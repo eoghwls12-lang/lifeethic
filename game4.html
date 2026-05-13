@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>윤리 판타지: 성현의 역습 v3.0</title>
+    <style>
+        :root {
+            --primary: #4facfe;
+            --accent: #f9d423;
+            --danger: #ff4e50;
+            --sidebar-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+        }
+        * { -webkit-tap-highlight-color: transparent; outline: none; }
+        body { margin: 0; overflow: hidden; background: #0f172a; font-family: 'Pretendard', 'Malgun Gothic', sans-serif; color: var(--text-dark); user-select: none; touch-action: none; }
+        
+        .game-wrapper { display: flex; width: 100vw; height: 100vh; position: relative; }
+        
+        #sidebar { 
+            width: 320px; background: var(--sidebar-bg); border-right: 4px solid var(--primary); 
+            display: none; flex-direction: column; padding: 25px; box-sizing: border-box;
+            z-index: 100; box-shadow: 10px 0 20px rgba(0,0,0,0.05); backdrop-filter: blur(15px);
+        }
+        
+        @media (max-width: 768px) { #sidebar { display: none !important; } }
+
+        #game-container { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: #f1f5f9; overflow: hidden; }
+
+        canvas { 
+            background: linear-gradient(to bottom, #bae6fd, #e0f2fe); 
+            border: 4px solid #fff; border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2); 
+            max-width: 100%; max-height: 100%; object-fit: contain;
+        }
+        
+        .screen { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: #f0f9ff; z-index: 50; padding: 20px; overflow-y: auto; }
+        h1 { font-size: clamp(1.5rem, 5vw, 3rem); margin-bottom: 1.5rem; color: #0c4a6e; text-shadow: 2px 2px 0px rgba(255,255,255,1); }
+        
+        /* Character Grid */
+        .char-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; max-width: 1200px; width: 100%; }
+        .char-card { 
+            background: white; border: 4px solid #e2e8f0; border-radius: 20px; 
+            padding: 15px; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-align: center; position: relative;
+        }
+        .char-card:hover { transform: translateY(-8px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3); }
+        .char-card canvas { display: block; margin: 0 auto 10px; background: #f8fafc; border: none; border-radius: 12px; width: 60px; height: 80px; }
+        .char-card h3 { margin: 5px 0; color: #0f172a; font-size: 1.1rem; }
+        .char-desc { font-size: 0.75rem; color: #64748b; line-height: 1.3; height: 3.2em; overflow: hidden; }
+
+        /* Top UI */
+        #top-ui { position: absolute; top: 15px; width: 100%; display: none; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 60; }
+        .stat-box { background: rgba(255,255,255,0.9); padding: 8px 16px; border-radius: 12px; border: 2px solid #0ea5e9; color: #0369a1; font-weight: 800; font-size: 0.9rem; }
+        
+        #boss-ui { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 500px; display: none; flex-direction: column; align-items: center; z-index: 60; }
+        .hp-container { width: 100%; height: 12px; background: #e2e8f0; border-radius: 6px; border: 2px solid #fff; overflow: hidden; }
+        #boss-hp-bar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.3s; }
+
+        /* Mobile Controls */
+        #mobile-controls { position: absolute; bottom: 20px; width: 100%; display: none; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 70; pointer-events: none; }
+        .control-group { display: flex; gap: 15px; pointer-events: auto; }
+        .ctrl-btn { 
+            width: 65px; height: 65px; background: rgba(15, 23, 42, 0.4); border: 3px solid rgba(255,255,255,0.6); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            color: white; font-weight: bold; font-size: 1.2rem; backdrop-filter: blur(5px);
+        }
+        .ctrl-btn:active { background: rgba(15, 23, 42, 0.8); transform: scale(0.9); }
+        .btn-jump { background: rgba(14, 165, 233, 0.5); }
+        .btn-atk { background: rgba(244, 63, 94, 0.5); width: 80px; height: 80px; font-size: 1.5rem; }
+        .btn-ult { background: rgba(249, 212, 35, 0.6); color: #000; width: 60px; height: 60px; margin-top: -10px; }
+
+        #ult-cut-in {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0);
+            background: rgba(15, 23, 42, 0.95); color: white; padding: 15px 40px;
+            border-radius: 100px; border: 4px solid var(--accent); font-size: clamp(1.2rem, 4vw, 2.2rem); font-weight: 900;
+            z-index: 200; pointer-events: none; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 50px rgba(249, 212, 35, 0.5); display: none;
+        }
+        #ult-cut-in.active { display: block; transform: translate(-50%, -50%) scale(1); }
+        #portal-msg { position: absolute; top: 120px; left: 50%; transform: translateX(-50%); background: #0ea5e9; color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; font-size: 0.8rem; display: none; animation: bounce 1s infinite; z-index: 100; }
+        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -10px); } }
+
+        .btn-main { background: #0284c7; color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 12px; cursor: pointer; font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper">
+    <!-- Sidebar for Desktop -->
+    <div id="sidebar">
+        <div class="sidebar-header"><h2 id="side-char-name">철학자 선택</h2></div>
+        <div class="sidebar-section"><h4>✨ 특성</h4><div id="side-ability" class="sidebar-content">-</div></div>
+        <div class="sidebar-section"><h4>🔥 필살기 (X)</h4><div id="side-ult" class="sidebar-content">-</div></div>
+        <div style="margin-top:auto; font-size:0.85rem; color:#64748b;">
+            Z: 공격 / X: 필살기 / Space: 점프<br>
+            모바일: 하단 버튼 사용
+        </div>
+    </div>
+
+    <div id="game-container">
+        <div id="ult-cut-in">필살기!</div>
+        
+        <!-- Selection Screen -->
+        <div id="selection-screen" class="screen">
+            <h1>🕊️ 성현의 역습 v3.0</h1>
+            <p style="margin-top:-1rem; margin-bottom:1.5rem; color:#64748b;">허무의 군주로부터 윤리의 세계를 구원할 사상가를 선택하세요.</p>
+            <div class="char-grid" id="char-grid"></div>
+        </div>
+
+        <!-- Gameplay UI -->
+        <div id="top-ui">
+            <div style="display:flex; gap:10px;">
+                <div class="stat-box">STG <span id="ui-stage">1</span></div>
+                <div class="stat-box">적 <span id="ui-enemies">0</span></div>
+            </div>
+            <div class="stat-box">지혜 <span id="ui-score">0</span></div>
+        </div>
+
+        <div id="portal-msg">진리의 문이 열렸습니다!</div>
+
+        <div id="boss-ui">
+            <span style="font-size:0.8rem; font-weight:800; color:#e11d48; margin-bottom:4px; background:white; padding:2px 8px; border-radius:4px;">허무의 군주: 니힐리우스</span>
+            <div class="hp-container"><div id="boss-hp-bar"></div></div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Mobile Controls -->
+        <div id="mobile-controls">
+            <div class="control-group">
+                <div class="ctrl-btn" id="btn-left">◀</div>
+                <div class="ctrl-btn" id="btn-right">▶</div>
+            </div>
+            <div class="control-group">
+                <div class="ctrl-btn btn-ult" id="btn-ult">X</div>
+                <div class="ctrl-btn btn-atk" id="btn-atk">Z</div>
+                <div class="ctrl-btn btn-jump" id="btn-jump">↑</div>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="screen" style="display:none;">
+            <h1 id="end-title"></h1>
+            <p id="end-msg" style="margin-bottom: 20px;"></p>
+            <button class="btn-main" onclick="location.reload()">다시 시작</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const CHARS = {
+        '칸트': { color: '#1e293b', extra: 'wig', bullet: '⚖️', speed: 6, jump: -15, bulletSpeed: 14, ability: '피격 시 무적', ult: '정언명령: 의무의 심판', desc: '"네 의지의 준칙이 보편적 법칙이 되게 하라."', colorEffect: '#cbd5e1' },
+        '벤담': { color: '#78350f', extra: 'hat', bullet: '💰', speed: 8.5, jump: -13, bulletSpeed: 12, ability: '이속/연사 특화', ult: '최대 다수의 최대 행복', desc: '"최대 다수의 최대 행복이 도덕의 기초다."', colorEffect: '#fde047' },
+        '롤스': { color: '#1d4ed8', extra: 'glasses', bullet: '🛡️', speed: 6, jump: -15, bulletSpeed: 14, ability: '철벽의 방어막', ult: '정의론: 무지의 베일', desc: '"정의는 공정함으로서의 정의이다."', colorEffect: '#60a5fa' },
+        '싱어': { color: '#15803d', extra: 'glasses', bullet: '🐾', speed: 6.5, jump: -19, bulletSpeed: 16, ability: '초고공 점프', ult: '생명 윤리: 고통의 해방', desc: '"고통을 느끼는 모든 존재는 평등하다."', colorEffect: '#4ade80' },
+        '아리스토': { color: '#334155', extra: 'beard', bullet: '🌿', speed: 7.5, jump: -15, bulletSpeed: 15, ability: '유도형 탄환', ult: '중용: 조화의 일격', desc: '"행복은 덕에 부합하는 영혼의 활동이다."', colorEffect: '#94a3b8' },
+        '공자': { color: '#991b1b', extra: 'longbeard', bullet: '📜', speed: 6, jump: -15, bulletSpeed: 13, ability: '관통형 탄환', ult: '대동사회: 인(仁)의 물결', desc: '"자기가 하기 싫은 일을 남에게 시키지 마라."', colorEffect: '#f87171' }
+    };
+
+    let player = { x: 100, y: 300, w: 45, h: 70, dx: 0, dy: 0, grounded: false, char: '', dir: 1, jumpCount: 0, maxJumps: 2, ultGauge: 0, maxUlt: 100, isInvincible: false, invincTimer: 0 };
+    let bullets = [], enemies = [], platforms = [], particles = [];
+    let boss = { x: 850, y: 150, w: 150, h: 150, hp: 1000, maxHp: 1000, active: false, timer: 0, dirY: 1 };
+    let stage = 1, score = 0, gameState = 'select', isClearing = false, portalActive = false;
+    let portal = { x: 950, y: 390, w: 80, h: 120 };
+    let shakeAmount = 0;
+
+    function initSelectionScreen() {
+        const grid = document.getElementById('char-grid');
+        Object.keys(CHARS).forEach(name => {
+            const card = document.createElement('div');
+            card.className = 'char-card';
+            card.innerHTML = `<canvas id="prev-${name}" width="80" height="100"></canvas><h3>${name}</h3><div class="char-desc">${CHARS[name].desc}</div>`;
+            card.onclick = () => startGame(name);
+            grid.appendChild(card);
+            renderCharPreview(name);
+        });
+        
+        // Touch events for mobile
+        const bindBtn = (id, key) => {
+            const btn = document.getElementById(id);
+            btn.ontouchstart = (e) => { e.preventDefault(); keys[key] = true; if(key === 'Space') jump(); if(key === 'KeyZ') shoot(); if(key === 'KeyX') useUltimate(); };
+            btn.ontouchend = (e) => { e.preventDefault(); keys[key] = false; };
+        };
+        bindBtn('btn-left', 'ArrowLeft');
+        bindBtn('btn-right', 'ArrowRight');
+        bindBtn('btn-jump', 'Space');
+        bindBtn('btn-atk', 'KeyZ');
+        bindBtn('btn-ult', 'KeyX');
+    }
+
+    function renderCharPreview(name) {
+        const pCanvas = document.getElementById(`prev-${name}`);
+        const pCtx = pCanvas.getContext('2d');
+        const c = CHARS[name];
+        pCtx.fillStyle = c.color; pCtx.beginPath(); pCtx.roundRect(17, 35, 45, 50, 8); pCtx.fill();
+        pCtx.fillStyle = "#ffdbac"; pCtx.beginPath(); pCtx.roundRect(17+5, 15, 35, 30, 5); pCtx.fill();
+    }
+
+    function startGame(name) {
+        player.char = name; player.speed = CHARS[name].speed; player.jump = CHARS[name].jump;
+        document.getElementById('sidebar').style.display = 'flex';
+        document.getElementById('side-char-name').innerText = name;
+        document.getElementById('side-ability').innerText = CHARS[name].ability;
+        document.getElementById('side-ult').innerText = CHARS[name].ult;
+        document.getElementById('selection-screen').style.display = 'none';
+        document.getElementById('top-ui').style.display = 'flex';
+        document.getElementById('mobile-controls').style.display = 'flex';
+        canvas.style.display = 'block';
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        loadStage(1);
+        gameState = 'play';
+        requestAnimationFrame(gameLoop);
+    }
+
+    function resizeCanvas() {
+        const container = document.getElementById('game-container');
+        const ratio = 1100 / 550;
+        let w = container.clientWidth - 40;
+        let h = w / ratio;
+        if (h > container.clientHeight - 40) {
+            h = container.clientHeight - 40;
+            w = h * ratio;
+        }
+        canvas.style.width = w + "px";
+        canvas.style.height = h + "px";
+        canvas.width = 1100;
+        canvas.height = 550;
+    }
+
+    const keys = {};
+    window.onkeydown = e => {
+        if(gameState !== 'play') return;
+        if(e.code === 'Space') jump();
+        keys[e.code] = true;
+        if(e.code === 'KeyZ') shoot();
+        if(e.code === 'KeyX') useUltimate();
+    };
+    window.onkeyup = e => keys[e.code] = false;
+
+    function jump() {
+        if(player.jumpCount < player.maxJumps) {
+            player.dy = player.jump; player.jumpCount++; player.grounded = false;
+            createParticles(player.x + 20, player.y + 70, "#fff", 5);
+        }
+    }
+
+    function shoot() {
+        if(bullets.length > 20) return;
+        bullets.push({ x: player.x + (player.dir === 1 ? 45 : -5), y: player.y + 30, dx: player.dir * CHARS[player.char].bulletSpeed, char: CHARS[player.char].bullet, penetrate: player.char === '공자' });
+    }
+
+    function createParticles(x, y, color, count, speed=5) {
+        for(let i=0; i<count; i++) {
+            particles.push({ x, y, dx: (Math.random()-0.5)*speed, dy: (Math.random()-0.5)*speed, life: 1, color, size: Math.random()*5+2 });
+        }
+    }
+
+    function useUltimate() {
+        if(player.ultGauge < player.maxUlt) return;
+        player.ultGauge = 0;
+        shakeAmount = 20;
+        const c = player.char;
+        const cutIn = document.getElementById('ult-cut-in');
+        cutIn.innerText = CHARS[c].ult; cutIn.classList.add('active');
+        setTimeout(() => cutIn.classList.remove('active'), 1000);
+
+        // 화려한 연출을 위한 파티클 대량 생성
+        createParticles(player.x, player.y, CHARS[c].colorEffect, 50, 15);
+
+        if(c === '칸트') { 
+            enemies.forEach(e => { if(!e.isBullet) { e.hp -= 50; createParticles(e.x, e.y, "#fff", 10); } }); 
+            if(boss.active) boss.hp -= 150;
+        } else if(c === '벤담') { 
+            for(let i=0; i<48; i++) { 
+                let ang = (i/48)*Math.PI*2; 
+                bullets.push({ x: player.x+20, y: player.y+30, dx: Math.cos(ang)*18, dy: Math.sin(ang)*18, char: '💰' }); 
+            }
+        } else if(c === '롤스') { 
+            player.isInvincible = true; player.invincTimer = 300; 
+            createParticles(player.x, player.y, "#60a5fa", 30);
+        } else if(c === '싱어') { 
+            enemies.forEach(e => { if(!e.isBullet) { e.hp -= 60; createParticles(e.x, e.y, "#4ade80", 15); } });
+            if(boss.active) boss.hp -= 180;
+        } else if(c === '아리스토') { 
+            for(let i=0; i<30; i++) bullets.push({ x: player.x, y: player.y, dx: 15, dy: (Math.random()-0.5)*30, char: '🌿', homing: true }); 
+        } else if(c === '공자') { 
+            bullets.push({ x: player.x, y: player.y-100, dx: player.dir*9, dy:0, char: '仁', ultra: true });
+        }
+    }
+
+    function loadStage(s) {
+        isClearing = true; portalActive = false;
+        document.getElementById('portal-msg').style.display = 'none';
+        stage = s; player.x = 50; player.y = 400; player.dx = 0; player.dy = 0;
+        document.getElementById('ui-stage').innerText = s;
+        enemies = []; bullets = []; particles = [];
+        platforms = [{x: 0, y: 510, w: 3000, h: 40}];
+        
+        if(s === 3) {
+            boss.active = true; boss.hp = boss.maxHp;
+            document.getElementById('boss-ui').style.display = 'flex';
+            platforms.push(
+                {x: 100, y: 400, w: 150, h: 20}, {x: 350, y: 380, w: 150, h: 20}, 
+                {x: 600, y: 400, w: 150, h: 20}, {x: 200, y: 280, w: 200, h: 20},
+                {x: 500, y: 250, w: 200, h: 20}, {x: 350, y: 150, w: 200, h: 20},
+                {x: 750, y: 200, w: 120, h: 20}
+            );
+        } else {
+            document.getElementById('boss-ui').style.display = 'none'; boss.active = false;
+            for(let i=1; i<=5+s; i++) {
+                let px = i * 180 + 100; let py = 510 - (Math.random()*150 + 120);
+                platforms.push({x: px, y: py, w: 160, h: 20});
+                let hp = 3 + stage * 4;
+                enemies.push({ x: px+50, y: py-60, w:50, h:50, hp, maxHp: hp, dx: (Math.random()>0.5?1:-1)*2.5, range: 60, originX: px+50 });
+            }
+        }
+        portal.x = 980; portal.y = 390;
+        setTimeout(() => isClearing = false, 500);
+    }
+
+    function update() {
+        if(isClearing || gameState !== 'play') return;
+
+        if(shakeAmount > 0) shakeAmount *= 0.9;
+
+        if(keys["ArrowRight"]) { player.dx = player.speed; player.dir = 1; }
+        else if(keys["ArrowLeft"]) { player.dx = -player.speed; player.dir = -1; }
+        else player.dx *= 0.85;
+
+        player.dy += 0.8; player.x += player.dx; player.y += player.dy;
+        if(player.x < 0) player.x = 0; if(player.x > 1100 - player.w) player.x = 1100 - player.w;
+
+        if(player.invincTimer > 0) { player.invincTimer--; if(player.invincTimer === 0) player.isInvincible = false; }
+        if(player.ultGauge < player.maxUlt) player.ultGauge += 0.2;
+
+        player.grounded = false;
+        platforms.forEach(p => {
+            if(player.x+player.w > p.x && player.x < p.x+p.w && player.y+player.h > p.y && player.y+player.h < p.y+p.h+10 && player.dy > 0) {
+                player.y = p.y - player.h; player.dy = 0; player.grounded = true; player.jumpCount = 0;
+            }
+        });
+
+        bullets.forEach((b, bi) => {
+            if(b.homing && enemies.length > 0) {
+                let target = enemies.find(e => !e.isBullet) || enemies[0];
+                let ang = Math.atan2(target.y - b.y, target.x - b.x);
+                b.dx += Math.cos(ang)*1.5; b.dy += Math.sin(ang)*1.5;
+                let cur = Math.sqrt(b.dx*b.dx + b.dy*b.dy); b.dx = (b.dx/cur)*15; b.dy = (b.dy/cur)*15;
+            }
+            b.x += b.dx; if(b.dy) b.y += b.dy;
+            if(b.x > 1300 || b.x < -200) { bullets.splice(bi, 1); return; }
+
+            enemies.forEach((en, ei) => {
+                if(en.isBullet && b.x > en.x && b.x < en.x+en.w && b.y > en.y && b.y < en.y+en.h) {
+                    createParticles(en.x, en.y, "#ff4e50", 5);
+                    enemies.splice(ei, 1); if(!b.penetrate) bullets.splice(bi, 1);
+                } else if(!en.isBullet && b.x > en.x && b.x < en.x+en.w && b.y > en.y && b.y < en.y+en.h) {
+                    en.hp--; createParticles(en.x, en.y, "#fff", 3);
+                    if(!b.penetrate && !b.ultra) bullets.splice(bi, 1);
+                }
+            });
+
+            if(boss.active && b.x > boss.x && b.x < boss.x+boss.w && b.y > boss.y && b.y < boss.y+boss.h) {
+                boss.hp -= b.ultra?40:8; if(!b.penetrate && !b.ultra) bullets.splice(bi, 1);
+                createParticles(b.x, b.y, "#f43f5e", 5);
+                document.getElementById('boss-hp-bar').style.width = (boss.hp/boss.maxHp*100) + "%";
+                if(boss.hp <= 0) endGame("진리의 승리", "모든 허무를 극복하고 세상을 구원했습니다!");
+            }
+        });
+
+        enemies = enemies.filter(en => {
+            if(!en.isBullet && en.hp <= 0) { score += 100; createParticles(en.x+25, en.y+25, "#334155", 15); return false; }
+            if(en.isBullet) { en.x += en.dx; en.y += en.dy; if(en.x < -100 || en.x > 1200) return false; }
+            else { en.x += en.dx; if(Math.abs(en.x - en.originX) > en.range) en.dx *= -1; }
+            
+            if(!player.isInvincible && player.x < en.x+en.w && player.x+player.w > en.x && player.y < en.y+en.h && player.y+player.h > en.y) {
+                if(player.char === '칸트') { player.isInvincible = true; player.invincTimer = 90; }
+                else endGame("윤리적 낙제", "진리의 길은 아직 멉니다.");
+            }
+            return true;
+        });
+
+        particles.forEach((p, pi) => { p.x += p.dx; p.y += p.dy; p.life -= 0.02; if(p.life <= 0) particles.splice(pi, 1); });
+
+        let realEnemies = enemies.filter(e => !e.isBullet).length;
+        document.getElementById('ui-enemies').innerText = realEnemies;
+        document.getElementById('ui-score').innerText = score;
+
+        if(!boss.active && realEnemies === 0) {
+            if(!portalActive) { portalActive = true; document.getElementById('portal-msg').style.display = 'block'; }
+            if(player.x + player.w > portal.x && player.x < portal.x + portal.w && player.y + player.h > portal.y) {
+                if(stage < 3) loadStage(stage + 1);
+            }
+        }
+
+        if(boss.active) {
+            boss.timer++; boss.y += boss.dirY * 4;
+            if(boss.y < 30 || boss.y > 370) boss.dirY *= -1;
+            if(boss.timer % 30 === 0) {
+                if(Math.random() < 0.7) enemies.push({ x: boss.x, y: boss.y+75, w:30, h:30, isBullet: true, dx: -12, dy: 0 });
+                else enemies.push({ x: player.x, y: -50, w:30, h:30, isBullet: true, dx: 0, dy: 12 });
+            }
+        }
+
+        if(player.y > 600) endGame("실족", "추락은 성찰의 계기가 됩니다.");
+    }
+
+    function draw() {
+        ctx.save();
+        if(shakeAmount > 1) ctx.translate((Math.random()-0.5)*shakeAmount, (Math.random()-0.5)*shakeAmount);
+        
+        ctx.clearRect(0, 0, 1100, 550);
+        
+        // Platforms
+        ctx.fillStyle = "#fff"; ctx.strokeStyle = "#0ea5e9"; ctx.lineWidth = 3;
+        platforms.forEach(p => { ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, p.h, 8); ctx.fill(); ctx.stroke(); });
+
+        if(portalActive) {
+            const time = Date.now() * 0.005;
+            let grad = ctx.createRadialGradient(portal.x+40, portal.y+60, 0, portal.x+40, portal.y+60, 60);
+            grad.addColorStop(0, "#fff"); grad.addColorStop(1, "rgba(56, 189, 248, 0)");
+            ctx.fillStyle = grad; ctx.beginPath(); ctx.ellipse(portal.x+40, portal.y+60, 40+Math.sin(time)*5, 60+Math.cos(time)*5, 0, 0, Math.PI*2); ctx.fill();
+        }
+
+        enemies.forEach(en => {
+            if(en.isBullet) { 
+                ctx.fillStyle="#ef4444"; ctx.beginPath(); ctx.arc(en.x+15, en.y+15, 15, 0, Math.PI*2); ctx.fill(); 
+                ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(en.x+15, en.y+15, 5, 0, Math.PI*2); ctx.fill();
+            } else { 
+                ctx.fillStyle="#334155"; ctx.beginPath(); ctx.roundRect(en.x, en.y, en.w, en.h, 10); ctx.fill();
+                ctx.fillStyle="#f43f5e"; ctx.fillRect(en.x, en.y - 12, en.w * (en.hp/en.maxHp), 6);
+            }
+        });
+
+        bullets.forEach(b => { 
+            ctx.textAlign="center";
+            ctx.font = b.ultra ? "250px Arial" : "30px Arial"; 
+            ctx.fillText(b.char, b.x, b.y); 
+        });
+
+        particles.forEach(p => {
+            ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        if(boss.active) {
+            ctx.fillStyle="#1e293b"; ctx.strokeStyle="#f43f5e"; ctx.lineWidth=5;
+            ctx.beginPath(); ctx.roundRect(boss.x, boss.y, boss.w, boss.h, 20); ctx.fill(); ctx.stroke();
+            ctx.fillStyle="#f43f5e"; ctx.beginPath(); ctx.arc(boss.x+75, boss.y+75, 40+Math.sin(Date.now()*0.01)*10, 0, Math.PI*2); ctx.fill();
+        }
+        
+        drawPlayer();
+        ctx.restore();
+    }
+
+    function drawPlayer() {
+        const c = CHARS[player.char];
+        ctx.save();
+        if(player.isInvincible) ctx.globalAlpha = 0.4 + Math.sin(Date.now()*0.1)*0.2;
+        ctx.fillStyle = c.color; ctx.beginPath(); ctx.roundRect(player.x, player.y+20, player.w, player.h-20, 8); ctx.fill();
+        ctx.fillStyle = "#ffdbac"; ctx.beginPath(); ctx.roundRect(player.x+5, player.y, player.w-10, 30, 5); ctx.fill();
+        ctx.fillStyle = "#000"; ctx.fillRect(player.x+(player.dir===1?30:10), player.y+10, 6, 6); ctx.fillRect(player.x+(player.dir===1?10:30), player.y+10, 6, 6);
+        ctx.restore();
+    }
+
+    function endGame(title, msg) { gameState = 'end'; document.getElementById('end-screen').style.display = 'flex'; document.getElementById('end-title').innerText = title; document.getElementById('end-msg').innerText = msg; }
+    function gameLoop() { update(); draw(); if(gameState === 'play') requestAnimationFrame(gameLoop); }
+    window.onload = initSelectionScreen;
+</script>
+</body>
+</html>
