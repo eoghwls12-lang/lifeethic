@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>법이야, 정의야? - 시민 불복종 시뮬레이션</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 부드러운 애니메이션 효과를 위한 CSS */
+        .progress-bar {
+            transition: width 0.5s ease-in-out, background-color 0.3s ease;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        body {
+            /* 교육용 게임에 어울리는 차분한 배경색 */
+            background-color: #f3f4f6; 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- 메인 게임 컨테이너 -->
+    <div id="game-container" class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden relative">
+        
+        <!-- 1. 시작 화면 -->
+        <div id="screen-start" class="p-10 text-center fade-in">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-4 tracking-tight">⚖️ 법이야, 정의야?</h1>
+            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                당신은 평범한 시민입니다.<br>
+                국가는 질서를 유지하기 위해 법을 만들지만, 때로는 그 법이 양심에 어긋나기도 합니다.<br>
+                당신은 <strong>법을 따르는 모범 시민</strong>이 되겠습니까, 아니면 <strong>정의를 위해 불복종</strong>하시겠습니까?
+            </p>
+            <button onclick="startGame()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                게임 시작하기
+            </button>
+        </div>
+
+        <!-- 2. 게임 플레이 화면 -->
+        <div id="screen-game" class="hidden flex flex-col h-full fade-in">
+            <!-- 상단 상태바 영역 -->
+            <div class="bg-gray-800 text-white p-6 rounded-b-3xl shadow-md z-10">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm font-semibold text-gray-300" id="turn-display">상황 1 / 6</span>
+                    <span class="text-lg font-bold">나의 상태</span>
+                </div>
+                
+                <!-- 사회 질서 바 -->
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="font-medium text-blue-200">🏛️ 사회 질서 (법 준수)</span>
+                        <span id="order-val" class="font-bold">80%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div id="bar-order" class="bg-blue-500 h-3 rounded-full progress-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+
+                <!-- 개인 양심 바 -->
+                <div>
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="font-medium text-red-200">❤️ 개인 양심 (정의감)</span>
+                        <span id="conscience-val" class="font-bold">80%</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+                        <div id="bar-conscience" class="bg-red-500 h-3 rounded-full progress-bar" style="width: 80%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 중앙 이벤트/딜레마 영역 -->
+            <div class="p-8 flex-grow flex flex-col justify-center">
+                <div id="event-card" class="bg-blue-50 border border-blue-100 p-6 rounded-xl shadow-sm mb-8">
+                    <h2 class="text-xl font-bold text-gray-800 mb-3 flex items-center">
+                        <span class="text-2xl mr-2">🚨</span> 발생한 상황
+                    </h2>
+                    <p id="event-text" class="text-gray-700 text-lg leading-relaxed">
+                        이벤트 텍스트가 여기에 표시됩니다.
+                    </p>
+                </div>
+
+                <!-- 선택 버튼 영역 -->
+                <div id="choice-area" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="makeChoice('obey')" class="group relative overflow-hidden bg-white border-2 border-gray-300 hover:border-blue-500 text-gray-800 p-4 rounded-xl shadow-sm transition-all text-left">
+                        <span class="block text-sm text-blue-600 font-bold mb-1">선택 1: 순응</span>
+                        <span id="btn-obey-text" class="block font-medium group-hover:text-blue-700">법을 지킨다</span>
+                    </button>
+                    
+                    <button onclick="makeChoice('disobey')" class="group relative overflow-hidden bg-white border-2 border-gray-300 hover:border-red-500 text-gray-800 p-4 rounded-xl shadow-sm transition-all text-left">
+                        <span class="block text-sm text-red-600 font-bold mb-1">선택 2: 불복종</span>
+                        <span id="btn-disobey-text" class="block font-medium group-hover:text-red-700">법을 어긴다</span>
+                    </button>
+                </div>
+
+                <!-- 피드백(결과) 영역 (선택 후 표시됨) -->
+                <div id="feedback-area" class="hidden text-center fade-in mt-4">
+                    <div id="feedback-text" class="text-lg font-semibold text-gray-800 mb-6 bg-gray-100 p-4 rounded-lg">
+                        결과 텍스트
+                    </div>
+                    <button onclick="nextTurn()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-8 rounded-full shadow transition">
+                        다음 상황으로
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 결과 화면 -->
+        <div id="screen-result" class="hidden p-10 text-center fade-in">
+            <div class="text-6xl mb-4" id="result-icon">🏆</div>
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-2" id="result-title">게임 종료</h1>
+            <p class="text-lg text-gray-600 mb-6 font-medium" id="result-subtitle">당신의 최종 상태</p>
+            
+            <div class="bg-gray-100 rounded-xl p-6 mb-8 text-left">
+                <p id="result-desc" class="text-gray-700 leading-relaxed text-center font-medium">
+                    결과 설명이 들어갑니다.
+                </p>
+            </div>
+
+            <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transform transition hover:scale-105">
+                처음부터 다시하기
+            </button>
+        </div>
+
+    </div>
+
+    <!-- 게임 로직 스크립트 -->
+    <script>
+        // 게임 상태 변수
+        let currentOrder = 80;
+        let currentConscience = 80;
+        let currentEventIndex = 0;
+        let isGameOver = false;
+
+        // 시나리오 데이터 (실제 수업에서 다룰 법한 시민 불복종 사례들)
+        const events = [
+            {
+                text: "정부가 명분 없는 침략 전쟁을 선포하고, 전쟁 자금을 마련하기 위해 모든 시민에게 '특별 전쟁세' 납부를 의무화했습니다.",
+                obey: { text: "전쟁세를 납부한다.", order: 10, conscience: -20, msg: "국가의 명령에 따랐습니다. 하지만 당신이 낸 세금이 무고한 사람들을 해치는 데 쓰인다는 사실에 깊은 죄책감을 느낍니다." },
+                disobey: { text: "세금 납부를 거부한다.", order: -15, conscience: 15, msg: "양심에 따라 세금 납부를 거부했습니다. 정부로부터 탈세 혐의로 벌금을 부과받았지만 마음은 떳떳합니다." }
+            },
+            {
+                text: "새로운 인종 분리법이 통과되어, 대중교통에서 특정 인종은 앞자리에 앉을 수 없고 무조건 뒷자리에만 앉아야 합니다.",
+                obey: { text: "법대로 자리를 비켜준다.", order: 5, conscience: -25, msg: "부당한 차별이지만 법을 따랐습니다. 불의를 보고도 외면했다는 사실에 양심이 크게 무너집니다." },
+                disobey: { text: "자리 양보를 거부하고 연대한다.", order: -20, conscience: 20, msg: "차별에 반대하며 자리를 지켰습니다! 경찰에 연행되어 질서는 흔들렸지만, 당신의 행동은 많은 이들에게 용기를 주었습니다." }
+            },
+            {
+                text: "국가 안보를 핑계로 정부를 비판하는 모든 기사와 출판물을 검열하고 금지하는 '언론 통제법'이 시행되었습니다.",
+                obey: { text: "침묵하고 정부 찬양 글만 쓴다.", order: 15, conscience: -20, msg: "안전하게 법을 지켰고 사회는 조용해졌습니다. 하지만 진실이 묻히는 것을 방관하며 양심의 가책을 느낍니다." },
+                disobey: { text: "비밀리에 진실을 담은 전단지를 뿌린다.", order: -15, conscience: 15, msg: "감옥에 갈 각오로 진실을 알렸습니다. 공안이 출동하여 거리는 혼란스러워졌지만, 시민들의 알 권리를 지켰습니다." }
+            },
+            {
+                text: "대기업의 리조트 건설을 위해 달동네 빈민들에게 강제 퇴거 명령이 떨어졌습니다. 갈 곳 없는 주민들을 경찰이 무력으로 쫓아내려 합니다.",
+                obey: { text: "법적 명령이므로 개입하지 않는다.", order: 10, conscience: -25, msg: "합법적인 철거이므로 방관했습니다. 집을 잃고 우는 이웃들을 보며 깊은 무력감과 죄책감이 듭니다." },
+                disobey: { text: "주민들과 스크럼을 짜고 철거를 막는다.", order: -20, conscience: 15, msg: "인간의 기본권을 위해 법적 집행을 물리력으로 막아섰습니다. 공무집행방해로 체포될 위기에 처했습니다." }
+            },
+            {
+                text: "정부가 독재를 영구화하기 위해 헌법을 날치기로 통과시켰습니다. 이에 항의하기 위해 시민 단체들이 '불법 평화 행진'을 기획했습니다.",
+                obey: { text: "불법 집회이므로 참여하지 않는다.", order: 5, conscience: -30, msg: "불법을 저지르지 않기 위해 집에 머물렀습니다. 독재는 굳어지고 민주주의가 후퇴하는 것을 지켜만 봅니다." },
+                disobey: { text: "법을 어기고 평화 행진에 나선다.", order: -25, conscience: 25, msg: "불법 집회임에도 거리에 나가 평화적으로 행진했습니다. 대규모 시위로 도시는 마비되었지만 민주주의를 향한 열망을 보여주었습니다." }
+            }
+        ];
+
+        // UI 요소 캐싱
+        const screenStart = document.getElementById('screen-start');
+        const screenGame = document.getElementById('screen-game');
+        const screenResult = document.getElementById('screen-result');
+        const barOrder = document.getElementById('bar-order');
+        const barConscience = document.getElementById('bar-conscience');
+        const textOrder = document.getElementById('order-val');
+        const textConscience = document.getElementById('conscience-val');
+        
+        const choiceArea = document.getElementById('choice-area');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackText = document.getElementById('feedback-text');
+
+        // 게임 시작
+        function startGame() {
+            screenStart.classList.add('hidden');
+            screenGame.classList.remove('hidden');
+            updateUI();
+            loadEvent();
+        }
+
+        // 스탯 업데이트 및 게이지 바 색상 변경
+        function updateStats(orderDiff, consDiff) {
+            currentOrder += orderDiff;
+            currentConscience += consDiff;
+
+            // 최소 0, 최대 100으로 제한
+            currentOrder = Math.max(0, Math.min(100, currentOrder));
+            currentConscience = Math.max(0, Math.min(100, currentConscience));
+
+            updateUI();
+            checkGameOver();
+        }
+
+        // UI 렌더링
+        function updateUI() {
+            barOrder.style.width = currentOrder + '%';
+            textOrder.innerText = currentOrder + '%';
+            
+            // 질서가 낮으면 바 색상을 빨간색 계열로 변경
+            if(currentOrder <= 30) barOrder.className = "bg-red-600 h-3 rounded-full progress-bar";
+            else if(currentOrder <= 60) barOrder.className = "bg-yellow-500 h-3 rounded-full progress-bar";
+            else barOrder.className = "bg-blue-500 h-3 rounded-full progress-bar";
+
+            barConscience.style.width = currentConscience + '%';
+            textConscience.innerText = currentConscience + '%';
+
+            // 양심이 낮으면 바 색상을 흑백 계열로 변경 (인간성 상실 느낌)
+            if(currentConscience <= 30) barConscience.className = "bg-gray-800 h-3 rounded-full progress-bar";
+            else if(currentConscience <= 60) barConscience.className = "bg-orange-400 h-3 rounded-full progress-bar";
+            else barConscience.className = "bg-red-500 h-3 rounded-full progress-bar";
+        }
+
+        // 현재 이벤트 로드
+        function loadEvent() {
+            const ev = events[currentEventIndex];
+            document.getElementById('turn-display').innerText = `상황 ${currentEventIndex + 1} / ${events.length}`;
+            document.getElementById('event-text').innerText = ev.text;
+            
+            document.getElementById('btn-obey-text').innerText = ev.obey.text;
+            document.getElementById('btn-disobey-text').innerText = ev.disobey.text;
+
+            choiceArea.classList.remove('hidden');
+            feedbackArea.classList.add('hidden');
+        }
+
+        // 플레이어 선택 처리
+        function makeChoice(type) {
+            const ev = events[currentEventIndex];
+            const result = (type === 'obey') ? ev.obey : ev.disobey;
+
+            // 스탯 적용
+            updateStats(result.order, result.conscience);
+
+            // 피드백 텍스트 구성 (증감치 표시)
+            let statChanges = `<div class="mt-3 text-sm flex justify-center space-x-4">`;
+            
+            if(result.order > 0) statChanges += `<span class="text-blue-600">질서 +${result.order}</span>`;
+            else if(result.order < 0) statChanges += `<span class="text-red-600">질서 ${result.order}</span>`;
+            
+            if(result.conscience > 0) statChanges += `<span class="text-red-500">양심 +${result.conscience}</span>`;
+            else if(result.conscience < 0) statChanges += `<span class="text-gray-600">양심 ${result.conscience}</span>`;
+            
+            statChanges += `</div>`;
+
+            feedbackText.innerHTML = `<strong>${result.msg}</strong>` + statChanges;
+
+            // 화면 전환
+            choiceArea.classList.add('hidden');
+            if(!isGameOver) {
+                feedbackArea.classList.remove('hidden');
+            }
+        }
+
+        // 다음 턴으로 넘어가기
+        function nextTurn() {
+            currentEventIndex++;
+            if (currentEventIndex >= events.length) {
+                showResult('clear'); // 끝까지 생존
+            } else {
+                loadEvent();
+            }
+        }
+
+        // 게임 오버 조건 체크
+        function checkGameOver() {
+            if (currentOrder <= 0) {
+                isGameOver = true;
+                showResult('anarchy');
+            } else if (currentConscience <= 0) {
+                isGameOver = true;
+                showResult('conformist');
+            }
+        }
+
+        // 결과 화면 표시
+        function showResult(type) {
+            screenGame.classList.add('hidden');
+            screenResult.classList.remove('hidden');
+
+            const icon = document.getElementById('result-icon');
+            const title = document.getElementById('result-title');
+            const sub = document.getElementById('result-subtitle');
+            const desc = document.getElementById('result-desc');
+
+            if (type === 'anarchy') {
+                icon.innerText = "🔥";
+                title.innerText = "무법천지 도래";
+                title.className = "text-3xl font-extrabold text-red-600 mb-2";
+                sub.innerText = "사회 질서가 0%가 되었습니다.";
+                desc.innerHTML = "당신은 양심을 지키기 위해 끊임없이 불복종했습니다. 하지만 <strong>과도한 불복종과 무질서</strong>로 인해 국가의 시스템이 붕괴되고 폭동이 일어났습니다.<br><br>시민 불복종은 사회 질서를 완전히 파괴하려는 목적이 아니라, 부당한 법을 고치기 위한 <strong>'제한적이고 평화적인' 행위</strong>여야 한다는 롤스(Rawls)의 경고를 떠올려보세요.";
+            } 
+            else if (type === 'conformist') {
+                icon.innerText = "🤖";
+                title.innerText = "기계적인 순응자";
+                title.className = "text-3xl font-extrabold text-gray-600 mb-2";
+                sub.innerText = "개인 양심이 0%가 되었습니다.";
+                desc.innerHTML = "당신은 법이라는 이유만으로 모든 불의에 눈감고 순응했습니다. 그 결과 사회는 안정을 유지했지만, <strong>인간으로서의 존엄성과 양심은 완전히 상실</strong>되었습니다.<br><br>소로(Thoreau)는 <em>'우리는 먼저 인간이어야 하고, 그다음에 국민이어야 한다'</em>고 말했습니다. 법보다 정의를 먼저 생각하는 태도가 필요하지 않을까요?";
+            } 
+            else if (type === 'clear') {
+                icon.innerText = "🕊️";
+                title.innerText = "깨어있는 시민";
+                title.className = "text-3xl font-extrabold text-blue-600 mb-2";
+                sub.innerText = `질서: ${currentOrder}% | 양심: ${currentConscience}%`;
+                
+                if (currentConscience >= 70) {
+                    desc.innerHTML = "훌륭합니다! 당신은 부당한 법에 맞서면서도 사회 전체가 붕괴되는 것은 막아냈습니다. 당신의 용기 있는 <strong>시민 불복종</strong>은 대중의 지지를 얻었고, 마침내 악법이 개정되는 계기가 되었습니다.<br><br>진정한 민주주의는 이렇게 깨어있는 시민들의 용기로 발전해 나갑니다.";
+                } else {
+                    desc.innerHTML = "당신은 현실과 타협하며 무사히 상황들을 넘겼습니다. 큰 혼란은 없었지만, 마음 한구석에는 불의를 보고도 적극적으로 나서지 못한 아쉬움이 남습니다.<br><br>다음에는 두려움을 이겨내고 조금 더 정의의 편에 서보는 것은 어떨까요?";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
