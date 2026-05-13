@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무지의 베일: 사회 설계자</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #1e272e; color: #ecf0f1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background-color: #2c3e50; padding: 40px; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.5); max-width: 750px; width: 100%; text-align: center; }
+        h1 { color: #f1c40f; border-bottom: 2px solid #f39c12; padding-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        h2 { color: #3498db; margin-bottom: 5px; }
+        .subtitle-desc { color: #bdc3c7; font-size: 0.95em; margin-bottom: 25px; line-height: 1.5; }
+        p { line-height: 1.6; font-size: 1.1em; margin-bottom: 20px; color: #bdc3c7; }
+        .hidden { display: none !important; }
+        
+        .btn { background-color: #e67e22; color: white; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s; margin: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .btn:hover { background-color: #d35400; transform: translateY(-2px); }
+        .btn:disabled { background-color: #7f8c8d; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .btn-choice { background-color: #34495e; color: #ecf0f1; border: 2px solid #7f8c8d; width: 48%; padding: 12px; font-size: 1em; margin-top: 10px; cursor: pointer; border-radius: 5px; transition: 0.2s; }
+        .btn-choice:hover { background-color: #465c71; }
+        .btn-choice.selected { background-color: #2ecc71; color: white; border-color: #27ae60; box-shadow: 0 0 10px rgba(46, 204, 113, 0.4); font-weight: bold; }
+
+        .budget-row { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; padding: 15px; background: #34495e; border-radius: 8px; text-align: left;}
+        .budget-row label { flex-grow: 1; }
+        .budget-row input { width: 80px; padding: 10px; font-size: 1.2em; font-weight: bold; text-align: center; border: 2px solid #f1c40f; border-radius: 5px; background: #2c3e50; color: #f1c40f; }
+        .total-points { font-size: 1.5em; font-weight: bold; color: #e74c3c; margin: 20px 0; }
+
+        .policy-box { text-align: left; padding: 20px; border: 1px solid #7f8c8d; border-radius: 8px; margin-bottom: 20px; background: #243447; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .policy-box h3 { margin-top: 0; color: #f39c12; font-size: 1.2em; border-bottom: 1px solid #465c71; padding-bottom: 8px; }
+        .policy-desc { font-size: 0.95em; color: #ecf0f1; margin-bottom: 15px; background: #2c3e50; padding: 12px; border-radius: 5px; border-left: 4px solid #3498db; line-height: 1.6; }
+        .btn-container { display: flex; justify-content: space-between; }
+
+        /* 룰렛 효과 */
+        #rouletteText { font-size: 3em; font-weight: bold; color: #9b59b6; height: 80px; margin: 40px 0; text-shadow: 0 0 20px rgba(155, 89, 182, 0.8); }
+        .flash { animation: flashAnim 0.1s infinite; }
+        @keyframes flashAnim { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        
+        /* 결과 게이지 바 */
+        .chart-container { background: #34495e; padding: 20px; border-radius: 10px; margin: 20px 0; }
+        .bar-row { display: flex; align-items: center; margin: 10px 0; }
+        .bar-label { width: 85px; font-weight: bold; text-align: right; margin-right: 15px; font-size: 0.9em; }
+        .bar-track { flex-grow: 1; background: #1e272e; height: 25px; border-radius: 12px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; transition: width 1s ease-in-out; display: flex; align-items: center; padding-left: 10px; font-weight: bold; color: white; text-shadow: 1px 1px 2px black; font-size: 0.9em; }
+        .fill-top { background: linear-gradient(90deg, #f39c12, #f1c40f); }
+        .fill-mid { background: linear-gradient(90deg, #2980b9, #3498db); }
+        .fill-bot { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+        
+        .result-box { background: #ecf0f1; color: #2c3e50; padding: 25px; border-left: 8px solid #3498db; border-radius: 8px; margin-top: 20px; text-align: left; font-size: 1.1em; box-shadow: inset 0 0 15px rgba(0,0,0,0.1); line-height: 1.6; }
+        .highlight { font-weight: bold; font-size: 1.6em; margin: 15px 0; }
+        .dead { color: #c0392b; }
+        .survive { color: #f39c12; }
+        .good { color: #27ae60; }
+        .rich { color: #8e44ad; }
+        
+        .hint { margin-top: 30px; font-style: italic; color: #95a5a6; font-size: 0.95em; border-top: 1px solid #7f8c8d; padding-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="stage1">
+    <h1>무지의 베일: 사회 설계자</h1>
+    <p>당신은 곧 태어날 사회의 지위, 재력, 건강을 <strong>전혀 모릅니다.</strong><br>이제부터 당신은 이 국가의 예산을 배분하고, 핵심 법안 5개를 통과시켜야 합니다.</p>
+    <p style="color: #e74c3c; font-weight: bold; background: #34495e; padding: 15px; border-radius: 8px;">※ 경고: 최종 '삶의 질 점수'가 30점 미만일 경우,<br>생존을 보장받을 수 없는 끔찍한 결말을 맞이합니다.</p>
+    <button class="btn" onclick="nextStage(2)">사회 설계 시작하기</button>
+</div>
+
+<div class="container hidden" id="stage2">
+    <h2>1단계: 국가 예산 분배</h2>
+    <div class="subtitle-desc">총 100pt의 예산을 분배하세요. 성장에 투자하여 전체 파이를 키울지, 분배에 투자하여 안전망을 구축할지 결정해야 합니다.</div>
+    <div class="budget-row">
+        <label>🚀 <strong>상위 10% 지원 (효율 x3배)</strong><br><small>기업 육성, 규제 완화 (투입 포인트의 3배 상승)</small></label>
+        <input type="number" id="bTop" value="0" min="0" max="100" oninput="updateTotal()">
+    </div>
+    <div class="budget-row">
+        <label>🏢 <strong>중위 60% 지원 (효율 x2배)</strong><br><small>중산층 고용 안정, 대출 지원 (투입 포인트의 2배 상승)</small></label>
+        <input type="number" id="bMid" value="0" min="0" max="100" oninput="updateTotal()">
+    </div>
+    <div class="budget-row">
+        <label>🛟 <strong>하위 30% 복지 (효율 x1배)</strong><br><small>기초수급, 무상급식 등 안전망 (투입 포인트만큼 상승)</small></label>
+        <input type="number" id="bBot" value="0" min="0" max="100" oninput="updateTotal()">
+    </div>
+    <div class="total-points">남은 포인트: <span id="pointsLeft">100</span></div>
+    <button class="btn" id="btnToStage3" onclick="nextStage(3)" disabled>다음: 5대 핵심 정책 투표</button>
+</div>
+
+<div class="container hidden" id="stage3">
+    <h2>2단계: 5대 핵심 정책 결정</h2>
+    <div class="subtitle-desc">예산을 바탕으로 사회의 뼈대가 될 법안을 선택하세요. 어떤 계층으로 태어날지 모르는 상태에서 가장 합리적인 제도는 무엇일까요?</div>
+    
+    <div class="policy-box">
+        <h3>1. 보건의료: 중증 질환 국가 무상치료제</h3>
+        <div class="policy-desc">의료는 국가가 보장해야 할 필수 기본권일까요? 도입 시 하위 계층은 돈이 없어 치료를 포기하는 일이 사라지지만, 이를 유지하기 위해 상위 계층은 막대한 세금 부담을 안게 됩니다.</div>
+        <div class="btn-container">
+            <button class="btn-choice" id="p1_Y" onclick="selectPolicy(1, 'Y')">도입 (하위+20 / 상위-15)</button>
+            <button class="btn-choice" id="p1_N" onclick="selectPolicy(1, 'N')">반대 (상위+15 / 하위-20)</button>
+        </div>
+    </div>
+    <div class="policy-box">
+        <h3>2. 교육기회: 대학 입시 기회균등(저소득) 할당제</h3>
+        <div class="policy-desc">부모의 재력 차이를 상쇄하기 위해 소외계층에게 정원의 일부를 배정할 것인가요? 도입 시 빈곤층의 계층 이동 사다리가 복원되지만, 최상위권 학생들의 역차별 논란이 발생합니다.</div>
+        <div class="btn-container">
+            <button class="btn-choice" id="p2_Y" onclick="selectPolicy(2, 'Y')">유지 (하위+15 / 상위-10)</button>
+            <button class="btn-choice" id="p2_N" onclick="selectPolicy(2, 'N')">폐지 (상위+20 / 하위-15)</button>
+        </div>
+    </div>
+    <div class="policy-box">
+        <h3>3. 노동시장: 강력한 해고 제한 및 임금 보장</h3>
+        <div class="policy-desc">노동자의 안정성이 우선인가요, 기업의 유연성이 우선인가요? 도입 시 다수의 중산층이 해고 불안 없이 안정적인 삶을 살지만, 기업(상위권)은 인건비 부담으로 성장이 둔화됩니다.</div>
+        <div class="btn-container">
+            <button class="btn-choice" id="p3_Y" onclick="selectPolicy(3, 'Y')">도입 (중위+20 / 상위-20)</button>
+            <button class="btn-choice" id="p3_N" onclick="selectPolicy(3, 'N')">반대 (상위+25 / 중위-15)</button>
+        </div>
+    </div>
+    <div class="policy-box">
+        <h3>4. 조세제도: 최고세율 70% 강력한 부유세</h3>
+        <div class="policy-desc">큰 부는 사회적 인프라 덕분이니 공동체에 환원해야 할까요, 아니면 개인의 정당한 노력이니 보호해야 할까요? 도입 시 중·하위권 복지 재원이 넉넉해지지만, 상위권의 재산권은 크게 제한됩니다.</div>
+        <div class="btn-container">
+            <button class="btn-choice" id="p4_Y" onclick="selectPolicy(4, 'Y')">도입 (하위+20 / 상위-30 / 중위+10)</button>
+            <button class="btn-choice" id="p4_N" onclick="selectPolicy(4, 'N')">반대 (상위+30 / 중위-10)</button>
+        </div>
+    </div>
+    <div class="policy-box">
+        <h3>5. 주거권리: 대규모 공공임대주택 건설</h3>
+        <div class="policy-desc">국가가 개입하여 저렴한 주택을 대량 공급할 것인가요? 도입 시 하위 계층의 주거 불안이 크게 해소되지만, 부동산 가격 상승을 노리던 상위 투자자들의 이익은 줄어듭니다.</div>
+        <div class="btn-container">
+            <button class="btn-choice" id="p5_Y" onclick="selectPolicy(5, 'Y')">도입 (하위+15 / 상위-10 / 중위+10)</button>
+            <button class="btn-choice" id="p5_N" onclick="selectPolicy(5, 'N')">반대 (상위+25 / 하위-20)</button>
+        </div>
+    </div>
+
+    <button class="btn" id="btnToStage4" onclick="startRoulette()" disabled style="width: 100%;">운명의 룰렛 돌리기</button>
+</div>
+
+<div class="container hidden" id="stage4">
+    <h2>베일이 걷힙니다...</h2>
+    <p>당신이 만든 세상의 톱니바퀴가 돌아가기 시작합니다.<br>당신은 누구로 태어날까요?</p>
+    <div id="rouletteText" class="flash">운명 계산 중...</div>
+</div>
+
+<div class="container hidden" id="stage5">
+    <h2>당신의 삶이 결정되었습니다</h2>
+    <div class="chart-container">
+        <p style="margin: 0 0 10px 0; color: #bdc3c7; font-size: 0.9em;">[당신이 설계한 사회의 계층별 최종 삶의 질]</p>
+        <div class="bar-row"><div class="bar-label">상위 10%</div><div class="bar-track"><div id="barTop" class="bar-fill fill-top" style="width: 0%;"></div></div></div>
+        <div class="bar-row"><div class="bar-label">중위 60%</div><div class="bar-track"><div id="barMid" class="bar-fill fill-mid" style="width: 0%;"></div></div></div>
+        <div class="bar-row"><div class="bar-label">하위 30%</div><div class="bar-track"><div id="barBot" class="bar-fill fill-bot" style="width: 0%;"></div></div></div>
+    </div>
+    
+    <div id="finalRoleHighlight" class="highlight"></div>
+    <div id="resultBox" class="result-box"></div>
+    
+    <div class="hint">
+        존 롤스(John Rawls)는 말했습니다. "정의로운 사회란, 우연히 가장 불리한 위치에 태어난 사람(최소 수혜자)이라도 인간다운 삶을 보장받을 수 있는 사회다." (최소 극대화 원칙)
+    </div>
+    <button class="btn" style="margin-top:20px; width:100%;" onclick="location.reload()">새로운 우주에서 다시 태어나기</button>
+</div>
+
+<script>
+    let pTop = 0, pMid = 0, pBot = 0;
+    let pol = { 1: '', 2: '', 3: '', 4: '', 5: '' };
+    
+    const roles = [
+        { id: 'top', name: "상위 10% (대기업 오너 일가, 대형 로펌 대표)", prob: 0.1 },
+        { id: 'mid', name: "중위 60% (평범한 사무직 노동자, 자영업자)", prob: 0.7 },
+        { id: 'bot', name: "하위 30% (희귀난치병 환자, 철거민, 일용직)", prob: 1.0 }
+    ];
+
+    function nextStage(stage) {
+        document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+        document.getElementById('stage' + stage).classList.remove('hidden');
+        window.scrollTo(0,0);
+    }
+
+    function updateTotal() {
+        pTop = parseInt(document.getElementById('bTop').value) || 0;
+        pMid = parseInt(document.getElementById('bMid').value) || 0;
+        pBot = parseInt(document.getElementById('bBot').value) || 0;
+        let left = 100 - (pTop + pMid + pBot);
+        document.getElementById('pointsLeft').innerText = left;
+        document.getElementById('pointsLeft').style.color = left === 0 ? "#2ecc71" : "#e74c3c";
+        document.getElementById('btnToStage3').disabled = (left !== 0);
+    }
+
+    function selectPolicy(num, choice) {
+        pol[num] = choice;
+        document.getElementById('p' + num + '_Y').classList.remove('selected');
+        document.getElementById('p' + num + '_N').classList.remove('selected');
+        document.getElementById('p' + num + '_' + choice).classList.add('selected');
+        
+        if(Object.values(pol).every(val => val !== '')) {
+            document.getElementById('btnToStage4').disabled = false;
+        }
+    }
+
+    function startRoulette() {
+        nextStage(4);
+        const rText = document.getElementById('rouletteText');
+        let count = 0;
+        let speed = 50;
+        
+        const spin = setInterval(() => {
+            rText.innerText = roles[count % 3].name.split(" ")[0] + "...";
+            count++;
+        }, speed);
+
+        setTimeout(() => {
+            clearInterval(spin);
+            rText.classList.remove('flash');
+            calculateResults();
+        }, 3500);
+    }
+
+    function calculateResults() {
+        // 기본 예산 점수
+        let scoreTop = pTop * 3;
+        let scoreMid = pMid * 2;
+        let scoreBot = pBot * 1;
+
+        // 정책 가감점 로직
+        if(pol[1] === 'Y') { scoreBot += 20; scoreTop -= 15; } else { scoreTop += 15; scoreBot -= 20; }
+        if(pol[2] === 'Y') { scoreBot += 15; scoreTop -= 10; } else { scoreTop += 20; scoreBot -= 15; }
+        if(pol[3] === 'Y') { scoreMid += 20; scoreTop -= 20; } else { scoreTop += 25; scoreMid -= 15; }
+        if(pol[4] === 'Y') { scoreBot += 20; scoreMid += 10; scoreTop -= 30; } else { scoreTop += 30; scoreMid -= 10; }
+        if(pol[5] === 'Y') { scoreBot += 15; scoreMid += 10; scoreTop -= 10; } else { scoreTop += 25; scoreBot -= 20; }
+
+        // 마이너스 점수 방지
+        scoreTop = Math.max(0, scoreTop);
+        scoreMid = Math.max(0, scoreMid);
+        scoreBot = Math.max(0, scoreBot);
+
+        // 룰렛 운명 결정
+        const rand = Math.random();
+        let myRole, myScore;
+        if(rand < 0.1) { myRole = roles[0]; myScore = scoreTop; }
+        else if(rand < 0.7) { myRole = roles[1]; myScore = scoreMid; }
+        else { myRole = roles[2]; myScore = scoreBot; }
+
+        nextStage(5);
+
+        // 게이지 바 애니메이션 적용 (최대 300 기준으로 퍼센트 계산)
+        setTimeout(() => {
+            document.getElementById('barTop').style.width = Math.min(100, (scoreTop/300)*100) + '%';
+            document.getElementById('barTop').innerText = scoreTop + '점';
+            document.getElementById('barMid').style.width = Math.min(100, (scoreMid/300)*100) + '%';
+            document.getElementById('barMid').innerText = scoreMid + '점';
+            document.getElementById('barBot').style.width = Math.min(100, (scoreBot/300)*100) + '%';
+            document.getElementById('barBot').innerText = scoreBot + '점';
+        }, 300);
+
+        // 결과 세팅
+        const highlightElement = document.getElementById('finalRoleHighlight');
+        const boxElement = document.getElementById('resultBox');
+        
+        highlightElement.innerHTML = `당신은 <span style="text-decoration: underline;">${myRole.name}</span>로 태어났습니다.<br>최종 내 삶의 질: ${myScore}점`;
+
+        let story = "";
+
+        // 점수별 구체적 시나리오
+        if (myScore < 30) {
+            highlightElement.className = 'highlight dead';
+            if (myRole.id === 'bot') {
+                story = `<strong>[SYSTEM: 생존 실패]</strong><br>
+                당신은 희귀난치병을 앓는 고아로 태어났습니다. 당신이 반대했던 무상의료와 깎아버린 복지 예산 때문에 병원 문턱도 밟지 못했습니다. 
+                추운 겨울, 난방이 끊긴 한 평짜리 쪽방에서 얼음장 같은 바닥에 누워 진통제 한 알 없이 생을 마감합니다. 마지막 순간, 부유층에게 세금을 깎아주던 당신의 투표 용지가 떠오릅니다. 당신이 만든 지옥입니다.`;
+            } else if (myRole.id === 'mid') {
+                story = `<strong>[SYSTEM: 파산 및 가정 붕괴]</strong><br>
+                당신은 평범한 직장인이었으나, 쉬운 해고를 찬성한 당신의 정책 탓에 40대에 문자로 해고 통보를 받았습니다. 
+                부동산 규제를 푼 탓에 월세는 치솟았고, 자녀의 학원비는커녕 당장 내일 먹을 쌀을 걱정해야 합니다. 매일 밤 대출 독촉 전화에 시달리며, 벼랑 끝에 내몰렸습니다.`;
+            } else {
+                story = `<strong>[SYSTEM: 몰락한 부유층]</strong><br>
+                상위 10%로 태어났으나, 당신이 극단적으로 분배에만 예산을 배분하고 기업을 옥죄는 바람에 국가 경제가 파탄 났습니다. 
+                명색이 대기업 오너 일가인데 회사는 부도를 맞았고, 막대한 부유세 세금 폭탄까지 맞아 하루아침에 빚더미에 앉았습니다.`;
+            }
+        } else if (myScore < 60) {
+            highlightElement.className = 'highlight survive';
+            if (myRole.id === 'bot') {
+                story = `<strong>[비가 새는 반지하의 삶]</strong><br>
+                철거촌 빈민으로 태어났습니다. 하루 12시간씩 일용직 노동을 하며 간신히 입에 풀칠만 하고 있습니다. 
+                다행히 당신이 조금 남겨둔 복지 예산 덕에 굶어 죽지는 않지만, 매일 파스를 붙이고 눈물짓습니다. 평생 가난의 굴레를 벗어나기 힘든 팍팍한 삶입니다.`;
+            } else {
+                story = `<strong>[숨 막히는 무한 경쟁, 과로사 직전]</strong><br>
+                평범한 직장인으로 태어났습니다. 당신이 도입한 무한 경쟁 정책 탓에 밤낮없이 일해야만 중간이라도 갑니다. 
+                월급의 절반 이상이 월세와 대출 이자로 빠져나가고, 퇴근 후 배달 알바까지 투잡을 뛰며 하루 4시간 수면을 유지합니다. '산다는 것'보다 '버틴다는 것'이 어울리는 삶입니다.`;
+            }
+        } else if (myScore < 120) {
+            highlightElement.className = 'highlight good';
+            if (myRole.id === 'bot') {
+                story = `<strong>[가난하지만 희망이 있는 삶]</strong><br>
+                기초수급자 가정에서 태어났습니다. 하지만 당신이 설계한 탄탄한 공공임대주택과 무상 의료, 기회균등 할당제 덕분에 안정적으로 성장했습니다. 
+                국가의 지원으로 무사히 대학을 졸업하고 취업에 성공하여 중산층으로 진입했습니다. 베일 속에서 약자를 배려했던 당신의 지혜가 당신 스스로를 구원했습니다!`;
+            } else {
+                story = `<strong>[저녁이 있는 삶, 따뜻한 중산층]</strong><br>
+                당신은 쾌적한 전셋집에 살며, 연 1회 해외여행을 갈 수 있는 든든한 직장인입니다. 
+                아프면 건강보험으로 큰 돈 들이지 않고 치료받을 수 있고, 노동권이 보장되어 정시 퇴근 후 가족과 함께 시간을 보냅니다. 당신이 만든 사회 안전망 덕분에 평온한 삶을 영위합니다.`;
+            }
+        } else {
+            highlightElement.className = 'highlight rich';
+            story = `<strong>[선택받은 자의 호화로운 라이프]</strong><br>
+            당신은 한강이 내려다보이는 수십억 원대 펜트하우스에 누워 와인을 마십니다. 
+            당신이 부자들의 세금을 깎아주고 노동자들을 쉽게 해고할 수 있게 만든 법안 덕분에, 당신의 자산은 매년 기하급수적으로 증식하고 있습니다. 
+            당신의 도박은 완벽하게 성공했습니다! 단, 이 자리에 태어날 줄 알았다면 말이죠. 창밖 아래 보이는 빈민들의 시위에 귀를 막으며 당신은 안락한 잠에 빠집니다.`;
+        }
+
+        boxElement.innerHTML = story;
+    }
+</script>
+
+</body>
+</html>
