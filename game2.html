@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고3 생활과 윤리: 사회계약론 퀴즈</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        .option-label:hover {
+            background-color: #e5e7eb;
+        }
+        
+        input[type="radio"]:checked + .option-text {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .correct-bg {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+        }
+
+        .wrong-bg {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen pb-12">
+
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        <!-- Header -->
+        <header class="bg-white rounded-2xl shadow-sm p-8 mb-6 text-center border-t-4 border-blue-500">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">사회계약론 핵심 퀴즈</h1>
+            <p class="text-gray-600">고3 생활과 윤리 | 홉스, 로크, 루소 개념 정리</p>
+        </header>
+
+        <!-- Quiz Container -->
+        <main id="quiz-container" class="space-y-6">
+            <!-- Questions will be dynamically inserted here -->
+        </main>
+
+        <!-- Submit Button -->
+        <div class="mt-8 text-center" id="action-container">
+            <button id="submit-btn" onclick="submitQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
+                채점하기
+            </button>
+        </div>
+
+        <!-- Result Section (Hidden initially) -->
+        <div id="result-section" class="hidden mt-8 text-center fade-in bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">채점 결과</h2>
+            <div class="text-5xl font-extrabold text-blue-600 mb-4" id="score-display">0 / 100 점</div>
+            <p id="feedback-msg" class="text-lg text-gray-600 mb-6"></p>
+            <button onclick="retryQuiz()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300">
+                다시 풀기
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizData = [
+            {
+                id: 1,
+                question: "1. 각 사상가들의 '자연 상태'에 대한 설명으로 가장 적절한 것은?",
+                options: [
+                    "홉스 - 만인에 대한 만인의 투쟁 상태이며, 이성적 규칙인 자연법은 존재하지 않는다.",
+                    "로크 - 옳고 그름을 구별하는 공통의 척도와 이를 집행할 공정한 재판관이 결핍된 상태이다.",
+                    "루소 - 사유 재산 제도의 발생으로 인해 자유롭고 평등했던 자연 상태가 완전히 회복된 상태이다.",
+                    "홉스와 로크 - 국가 성립 이전의 자연 상태를 역사적으로 실재했던 구체적 사실로 간주한다.",
+                    "로크와 루소 - 자연 상태에서는 개인의 생명과 재산이 영구적이고 완벽하게 보장된다."
+                ],
+                correct: 1, // index of the correct option (0-based)
+                explanation: "정답은 ②번입니다. 로크는 자연 상태를 비교적 평화롭지만, 공통의 법률과 무사공평한 재판관, 그리고 집행 권력이 없어 분쟁 해결에 '불편함(결핍)'이 존재하는 상태로 보았습니다. (① 홉스의 자연 상태에도 이성의 계율인 자연법은 존재합니다. ③ 루소에게 사유재산의 발생은 자연 상태를 파괴하고 불평등을 초래하는 원인입니다. ④ 이들에게 자연 상태는 역사적 사실이 아닌 국가의 필요성을 설명하기 위한 논리적 가설입니다. ⑤ 두 사상가 모두 자연 상태에서 권리 보장이 불안정하다고 보았습니다.)"
+            },
+            {
+                id: 2,
+                question: "2. 다음 주장을 펼친 사상가의 입장으로 가장 적절한 것은?<br><br><span class='block p-4 bg-gray-100 rounded text-gray-700 italic font-serif'>\"입법부가 인민의 신임(trust)에 반하여 행동할 때, 인민은 그 입법부를 해임하거나 변경할 수 있는 최고 권력을 보유한다. 통치자가 권력을 남용하여 인민의 재산과 자유를 침해한다면 인민은 새로운 정부를 구성할 수 있다.\"</span>",
+                options: [
+                    "군주는 절대적인 권력을 가지며 인민은 어떠한 경우에도 저항할 수 없다.",
+                    "국가의 주권은 일반의지의 행사로서 결코 양도되거나 대표될 수 없다.",
+                    "국가는 개인의 소유권(생명, 자유, 자산) 보장을 위해 구성원들의 동의로 형성된다.",
+                    "자연 상태에서 인간은 타인에 대한 동정심과 자기 보존 본능만을 지닌다.",
+                    "평화를 위해 개인은 자신의 모든 자연권을 군주에게 전면적이고 무조건적으로 양도해야 한다."
+                ],
+                correct: 2,
+                explanation: "정답은 ③번입니다. 제시문의 사상가는 '저항권'과 '신탁'을 강조한 **로크**입니다. 로크는 국가의 목적이 개인의 기본권(소유권) 보장에 있다고 보았습니다. (①, ⑤는 홉스의 절대 군주제 지지 입장입니다. ②, ④는 루소의 입장입니다.)"
+            },
+            {
+                id: 3,
+                question: "3. 루소(Rousseau)의 '일반의지(General Will)'에 대한 설명으로 옳지 <u>않은</u> 것은?",
+                options: [
+                    "항상 국가 전체의 공익과 보편적 선을 지향하는 의지이다.",
+                    "사적 이익을 추구하는 개인들의 특수의지(의지들)의 단순한 총합이다.",
+                    "국가의 주권은 일반의지의 행사이며, 결코 양도되거나 분할될 수 없다.",
+                    "일반의지의 방향에 복종하는 것은 곧 자기 자신에게 복종하는 것과 같다.",
+                    "법은 일반의지의 기록이며, 인민은 스스로 제정한 법에 복종함으로써 진정한 자유를 얻는다."
+                ],
+                correct: 1,
+                explanation: "정답은 ②번입니다. 사적 이익을 추구하는 특수의지들의 단순한 총합은 '전체의지(will of all)'입니다. 루소는 공익만을 지향하는 '일반의지'와 사익들의 합인 '전체의지'를 엄격하게 구분하였습니다."
+            },
+            {
+                id: 4,
+                question: "4. 다음 갑, 을 사상가들의 공통된 입장으로 적절한 것은?<br><br><span class='block p-4 bg-gray-100 rounded text-gray-700 font-serif leading-relaxed'><strong>갑:</strong> 인간은 본래 이기적이므로 자연 상태는 끊임없는 공포와 죽음의 위험이 존재하는 '만인에 대한 만인의 투쟁' 상태이다.<br><strong>을:</strong> 자연 상태에서 인간은 선량했으나, 사유 재산의 발생으로 불평등이 심화되었다. 이를 극복하기 위해 새로운 사회 계약을 맺어야 한다.</span>",
+                options: [
+                    "주권자는 계약의 당사자로서 계약의 조건에 구속된다.",
+                    "개인의 모든 권리를 조건 없이 절대 군주에게 양도해야 한다.",
+                    "정부의 형태는 주권자인 인민이 직접 통치하는 형태이어야만 한다.",
+                    "자연 상태에서 인간은 도덕적 선악의 개념을 명확하게 인식하고 실천한다.",
+                    "정당한 국가 권력의 기원과 정당성은 구성원들의 자발적 동의와 계약에 있다."
+                ],
+                correct: 4,
+                explanation: "정답은 ⑤번입니다. 갑은 홉스, 을은 루소입니다. 사회계약론자인 홉스, 로크, 루소의 공통점은 모두 국가 권력의 기원과 정당성을 '개인들의 자발적 동의와 계약'에서 찾는다는 점입니다. (①은 로크에 대한 설명으로 홉스는 주권자를 계약의 당사자가 아닌 계약의 결과물로 보아 구속되지 않는다고 보았습니다. ②는 홉스, ③은 루소만의 입장입니다. ④ 세 사상가 모두 자연상태를 도덕적 선악이 명확히 실천되는 상태로 보지 않았습니다.)"
+            },
+            {
+                id: 5,
+                question: "5. 로크(Locke)의 권력 분립 및 통치 형태에 대한 입장으로 옳은 것을 고르시오.",
+                options: [
+                    "대의제를 전면 부정하고 직접 민주주의를 이상적인 정치 형태로 제시하였다.",
+                    "국가를 구성하는 계약과 동시에 정부를 구성하는 계약을 별도로 맺는다고 보았다.",
+                    "입법부와 행정부의 권력이 철저하게 융합되어야 국가가 안정된다고 주장하였다.",
+                    "시민의 동의를 통해 권력을 위임받은 입법권이 행정권보다 우위에 있다고 보았다.",
+                    "군주가 입법권과 집행권을 모두 독점해야만 사회적 혼란을 막을 수 있다고 보았다."
+                ],
+                correct: 3,
+                explanation: "정답은 ④번입니다. 로크는 2권 분립(입법권, 집행권)을 주장했으며, 이 중 시민들로부터 직접 권력을 위임받은 최고 권력인 '입법권'이 우위에 있다고 보았습니다. (①은 루소의 입장입니다. ② 로크는 '동의를 통한 사회(공동체) 형성'이 먼저이고, 그 공동체가 다수결로 정부(입법부)에 권력을 '신탁'한다고 보았습니다. ③, ⑤ 융합과 독점을 반대하고 권력 분립을 주장했습니다.)"
+            }
+        ];
+
+        let userAnswers = new Array(quizData.length).fill(null);
+        let isSubmitted = false;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultSection = document.getElementById('result-section');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackMsg = document.getElementById('feedback-msg');
+
+        // Render Quiz
+        function renderQuiz() {
+            quizContainer.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const questionBox = document.createElement('div');
+                questionBox.className = 'bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100 transition-colors duration-300';
+                questionBox.id = `question-box-${index}`;
+
+                let html = `
+                    <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-4 leading-relaxed">${q.question}</h3>
+                    <div class="space-y-3">
+                `;
+
+                q.options.forEach((opt, optIndex) => {
+                    const inputId = `q${index}-opt${optIndex}`;
+                    html += `
+                        <label for="${inputId}" id="label-${index}-${optIndex}" class="option-label flex items-start p-4 border border-gray-200 rounded-xl cursor-pointer transition-colors duration-200">
+                            <div class="flex-shrink-0 mt-0.5">
+                                <input type="radio" name="q${index}" id="${inputId}" value="${optIndex}" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" ${userAnswers[index] === optIndex ? 'checked' : ''} onchange="handleSelect(${index}, ${optIndex})">
+                            </div>
+                            <div class="ml-3 option-text text-gray-700 leading-relaxed">${optIndex + 1}. ${opt}</div>
+                        </label>
+                    `;
+                });
+
+                html += `</div>
+                    <div id="explanation-${index}" class="hidden mt-6 p-5 bg-blue-50 border-l-4 border-blue-500 text-blue-900 rounded-r-lg text-sm md:text-base leading-relaxed">
+                        ${q.explanation}
+                    </div>
+                `;
+
+                questionBox.innerHTML = html;
+                quizContainer.appendChild(questionBox);
+            });
+        }
+
+        // Handle Option Selection
+        function handleSelect(questionIndex, optionIndex) {
+            if (!isSubmitted) {
+                userAnswers[questionIndex] = optionIndex;
+            }
+        }
+
+        // Submit Quiz
+        function submitQuiz() {
+            // Check if all questions are answered
+            if (userAnswers.includes(null)) {
+                alert('모든 문제의 답을 선택해주세요!');
+                return;
+            }
+
+            isSubmitted = true;
+            let score = 0;
+            const pointsPerQuestion = 100 / quizData.length;
+
+            quizData.forEach((q, index) => {
+                const selected = userAnswers[index];
+                const box = document.getElementById(`question-box-${index}`);
+                const exp = document.getElementById(`explanation-${index}`);
+                
+                // Disable all inputs
+                const inputs = box.querySelectorAll('input[type="radio"]');
+                inputs.forEach(input => input.disabled = true);
+
+                // Show Explanation
+                exp.classList.remove('hidden');
+                exp.classList.add('fade-in');
+
+                // Style labels based on correct/incorrect
+                const selectedLabel = document.getElementById(`label-${index}-${selected}`);
+                const correctLabel = document.getElementById(`label-${index}-${q.correct}`);
+
+                if (selected === q.correct) {
+                    score += pointsPerQuestion;
+                    selectedLabel.classList.add('correct-bg');
+                    box.classList.add('border-green-200');
+                } else {
+                    selectedLabel.classList.add('wrong-bg');
+                    correctLabel.classList.add('correct-bg');
+                    box.classList.add('border-red-200');
+                }
+            });
+
+            // Hide Submit button, Show Results
+            document.getElementById('action-container').style.display = 'none';
+            resultSection.classList.remove('hidden');
+            scoreDisplay.innerText = `${score} / 100 점`;
+
+            if (score === 100) {
+                feedbackMsg.innerHTML = "🎉 완벽합니다! 사회계약론의 핵심 개념을 정확히 이해하고 계시네요. 수능에서도 1등급 문제없습니다!";
+                feedbackMsg.className = "text-lg text-green-600 font-semibold mb-6";
+            } else if (score >= 80) {
+                feedbackMsg.innerHTML = "훌륭합니다! 약간의 헷갈리는 선지만 복습하면 완벽해질 거예요. 해설을 꼭 읽어보세요.";
+                feedbackMsg.className = "text-lg text-blue-600 font-semibold mb-6";
+            } else {
+                feedbackMsg.innerHTML = "개념을 조금 더 다질 필요가 있군요! 홉스, 로크, 루소의 차이점을 중점으로 해설을 꼼꼼히 복습해 보세요. 할 수 있습니다 💪";
+                feedbackMsg.className = "text-lg text-red-500 font-semibold mb-6";
+            }
+
+            // Scroll to bottom to see results
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Retry Quiz
+        function retryQuiz() {
+            isSubmitted = false;
+            userAnswers = new Array(quizData.length).fill(null);
+            
+            document.getElementById('action-container').style.display = 'block';
+            resultSection.classList.add('hidden');
+            
+            renderQuiz();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize
+        renderQuiz();
+
+    </script>
+</body>
+</html>
