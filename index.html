@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>나만의 게임실</title>
+  <style>
+    /* 전체 배경과 폰트 설정 */
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+      margin: 0;
+    }
+    h1 { color: #333; margin-bottom: 10px; }
+    p { color: #666; margin-bottom: 40px; }
+
+    /* 카드를 바둑판처럼 배치하는 설정 */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* 개별 카드 디자인 */
+    .card {
+      background-color: white;
+      border: 1px solid #e1e4e8;
+      border-radius: 12px; /* 모서리 둥글게 */
+      padding: 24px;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* 살짝 그림자 */
+      transition: transform 0.2s; /* 마우스 올렸을 때 움직임 효과 */
+    }
+    .card:hover {
+      transform: translateY(-5px); /* 마우스 올리면 살짝 위로 뜸 */
+      box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    }
+
+    .badge {
+      font-size: 13px;
+      color: #007bff;
+      font-weight: bold;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin: 10px 0;
+      color: #222;
+    }
+    .desc {
+      font-size: 15px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* 버튼 디자인 */
+    .btn {
+      display: inline-block;
+      background-color: #24292e;
+      color: white;
+      padding: 10px 16px;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .btn:hover { background-color: #0366d6; }
+  </style>
+</head>
+<body>
+
+  <h1>🎮 나만의 게임실</h1>
+  <p>내가 만든 수업용 인터랙티브 게임들을 모아둔 공간입니다.</p>
+
+  <div class="grid-container">
+    
+    <div class="card">
+      <div class="badge">01 · 생활과 윤리</div>
+      <div class="title">시민불복종 게임</div>
+      <div class="desc">시민불복종의 의미와 한계를 딜레마 상황을 통해 알아보는 인터랙티브 게임입니다.</div>
+      <a href="game1.html" class="btn">시작하기</a>
+    </div>
+
+    <div class="card">
+      <div class="badge">02 · 윤리</div>
+      <div class="title">두 번째 게임 (준비중)</div>
+      <div class="desc">다음에 만들 게임에 대한 설명을 이곳에 적어주세요.</div>
+      <a href="#" class="btn">시작하기</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
