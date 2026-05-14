@@ -3,276 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>고3 생활과 윤리: 사회계약론 퀴즈</title>
+    <title>생활과 윤리: 수능 심화 마스터</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-        
-        body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f3f4f6;
-        }
-        
-        .option-label:hover {
-            background-color: #e5e7eb;
-        }
-        
-        input[type="radio"]:checked + .option-text {
-            color: #2563eb;
-            font-weight: 500;
-        }
-
-        .correct-bg {
-            background-color: #dcfce7 !important;
-            border-color: #22c55e !important;
-        }
-
-        .wrong-bg {
-            background-color: #fee2e2 !important;
-            border-color: #ef4444 !important;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; }
+        .quiz-container { max-width: 850px; margin: 2rem auto; background: white; padding: 2.5rem; border-radius: 1.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .hidden { display: none; }
+        .correct { color: #10b981; font-weight: bold; }
+        .wrong { color: #ef4444; font-weight: bold; }
+        .choice-label:hover { background-color: #f1f5f9; }
     </style>
 </head>
-<body class="text-gray-800 antialiased min-h-screen pb-12">
+<body class="p-4">
 
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        <!-- Header -->
-        <header class="bg-white rounded-2xl shadow-sm p-8 mb-6 text-center border-t-4 border-blue-500">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">사회계약론 핵심 퀴즈</h1>
-            <p class="text-gray-600">고3 생활과 윤리 | 홉스, 로크, 루소 개념 정리</p>
+    <div class="quiz-container">
+        <header class="text-center mb-10 border-b-2 border-indigo-100 pb-6">
+            <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide">High Level Ethics</span>
+            <h1 class="text-3xl font-bold text-slate-800 mt-3">수능 1등급 도전: 사회계약 & 시민불복종</h1>
+            <p class="text-slate-500 mt-2">평가원 기출 변형 및 고난도 심화 선지 수록</p>
         </header>
 
-        <!-- Quiz Container -->
-        <main id="quiz-container" class="space-y-6">
-            <!-- Questions will be dynamically inserted here -->
-        </main>
+        <div id="quiz-screen">
+            <!-- OX Questions -->
+            <section class="mb-12">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800">
+                    <span class="bg-indigo-600 text-white w-8 h-8 flex items-center justify-center rounded-lg">1</span>
+                    PART 1. 킬러 선지 진위 판정 (OX)
+                </h2>
+                <div id="ox-questions" class="space-y-4"></div>
+            </section>
 
-        <!-- Submit Button -->
-        <div class="mt-8 text-center" id="action-container">
-            <button id="submit-btn" onclick="submitQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105">
-                채점하기
-            </button>
+            <!-- Multiple Choice -->
+            <section class="mb-12">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-slate-800">
+                    <span class="bg-indigo-600 text-white w-8 h-8 flex items-center justify-center rounded-lg">2</span>
+                    PART 2. 수능형 5지선다 심화
+                </h2>
+                <div id="mc-questions" class="space-y-10"></div>
+            </section>
+
+            <div class="flex justify-center mt-12">
+                <button onclick="submitQuiz()" class="bg-indigo-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 shadow-lg hover:shadow-indigo-200 transition-all">답안지 제출하기</button>
+            </div>
         </div>
 
-        <!-- Result Section (Hidden initially) -->
-        <div id="result-section" class="hidden mt-8 text-center fade-in bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">채점 결과</h2>
-            <div class="text-5xl font-extrabold text-blue-600 mb-4" id="score-display">0 / 100 점</div>
-            <p id="feedback-msg" class="text-lg text-gray-600 mb-6"></p>
-            <button onclick="retryQuiz()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300">
-                다시 풀기
-            </button>
+        <div id="result-screen" class="hidden">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold text-slate-700">분석 결과</h2>
+                <div id="score-display" class="text-7xl font-black text-indigo-600 my-6">0 / 100</div>
+                <div id="grade-badge" class="inline-block px-4 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xl mb-4"></div>
+                <p id="grade-comment" class="text-slate-600"></p>
+            </div>
+            
+            <div id="review-section" class="space-y-6 mb-10 border-t pt-10">
+                <!-- 해설이 들어갈 자리 -->
+            </div>
+
+            <div class="flex justify-center">
+                <button onclick="resetQuiz()" class="bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-black transition-all">오답 정리 후 다시 풀기</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Quiz Data
-        const quizData = [
+        const oxData = [
+            { q: "홉스(Hobbes): 자연 상태에서 개인은 자신의 생명을 보존하기 위해 타인의 신체에 대한 권리를 갖지 못한다.", a: false, e: "홉스에 따르면 자연 상태에서 인간은 자기 보존을 위해 '모든 것에 대한 권리(Right to everything)', 즉 타인의 신체에 대한 권리까지도 갖습니다." },
+            { q: "로크(Locke): 자연법이 집행되지 않는 상태를 해결하기 위해 입법권과 집행권을 특정 주체에게 전적으로 양도한다.", a: false, e: "로크는 전적 양도가 아닌 '신탁(Trust)'을 강조하며, 권력을 분립(입법권 우위)시켜야 한다고 보았습니다." },
+            { q: "루소(Rousseau): 사회 계약을 통해 형성된 주권은 결코 타인에게 양도될 수도, 대표될 수도 없다.", a: true, e: "루소는 주권의 핵심인 '일반의지'는 성질상 대표되거나 양도될 수 없다고 보아 직접 민주주의를 옹호했습니다." },
+            { q: "소로(Thoreau): 정의롭지 못한 법이 존재할 때, 우리는 투표를 통해 다수를 설득할 때까지 그 법을 준수해야 한다.", a: false, e: "소로는 부당한 법의 도구가 되지 말 것을 강조하며, 법을 고칠 때까지 기다리기보다 '즉각적인' 불복종을 주장했습니다." },
+            { q: "롤스(Rawls): 시민불복종은 헌법의 근거가 되는 정의의 원칙에 의해 정당화되는 정치적 행위이다.", a: true, e: "롤스는 시민불복종을 '공유된 정의감' 혹은 '헌법적 원칙'에 호소하는 정치적 행위로 규정했습니다." },
+            { q: "싱어(Singer): 시민불복종은 사회적 유용성을 증진시키기 위한 수단이므로 항상 폭력적 수단도 허용된다.", a: false, e: "싱어 역시 결과적 유용성을 중시하지만, 불복종이 가져올 부정적 파급효과(무질서 등)를 최소화하기 위해 기본적으로 비폭력을 견지합니다." },
+            { q: "로크(Locke): 국가 권력의 정당성은 통치자의 의지가 아니라 피치자의 동의로부터 나온다.", a: true, e: "사회계약론의 공통점으로, 권력은 구성원들의 합의와 동의에 기초합니다." },
+            { q: "롤스(Rawls): 다수자의 정의감이 현저히 위반되었을 때에만 시민불복종이 정당화될 수 있다.", a: true, e: "롤스는 모든 불의가 아니라 '심대하고 명백한 불의'가 있을 때(제1원칙과 제2원칙 중 기회 균등의 원칙 위반)를 대상으로 합니다." },
+            { q: "홉스(Hobbes): 국가가 개인의 자기 보존을 보장하지 못할 경우에도 신민은 저항할 수 없다.", a: false, e: "홉스조차도 국가가 개인의 생명(자기보존)을 위협하거나 보호하지 못할 때는 계약의 목적이 상실된 것이므로 저항하거나 복종을 거부할 수 있다고 보았습니다." },
+            { q: "루소(Rousseau): 개별 의지들의 단순한 총합인 '전체 의지'가 국가 운영의 원리가 되어야 한다.", a: false, e: "국가 운영의 원리는 사적 이익을 배제한 공동의 이익을 추구하는 '일반의지'여야 합니다." }
+        ];
+
+        const mcData = [
             {
-                id: 1,
-                question: "1. 각 사상가들의 '자연 상태'에 대한 설명으로 가장 적절한 것은?",
-                options: [
-                    "홉스 - 만인에 대한 만인의 투쟁 상태이며, 이성적 규칙인 자연법은 존재하지 않는다.",
-                    "로크 - 옳고 그름을 구별하는 공통의 척도와 이를 집행할 공정한 재판관이 결핍된 상태이다.",
-                    "루소 - 사유 재산 제도의 발생으로 인해 자유롭고 평등했던 자연 상태가 완전히 회복된 상태이다.",
-                    "홉스와 로크 - 국가 성립 이전의 자연 상태를 역사적으로 실재했던 구체적 사실로 간주한다.",
-                    "로크와 루소 - 자연 상태에서는 개인의 생명과 재산이 영구적이고 완벽하게 보장된다."
-                ],
-                correct: 1, // index of the correct option (0-based)
-                explanation: "정답은 ②번입니다. 로크는 자연 상태를 비교적 평화롭지만, 공통의 법률과 무사공평한 재판관, 그리고 집행 권력이 없어 분쟁 해결에 '불편함(결핍)'이 존재하는 상태로 보았습니다. (① 홉스의 자연 상태에도 이성의 계율인 자연법은 존재합니다. ③ 루소에게 사유재산의 발생은 자연 상태를 파괴하고 불평등을 초래하는 원인입니다. ④ 이들에게 자연 상태는 역사적 사실이 아닌 국가의 필요성을 설명하기 위한 논리적 가설입니다. ⑤ 두 사상가 모두 자연 상태에서 권리 보장이 불안정하다고 보았습니다.)"
+                q: "사회계약론자 가, 나의 입장에 대한 설명으로 적절한 것은?<br><br><b>가:</b> 국가는 하나의 거대한 리바이어던이다. 사람들은 공포로부터 벗어나기 위해 자신의 모든 권리를 군주에게 양도한다.<br><b>나:</b> 입법권이 신탁을 위반하여 인민의 재산을 침해한다면, 인민은 그 권력을 제거할 최고의 권리를 갖는다.",
+                o: ["가: 주권자는 사회 계약의 직접적인 당사자로서 평화 유지의 의무를 진다.", "나: 자연 상태는 전쟁 상태와 동일하므로 시민들은 저항권을 가질 수 없다.", "가, 나: 국가 성립 이전에도 인간은 사회를 이루며 도덕적으로 완벽하게 생활한다.", "나: 입법권은 국가의 최고 권력이지만 시민의 동의 없이는 조세를 징수할 수 없다.", "가: 개인의 자유로운 의지에 근거한 계약은 군주의 절대권력을 제한하기 위한 것이다."],
+                a: 3,
+                e: "로크(나)는 입법권 우위를 인정하면서도 사유재산 보호를 위해 '동의 없는 조세 징수'를 금지했습니다. (1번: 홉스의 주권자는 제3자로 계약 당사자가 아님)"
             },
             {
-                id: 2,
-                question: "2. 다음 주장을 펼친 사상가의 입장으로 가장 적절한 것은?<br><br><span class='block p-4 bg-gray-100 rounded text-gray-700 italic font-serif'>\"입법부가 인민의 신임(trust)에 반하여 행동할 때, 인민은 그 입법부를 해임하거나 변경할 수 있는 최고 권력을 보유한다. 통치자가 권력을 남용하여 인민의 재산과 자유를 침해한다면 인민은 새로운 정부를 구성할 수 있다.\"</span>",
-                options: [
-                    "군주는 절대적인 권력을 가지며 인민은 어떠한 경우에도 저항할 수 없다.",
-                    "국가의 주권은 일반의지의 행사로서 결코 양도되거나 대표될 수 없다.",
-                    "국가는 개인의 소유권(생명, 자유, 자산) 보장을 위해 구성원들의 동의로 형성된다.",
-                    "자연 상태에서 인간은 타인에 대한 동정심과 자기 보존 본능만을 지닌다.",
-                    "평화를 위해 개인은 자신의 모든 자연권을 군주에게 전면적이고 무조건적으로 양도해야 한다."
-                ],
-                correct: 2,
-                explanation: "정답은 ③번입니다. 제시문의 사상가는 '저항권'과 '신탁'을 강조한 **로크**입니다. 로크는 국가의 목적이 개인의 기본권(소유권) 보장에 있다고 보았습니다. (①, ⑤는 홉스의 절대 군주제 지지 입장입니다. ②, ④는 루소의 입장입니다.)"
+                q: "롤스(Rawls)의 시민불복종론에 대한 다음 설명 중 '틀린' 것은?",
+                o: ["시민불복종은 법에 대한 불복종이지만, 동시에 법에 대한 충실성을 나타내는 행위이다.", "차등의 원칙(최소 수혜자 배려)의 위반은 시민불복종의 주요한 직접적 대상이 된다.", "시민불복종은 공공적이고 비폭력적이며 양심적인 정치적 행위여야 한다.", "거의 정의로운 사회에서 체제의 합법성을 인정하는 시민들에 의해 수행된다.", "법에 대한 처벌을 감수함으로써 법에 대한 존중심을 표현한다."],
+                a: 1,
+                e: "롤스는 '제1원칙(평등한 자유)'과 '제2원칙 중 기회 균등의 원칙' 위반은 불복종의 대상이지만, '차등의 원칙' 위반은 판단이 복잡하여 불복종의 직접적 근거로 삼기 어렵다고 보았습니다. (중요 기출 포인트)"
             },
             {
-                id: 3,
-                question: "3. 루소(Rousseau)의 '일반의지(General Will)'에 대한 설명으로 옳지 <u>않은</u> 것은?",
-                options: [
-                    "항상 국가 전체의 공익과 보편적 선을 지향하는 의지이다.",
-                    "사적 이익을 추구하는 개인들의 특수의지(의지들)의 단순한 총합이다.",
-                    "국가의 주권은 일반의지의 행사이며, 결코 양도되거나 분할될 수 없다.",
-                    "일반의지의 방향에 복종하는 것은 곧 자기 자신에게 복종하는 것과 같다.",
-                    "법은 일반의지의 기록이며, 인민은 스스로 제정한 법에 복종함으로써 진정한 자유를 얻는다."
-                ],
-                correct: 1,
-                explanation: "정답은 ②번입니다. 사적 이익을 추구하는 특수의지들의 단순한 총합은 '전체의지(will of all)'입니다. 루소는 공익만을 지향하는 '일반의지'와 사익들의 합인 '전체의지'를 엄격하게 구분하였습니다."
+                q: "시민불복종에 관한 사상가 A, B의 입장을 비교한 것으로 옳은 것은?<br><br><b>A:</b> 우리가 먼저 되어야 할 것은 국민이기보다는 인간이어야 한다. 법에 대한 존경심보다 정의에 대한 존경심을 기르는 것이 바람직하다.<br><b>B:</b> 어떤 행위가 가져올 결과가 법을 준수했을 때의 결과보다 더 큰 이익을 사회 전체에 준다면 그 불복종은 정당하다.",
+                o: ["A는 시민불복종의 정당성 근거를 사회적 유용성에서 찾는다.", "B는 불복종의 목적이 헌법적 원칙의 회복에 있다고 본다.", "A는 개인의 양심을, B는 공리의 원칙을 불복종의 판단 기준으로 삼는다.", "A, B 모두 불복종을 통해 국가 체제 자체를 전복해야 한다고 주장한다.", "A, B 모두 처벌의 감수가 불복종의 필수 조건이 아님을 강조한다."],
+                a: 2,
+                e: "A는 소로(양심), B는 싱어(공리)입니다. 소로는 양심을, 싱어는 공리(이익)를 중시합니다."
             },
             {
-                id: 4,
-                question: "4. 다음 갑, 을 사상가들의 공통된 입장으로 적절한 것은?<br><br><span class='block p-4 bg-gray-100 rounded text-gray-700 font-serif leading-relaxed'><strong>갑:</strong> 인간은 본래 이기적이므로 자연 상태는 끊임없는 공포와 죽음의 위험이 존재하는 '만인에 대한 만인의 투쟁' 상태이다.<br><strong>을:</strong> 자연 상태에서 인간은 선량했으나, 사유 재산의 발생으로 불평등이 심화되었다. 이를 극복하기 위해 새로운 사회 계약을 맺어야 한다.</span>",
-                options: [
-                    "주권자는 계약의 당사자로서 계약의 조건에 구속된다.",
-                    "개인의 모든 권리를 조건 없이 절대 군주에게 양도해야 한다.",
-                    "정부의 형태는 주권자인 인민이 직접 통치하는 형태이어야만 한다.",
-                    "자연 상태에서 인간은 도덕적 선악의 개념을 명확하게 인식하고 실천한다.",
-                    "정당한 국가 권력의 기원과 정당성은 구성원들의 자발적 동의와 계약에 있다."
-                ],
-                correct: 4,
-                explanation: "정답은 ⑤번입니다. 갑은 홉스, 을은 루소입니다. 사회계약론자인 홉스, 로크, 루소의 공통점은 모두 국가 권력의 기원과 정당성을 '개인들의 자발적 동의와 계약'에서 찾는다는 점입니다. (①은 로크에 대한 설명으로 홉스는 주권자를 계약의 당사자가 아닌 계약의 결과물로 보아 구속되지 않는다고 보았습니다. ②는 홉스, ③은 루소만의 입장입니다. ④ 세 사상가 모두 자연상태를 도덕적 선악이 명확히 실천되는 상태로 보지 않았습니다.)"
+                q: "사회계약론자 홉스, 로크, 루소가 공통적으로 동의할 진술로 가장 적절한 것은?",
+                o: ["국가는 개인의 자유를 억압하기 위해 존재하는 필요악이다.", "국가 권력의 정당성은 구성원들의 자발적 합의에서 비롯된다.", "주권은 인민에게 있으며, 정부는 언제나 교체 가능한 대리인일 뿐이다.", "자연 상태에서 인간은 타인과 평화로운 공존을 유지하는 사회적 존재이다.", "사회계약 이후 인간의 자연적 자유는 시민적 자유보다 언제나 우선한다."],
+                a: 1,
+                e: "세 학자 모두 '사회계약론'의 틀 안에서 국가 권력의 원천을 인민의 동의와 합의로 봅니다."
             },
             {
-                id: 5,
-                question: "5. 로크(Locke)의 권력 분립 및 통치 형태에 대한 입장으로 옳은 것을 고르시오.",
-                options: [
-                    "대의제를 전면 부정하고 직접 민주주의를 이상적인 정치 형태로 제시하였다.",
-                    "국가를 구성하는 계약과 동시에 정부를 구성하는 계약을 별도로 맺는다고 보았다.",
-                    "입법부와 행정부의 권력이 철저하게 융합되어야 국가가 안정된다고 주장하였다.",
-                    "시민의 동의를 통해 권력을 위임받은 입법권이 행정권보다 우위에 있다고 보았다.",
-                    "군주가 입법권과 집행권을 모두 독점해야만 사회적 혼란을 막을 수 있다고 보았다."
-                ],
-                correct: 3,
-                explanation: "정답은 ④번입니다. 로크는 2권 분립(입법권, 집행권)을 주장했으며, 이 중 시민들로부터 직접 권력을 위임받은 최고 권력인 '입법권'이 우위에 있다고 보았습니다. (①은 루소의 입장입니다. ② 로크는 '동의를 통한 사회(공동체) 형성'이 먼저이고, 그 공동체가 다수결로 정부(입법부)에 권력을 '신탁'한다고 보았습니다. ③, ⑤ 융합과 독점을 반대하고 권력 분립을 주장했습니다.)"
+                q: "다음 사례에 대해 롤스(Rawls)가 조언할 내용으로 가장 적절한 것은?<br><br>현행법상 특정 소수 인종의 투표권을 실질적으로 제한하는 법안이 통과되었다. 이에 시민단체 갑은 해당 법의 폐지를 위해 평화적인 거리 행진을 계획하고 있다.",
+                o: ["체제의 기반을 흔드는 혁명으로 전환하여 국가를 재건하십시오.", "다수의 정의감에 호소하여 헌법적 정의 원칙을 회복하도록 노력하십시오.", "이익 집단의 경제적 이익을 극대화하기 위한 전략적 행동을 취하십시오.", "개별적인 양심의 명령에만 따르고 다수의 의견은 완전히 무시하십시오.", "정의로운 법이 제정될 때까지 무기한으로 모든 납세를 거부하십시오."],
+                a: 1,
+                e: "롤스는 공유된 정의감에 호소하여 부당한 법을 교정하는 '안정성 수호'의 측면에서 시민불복종을 조언할 것입니다."
             }
         ];
 
-        let userAnswers = new Array(quizData.length).fill(null);
-        let isSubmitted = false;
-
-        const quizContainer = document.getElementById('quiz-container');
-        const submitBtn = document.getElementById('submit-btn');
-        const resultSection = document.getElementById('result-section');
-        const scoreDisplay = document.getElementById('score-display');
-        const feedbackMsg = document.getElementById('feedback-msg');
-
-        // Render Quiz
-        function renderQuiz() {
-            quizContainer.innerHTML = '';
-            
-            quizData.forEach((q, index) => {
-                const questionBox = document.createElement('div');
-                questionBox.className = 'bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-gray-100 transition-colors duration-300';
-                questionBox.id = `question-box-${index}`;
-
-                let html = `
-                    <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-4 leading-relaxed">${q.question}</h3>
-                    <div class="space-y-3">
-                `;
-
-                q.options.forEach((opt, optIndex) => {
-                    const inputId = `q${index}-opt${optIndex}`;
-                    html += `
-                        <label for="${inputId}" id="label-${index}-${optIndex}" class="option-label flex items-start p-4 border border-gray-200 rounded-xl cursor-pointer transition-colors duration-200">
-                            <div class="flex-shrink-0 mt-0.5">
-                                <input type="radio" name="q${index}" id="${inputId}" value="${optIndex}" class="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500" ${userAnswers[index] === optIndex ? 'checked' : ''} onchange="handleSelect(${index}, ${optIndex})">
-                            </div>
-                            <div class="ml-3 option-text text-gray-700 leading-relaxed">${optIndex + 1}. ${opt}</div>
-                        </label>
-                    `;
-                });
-
-                html += `</div>
-                    <div id="explanation-${index}" class="hidden mt-6 p-5 bg-blue-50 border-l-4 border-blue-500 text-blue-900 rounded-r-lg text-sm md:text-base leading-relaxed">
-                        ${q.explanation}
+        function loadQuiz() {
+            const oxContainer = document.getElementById('ox-questions');
+            oxData.forEach((item, index) => {
+                oxContainer.innerHTML += `
+                    <div class="p-5 border-2 border-slate-100 rounded-xl bg-white hover:border-indigo-200 transition-colors">
+                        <p class="font-medium text-slate-700 mb-4 text-lg"><span class="text-indigo-600 font-bold mr-2">Q${index + 1}.</span> ${item.q}</p>
+                        <div class="flex gap-8">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="ox-${index}" value="true" class="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                <span class="text-lg font-bold text-slate-500 group-hover:text-indigo-600">O (그렇다)</span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input type="radio" name="ox-${index}" value="false" class="w-5 h-5 text-indigo-600 border-slate-300 focus:ring-indigo-500">
+                                <span class="text-lg font-bold text-slate-500 group-hover:text-indigo-600">X (아니다)</span>
+                            </label>
+                        </div>
                     </div>
                 `;
+            });
 
-                questionBox.innerHTML = html;
-                quizContainer.appendChild(questionBox);
+            const mcContainer = document.getElementById('mc-questions');
+            mcData.forEach((item, index) => {
+                let optionsHtml = item.o.map((opt, i) => `
+                    <label class="choice-label flex items-start gap-4 p-4 border border-slate-200 rounded-xl cursor-pointer transition-all">
+                        <input type="radio" name="mc-${index}" value="${i}" class="mt-1.5 w-4 h-4 text-indigo-600">
+                        <span class="text-slate-700 leading-relaxed"><span class="font-bold mr-1">${i + 1}.</span> ${opt}</span>
+                    </label>
+                `).join('');
+
+                mcContainer.innerHTML += `
+                    <div class="p-6 border-2 border-slate-100 rounded-2xl bg-white shadow-sm">
+                        <div class="mb-6">
+                            <span class="text-indigo-600 font-black text-sm uppercase tracking-widest">Multiple Choice ${index + 11}</span>
+                            <p class="text-lg font-bold text-slate-800 mt-2 leading-snug">${item.q}</p>
+                        </div>
+                        <div class="grid grid-cols-1 gap-3">${optionsHtml}</div>
+                    </div>
+                `;
             });
         }
 
-        // Handle Option Selection
-        function handleSelect(questionIndex, optionIndex) {
-            if (!isSubmitted) {
-                userAnswers[questionIndex] = optionIndex;
-            }
-        }
-
-        // Submit Quiz
         function submitQuiz() {
-            // Check if all questions are answered
-            if (userAnswers.includes(null)) {
-                alert('모든 문제의 답을 선택해주세요!');
-                return;
-            }
+            let correctCount = 0;
+            const totalQuestions = oxData.length + mcData.length;
+            const reviewContainer = document.getElementById('review-section');
+            reviewContainer.innerHTML = '<h3 class="text-xl font-bold mb-6 text-slate-800">문항별 상세 분석</h3>';
 
-            isSubmitted = true;
-            let score = 0;
-            const pointsPerQuestion = 100 / quizData.length;
-
-            quizData.forEach((q, index) => {
-                const selected = userAnswers[index];
-                const box = document.getElementById(`question-box-${index}`);
-                const exp = document.getElementById(`explanation-${index}`);
+            // Grade OX
+            oxData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="ox-${index}"]:checked`);
+                const isCorrect = selected && (selected.value === String(item.a));
+                if (isCorrect) correctCount++;
                 
-                // Disable all inputs
-                const inputs = box.querySelectorAll('input[type="radio"]');
-                inputs.forEach(input => input.disabled = true);
-
-                // Show Explanation
-                exp.classList.remove('hidden');
-                exp.classList.add('fade-in');
-
-                // Style labels based on correct/incorrect
-                const selectedLabel = document.getElementById(`label-${index}-${selected}`);
-                const correctLabel = document.getElementById(`label-${index}-${q.correct}`);
-
-                if (selected === q.correct) {
-                    score += pointsPerQuestion;
-                    selectedLabel.classList.add('correct-bg');
-                    box.classList.add('border-green-200');
-                } else {
-                    selectedLabel.classList.add('wrong-bg');
-                    correctLabel.classList.add('correct-bg');
-                    box.classList.add('border-red-200');
-                }
+                reviewContainer.innerHTML += `
+                    <div class="p-5 rounded-xl border ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="${isCorrect ? 'bg-emerald-500' : 'bg-rose-500'} text-white text-xs px-2 py-0.5 rounded font-bold uppercase">Q${index + 1}</span>
+                            <span class="font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${isCorrect ? '정답입니다' : '오답입니다'}</span>
+                        </div>
+                        <p class="text-slate-600 text-sm mb-3">질문: ${item.q}</p>
+                        <div class="bg-white/60 p-3 rounded-lg text-sm border border-slate-200">
+                            <strong class="text-indigo-700">심화 해설:</strong> ${item.e}
+                        </div>
+                    </div>
+                `;
             });
 
-            // Hide Submit button, Show Results
-            document.getElementById('action-container').style.display = 'none';
-            resultSection.classList.remove('hidden');
-            scoreDisplay.innerText = `${score} / 100 점`;
+            // Grade MC
+            mcData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="mc-${index}"]:checked`);
+                const isCorrect = selected && (parseInt(selected.value) === item.a);
+                if (isCorrect) correctCount++;
 
-            if (score === 100) {
-                feedbackMsg.innerHTML = "🎉 완벽합니다! 사회계약론의 핵심 개념을 정확히 이해하고 계시네요. 수능에서도 1등급 문제없습니다!";
-                feedbackMsg.className = "text-lg text-green-600 font-semibold mb-6";
-            } else if (score >= 80) {
-                feedbackMsg.innerHTML = "훌륭합니다! 약간의 헷갈리는 선지만 복습하면 완벽해질 거예요. 해설을 꼭 읽어보세요.";
-                feedbackMsg.className = "text-lg text-blue-600 font-semibold mb-6";
-            } else {
-                feedbackMsg.innerHTML = "개념을 조금 더 다질 필요가 있군요! 홉스, 로크, 루소의 차이점을 중점으로 해설을 꼼꼼히 복습해 보세요. 할 수 있습니다 💪";
-                feedbackMsg.className = "text-lg text-red-500 font-semibold mb-6";
-            }
+                reviewContainer.innerHTML += `
+                    <div class="p-5 rounded-xl border ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="${isCorrect ? 'bg-emerald-500' : 'bg-rose-500'} text-white text-xs px-2 py-0.5 rounded font-bold uppercase">Q${index + 11}</span>
+                            <span class="font-bold ${isCorrect ? 'text-emerald-700' : 'text-rose-700'}">${isCorrect ? '정답입니다' : '오답입니다'}</span>
+                        </div>
+                        <div class="bg-white/60 p-3 rounded-lg text-sm border border-slate-200">
+                            <strong class="text-indigo-700">심화 해설:</strong> ${item.e}
+                        </div>
+                    </div>
+                `;
+            });
 
-            // Scroll to bottom to see results
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            const score = Math.round((correctCount / totalQuestions) * 100);
+            document.getElementById('score-display').innerText = `${score}점`;
+            
+            let grade = "";
+            let comment = "";
+            if (score === 100) { grade = "1등급 (만점)"; comment = "완벽합니다. 수능 시험장으로 바로 가셔도 되겠어요!"; }
+            else if (score >= 90) { grade = "1등급"; comment = "사소한 실수만 잡으면 만점입니다. 킬러 선지를 정복하셨네요."; }
+            else if (score >= 80) { grade = "2등급"; comment = "안정적인 성적입니다. 롤스와 루소의 차이점을 좀 더 복습해보세요."; }
+            else if (score >= 60) { grade = "3-4등급"; comment = "핵심 개념은 알지만 함정에 빠지고 있습니다. 해설을 꼼꼼히 보세요."; }
+            else { grade = "노력 요함"; comment = "기본 개념부터 차근차근 다시 정리해봅시다. 포기하지 마세요!"; }
+            
+            document.getElementById('grade-badge').innerText = grade;
+            document.getElementById('grade-comment').innerText = comment;
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
         }
 
-        // Retry Quiz
-        function retryQuiz() {
-            isSubmitted = false;
-            userAnswers = new Array(quizData.length).fill(null);
-            
-            document.getElementById('action-container').style.display = 'block';
-            resultSection.classList.add('hidden');
-            
-            renderQuiz();
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function resetQuiz() {
+            location.reload();
         }
 
-        // Initialize
-        renderQuiz();
-
+        window.onload = loadQuiz;
     </script>
 </body>
 </html>
