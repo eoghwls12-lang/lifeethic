@@ -143,7 +143,7 @@
       border-radius: 6px;
     }
 
-    /* [추가] 마인드맵 가이드 전용 카드 스타일 (인디고 테마) */
+    /* 마인드맵 가이드 전용 카드 스타일 (인디고 테마) */
     .card.guide::before {
       background: #6366f1;
     }
@@ -158,6 +158,23 @@
     }
     .card.guide .btn:hover {
       background-color: #3730a3;
+    }
+
+    /* [추가] 환경 윤리 전용 카드 스타일 (그린/에메랄드 테마) */
+    .card.eco::before {
+      background: #10b981;
+    }
+    .card.eco .badge {
+      color: #10b981;
+    }
+    .card.eco:hover::before {
+      background: #059669;
+    }
+    .card.eco .btn {
+      background-color: #059669;
+    }
+    .card.eco .btn:hover {
+      background-color: #047857;
     }
   </style>
 </head>
@@ -201,12 +218,20 @@
       <a href="game4.html" class="btn">시작하기</a>
     </div>
 
-    <!-- [신규 추가] Game 05: 마인드맵 설명서 -->
+    <!-- Game 05: 마인드맵 설명서 -->
     <div class="card guide">
       <div class="badge"><i class="fa-solid fa-map"></i> 05 · 구조도 활동</div>
       <div class="title">생각 지도(마인드맵) 그리기 가이드</div>
       <div class="desc">어렵고 복잡한 윤리 단원을 나만의 감성적인 구조도로 직접 요약하고 그려보는 4단계 비법 지도서입니다.</div>
       <a href="game5.html" class="btn">가이드 열기</a>
+    </div>
+
+    <!-- [신규 추가] Game 06: 환경 윤리 -->
+    <div class="card eco">
+      <div class="badge"><i class="fa-solid fa-leaf"></i> 06 · 환경 윤리</div>
+      <div class="title">생태 발자국 탐험대</div>
+      <div class="desc">인간 중심주의부터 생태 중심주의까지 다양한 관점을 배우고, 일상생활 속 나의 생태 발자국 점수를 측정해봅니다.</div>
+      <a href="game6.html" class="btn">탐험 시작</a>
     </div>
 
   </div>
