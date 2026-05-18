@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>나만의 게임실</title>
+  <!-- FontAwesome 아이콘 추가 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     /* 전체 배경과 폰트 설정 */
     body {
@@ -20,6 +22,10 @@
       color: #1e293b; 
       margin-bottom: 10px; 
       letter-spacing: -1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
     }
     
     p { 
@@ -79,6 +85,9 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     
     .title {
@@ -133,18 +142,35 @@
       padding: 4px 8px;
       border-radius: 6px;
     }
+
+    /* [추가] 마인드맵 가이드 전용 카드 스타일 (인디고 테마) */
+    .card.guide::before {
+      background: #6366f1;
+    }
+    .card.guide .badge {
+      color: #6366f1;
+    }
+    .card.guide:hover::before {
+      background: #4f46e5;
+    }
+    .card.guide .btn {
+      background-color: #4f46e5;
+    }
+    .card.guide .btn:hover {
+      background-color: #3730a3;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎮 나만의 게임실</h1>
-  <p>수업의 즐거움을 더하는 윤리 교육용 인터랙티브 게임 컬렉션</p>
+  <h1><span>🎮</span> 나만의 게임실</h1>
+  <p>수업의 즐거움을 더하는 윤리 교육용 인터랙티브 콘텐츠 컬렉션</p>
 
   <div class="grid-container">
     
     <!-- Game 01 -->
     <div class="card">
-      <div class="badge">01 · 생활과 윤리</div>
+      <div class="badge"><i class="fa-solid fa-scale-unbalanced-flip"></i> 01 · 생활과 윤리</div>
       <div class="title">시민불복종 게임</div>
       <div class="desc">시민불복종의 의미와 한계를 딜레마 상황을 통해 알아보는 인터랙티브 시뮬레이션입니다.</div>
       <a href="game1.html" class="btn">시작하기</a>
@@ -152,7 +178,7 @@
 
     <!-- Game 02 -->
     <div class="card">
-      <div class="badge">02 · 사회 윤리</div>
+      <div class="badge"><i class="fa-solid fa-circle-question"></i> 02 · 사회 윤리</div>
       <div class="title">사회계약론, 시민불복종 내용 확인 퀴즈</div>
       <div class="desc">사계론, 시불 배운 핵심 내용을 퀴즈로 복습해봅시다.</div>
       <a href="game2.html" class="btn">시작하기</a>
@@ -160,7 +186,7 @@
 
     <!-- Game 03 -->
     <div class="card">
-      <div class="badge">03 · 정의론</div>
+      <div class="badge"><i class="fa-solid fa-eye-slash"></i> 03 · 정의론</div>
       <div class="title">무지의 베일 : 사회 설계자</div>
       <div class="desc">롤스의 정의론을 바탕으로 자원을 배분하고 정책을 수립하여 공정한 사회를 설계해봅니다.</div>
       <a href="game3.html" class="btn">시작하기</a>
@@ -169,10 +195,18 @@
     <!-- Game 04 (New!) -->
     <div class="card new">
       <div class="new-label">HOT</div>
-      <div class="badge">04 · 응용 윤리</div>
+      <div class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i> 04 · 응용 윤리</div>
       <div class="title">윤리 판타지 : 성현의 역습</div>
       <div class="desc">동서양의 위대한 사상가들을 선택해 허무의 군주로부터 윤리의 세계를 구원하는 액션 게임입니다.</div>
       <a href="game4.html" class="btn">시작하기</a>
+    </div>
+
+    <!-- [신규 추가] Game 05: 마인드맵 설명서 -->
+    <div class="card guide">
+      <div class="badge"><i class="fa-solid fa-map"></i> 05 · 구조도 활동</div>
+      <div class="title">생각 지도(마인드맵) 그리기 가이드</div>
+      <div class="desc">어렵고 복잡한 윤리 단원을 나만의 감성적인 구조도로 직접 요약하고 그려보는 4단계 비법 지도서입니다.</div>
+      <a href="mindmap_guide_printable.html" class="btn">가이드 열기</a>
     </div>
 
   </div>
