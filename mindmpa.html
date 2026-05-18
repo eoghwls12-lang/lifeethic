@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스스로 그리는 생각 지도! 마인드맵 작성 가이드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- 인쇄 가독성에 최적화된 고운돋움 & 개구 서체 -->
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gaegu:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --pen-black: #2d3436;
+            --pen-blue: #0984e3;
+            --pen-red: #d63031;
+            --pen-green: #27ae60;
+            --highlighter-yellow: rgba(255, 234, 167, 0.7);
+            --highlighter-green: rgba(184, 233, 148, 0.6);
+            --paper-bg: #fffdf5;
+        }
+
+        /* 인쇄 설정: A4 세로 방향 */
+        @media print {
+            body { background: none; margin: 0; padding: 0; -webkit-print-color-adjust: exact; }
+            .guide-page { box-shadow: none !important; border: none !important; width: 100% !important; height: 100% !important; margin: 0 !important; }
+            .no-print { display: none !important; }
+        }
+
+        body {
+            background-color: #f1f2f6;
+            margin: 0;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: 'Gowun Dodum', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* A4 규격화 스타일 */
+        .guide-page {
+            background-color: var(--paper-bg);
+            width: 210mm; /* A4 세로 너비 */
+            min-height: 297mm; /* A4 세로 높이 */
+            padding: 25mm 20mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+            background-image: linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 100% 3rem;
+            line-height: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* 헤더 스타일 */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--pen-black);
+            padding-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 42px;
+            margin: 0;
+            color: var(--pen-black);
+            display: inline-block;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0; width: 100%; height: 12px;
+            background-color: var(--highlighter-yellow);
+            z-index: -1;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+
+        /* 각 단계 섹션 */
+        .step-section {
+            margin-bottom: 20px;
+        }
+
+        .step-title {
+            font-family: 'Gaegu', sans-serif;
+            font-weight: 700;
+            font-size: 30px;
+            color: var(--pen-blue);
+            margin-top: 15px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-title i {
+            margin-right: 12px;
+            font-size: 24px;
+        }
+
+        .step-content {
+            font-size: 18px;
+            padding-left: 40px;
+            color: #2d3436;
+        }
+
+        /* 하이라이트/손그림 효과 */
+        .hl-yellow { background-color: var(--highlighter-yellow); padding: 1px 4px; border-radius: 4px; }
+        .hl-green { background-color: var(--highlighter-green); padding: 1px 4px; border-radius: 4px; }
+        .circle-accent {
+            border: 2px dashed var(--pen-red);
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+            padding: 2px 8px;
+            display: inline-block;
+            font-weight: bold;
+            color: var(--pen-red);
+            line-height: 1.4rem;
+        }
+        .underline-red { border-bottom: 2.5px dashed var(--pen-red); }
+
+        /* 주의사항 구역 */
+        .warning-box {
+            border: 2px solid #e2e8f0;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .warning-box h3 {
+            font-family: 'Gaegu', sans-serif;
+            font-size: 24px;
+            color: var(--pen-red);
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-list {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 16px;
+            line-height: 2.2rem;
+            color: #485460;
+        }
+
+        /* 하단 서명란 */
+        .footer {
+            border-top: 1px dashed #cbd5e1;
+            padding-top: 15px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            color: #57606f;
+        }
+
+        /* 컨트롤 패널 */
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            z-index: 10;
+        }
+
+        .btn {
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.12);
+        }
+
+        .btn-print { background: #4f46e5; }
+        .btn-download { background: #10b981; }
+    </style>
+</head>
+<body>
+
+    <div class="controls no-print">
+        <button class="btn btn-print" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> PDF 세로 인쇄/저장
+        </button>
+        <button class="btn btn-download" onclick="downloadHTML()">
+            <i class="fa-solid fa-download"></i> 가이드북 파일 다운로드 (.html)
+        </button>
+    </div>
+
+    <div class="guide-page">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>내 머릿속 "생각 지도" 그리기</h1>
+            <p>교과서를 무작정 받아적는 공부 대신, 개념 지도를 그려봐요!</p>
+        </div>
+
+        <!-- 1단계 -->
+        <div class="step-section">
+            <div class="step-title">
+                <i class="fa-solid fa-seedling"></i> 1단계: 뿌리 내리기 (중심 생각)
+            </div>
+            <div class="step-content">
+                • 종이를 <span class="hl-yellow">가로로 길게</span> 눕힌 다음, 가장 한가운데에 오늘 배울 주제를 적으세요.<br>
+                • 심심한 글자 대신 구름 모양, 원, 혹은 주제와 어울리는 <span class="underline-red">작은 그림(저울 ⚖️, 컴퓨터 💻 등)</span>을 함께 그리면 집중도가 쑥 올라가요!
+            </div>
+        </div>
+
+        <!-- 2단계 -->
+        <div class="step-section">
+            <div class="step-title">
+                <i class="fa-solid fa-network-wired"></i> 2단계: 뼈대 세우기 (대주제 가지)
+            </div>
+            <div class="step-content">
+                • 중심 단어에서 사방으로 <span class="hl-yellow">굵은 가지(선)</span>를 뻗쳐 나가세요.<br>
+                • 교과서 단원의 가장 큰 단원명이나 핵심 범주를 적어 뼈대를 만듭니다. (글씨는 중심 주제보다 한 단계 작게!)
+            </div>
+        </div>
+
+        <!-- 3단계 -->
+        <div class="step-section">
+            <div class="step-title">
+                <i class="fa-solid fa-leaf"></i> 3단계: 살 붙이기 (소주제 가지)
+            </div>
+            <div class="step-content">
+                • 굵은 가지 끝에서 나무줄기가 또 갈라지듯 <span class="hl-green">더 가는 잔가지</span>를 뻗어 세부 개념을 엮어줍니다.<br>
+                • <span class="circle-accent">절대주의!</span> 문장을 길게 쓰면 단순 필기가 되어버려요. 반드시 <span class="underline-red">하나의 단어(키워드)</span> 위주로만 올리세요.
+            </div>
+        </div>
+
+        <!-- 4단계 -->
+        <div class="step-section">
+            <div class="step-title">
+                <i class="fa-solid fa-palette"></i> 4단계: 내 무기 만들기 (시각적 연결)
+            </div>
+            <div class="step-content">
+                • 펜과 색연필을 꺼내 중요한 개념에 색을 입힙니다.<br>
+                • 꼭 외워야 하는 학자는 <span class="hl-green">형광펜</span>, 서로 대립하는 단어는 <span class="circle-accent">VS</span>나 양방향 화살표(↔️)로 한눈에 알아볼 수 있도록 표시하세요.
+            </div>
+        </div>
+
+        <!-- 주의사항 상자 -->
+        <div class="warning-box">
+            <h3><i class="fa-solid fa-circle-exclamation"></i> 구조도를 그릴 때 조심할 실수 3가지</h3>
+            <ul class="warning-list">
+                <li><strong>글자가 너무 빽빽해요:</strong> 부연 설명은 덜어내고 <strong>핵심 단어</strong>만 연결해야 한눈에 들어오는 진짜 지도가 돼요.</li>
+                <li><strong>종이 한쪽이 너무 꽉 차요:</strong> 그리기 전 연필로 미리 자리를 가볍게 점 찍어 둔 뒤에 가지를 넓게 벌려 그립니다.</li>
+                <li><strong>예쁘게 그리느라 진이 빠져요:</strong> 우리는 미술 작품을 만드는 것이 아니에요! <strong>"생각의 흐름이 한눈에 보이는가"</strong>가 제일 훌륭한 잣대예요.</li>
+            </ul>
+        </div>
+
+        <!-- 하단 -->
+        <div class="footer">
+            <div>[미션] 선생님이 보낸 필기 예시를 참고하여 나만의 마인드맵을 종이에 채워봅시다.</div>
+            <div>학번: ______________ 이름: ______________</div>
+        </div>
+    </div>
+
+    <script>
+        // 현재 가이드 HTML 문서를 사용자의 로컬 환경에 다운로드하는 함수
+        function downloadHTML() {
+            try {
+                const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+                const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+                
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = "현대사회윤리_마인드맵_가이드북.html";
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            } catch (err) {
+                console.error("다운로드 실패: ", err);
+            }
+        }
+    </script>
+</body>
+</html>
