@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
-    <title>윤리 판타지: 성현의 역습 v3.0 (모바일 최적화)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <title>윤리 판타지: 성현의 역습 v3.0 (모바일 풀 최적화)</title>
     <style>
         :root {
             --primary: #4facfe;
@@ -13,13 +13,12 @@
             --text-dark: #1e293b;
         }
         
-        /* 모바일 드래그, 롱터치 메뉴, 더블탭 확대 완전 차단 */
         * { 
             -webkit-tap-highlight-color: transparent; 
             outline: none; 
             user-select: none;
             -webkit-user-select: none;
-            touch-action: none; /* 브라우저 기본 스크롤/확대 제어 */
+            touch-action: none;
         }
         
         body { 
@@ -34,7 +33,6 @@
         
         .game-wrapper { display: flex; width: 100vw; height: 100vh; position: relative; }
         
-        /* 데스크톱 사이드바: 모바일에서는 공간 확보를 위해 완전 숨김 */
         #sidebar { 
             width: 320px; background: var(--sidebar-bg); border-right: 4px solid var(--primary); 
             display: flex; flex-direction: column; padding: 25px; box-sizing: border-box;
@@ -53,14 +51,12 @@
             max-width: 100%; max-height: 100%; object-fit: contain;
         }
         
-        /* 모바일에서 선택 창 스크롤 가능하도록 터치 액션 허용 */
         .screen { 
             position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; background: #f0f9ff; z-index: 50; padding: 30px 20px; overflow-y: auto; 
             touch-action: pan-y;
         }
         h1 { font-size: clamp(1.5rem, 6vw, 2.8rem); margin-top: 10px; margin-bottom: 1rem; color: #0c4a6e; text-shadow: 2px 2px 0px rgba(255,255,255,1); }
         
-        /* 캐릭터 그리드 모바일 반응형 조정 */
         .char-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; max-width: 800px; width: 100%; padding-bottom: 40px; }
         .char-card { 
             background: white; border: 3px solid #e2e8f0; border-radius: 16px; 
@@ -72,7 +68,6 @@
         .char-card h3 { margin: 4px 0; color: #0f172a; font-size: 1rem; }
         .char-desc { font-size: 0.75rem; color: #64748b; line-height: 1.3; height: 3.2em; overflow: hidden; }
 
-        /* 상단 UI 모바일 배치 조정 */
         #top-ui { position: absolute; top: 12px; width: 100%; display: none; justify-content: space-between; padding: 0 15px; box-sizing: border-box; pointer-events: none; z-index: 60; }
         .stat-box { background: rgba(255,255,255,0.92); padding: 6px 12px; border-radius: 10px; border: 2px solid #0ea5e9; color: #0369a1; font-weight: 800; font-size: 0.8rem; backdrop-filter: blur(5px); }
         
@@ -80,25 +75,46 @@
         .hp-container { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; border: 1.5px solid #fff; overflow: hidden; }
         #boss-hp-bar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
 
-        /* 가상 컨트롤러 패드 모바일 전용 배치 (엄지손가락 위치 최적화) */
+        /* 사파리 / 삼성인터넷 하단 바 간섭 방지 최적화 레이아웃 */
         #mobile-controls { 
-            position: absolute; bottom: 15px; width: 100%; display: none; 
-            justify-content: space-between; padding: 0 20px; box-sizing: border-box; 
-            z-index: 70; pointer-events: none;
+            position: absolute; 
+            bottom: calc(30px + env(safe-area-inset-bottom)); /* 하단 내비게이션 바 위로 강제 리프팅 */
+            width: 100%; 
+            display: none; 
+            justify-content: space-between; 
+            padding: 0 25px; 
+            box-sizing: border-box; 
+            z-index: 70; 
+            pointer-events: none;
         }
-        .control-group { display: flex; gap: 12px; pointer-events: auto; align-items: flex-end; }
-        .ctrl-btn { 
-            width: 60px; height: 60px; background: rgba(15, 23, 42, 0.55); border: 2px solid rgba(255,255,255,0.7); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: bold; font-size: 1.3rem; backdrop-filter: blur(4px);
-            user-select: none; -webkit-user-select: none;
-        }
-        /* 터치 시 피드백 시각화 */
-        .ctrl-btn.active-touch { background: rgba(15, 23, 42, 0.9); transform: scale(0.9); border-color: var(--primary); }
+        .control-group { display: flex; gap: 15px; pointer-events: auto; align-items: flex-end; }
         
-        .btn-jump { background: rgba(14, 165, 233, 0.6); width: 65px; height: 65px; font-size: 1.4rem; }
-        .btn-atk { background: rgba(244, 63, 94, 0.6); width: 75px; height: 75px; font-size: 1.6rem; border-radius: 50%; }
-        .btn-ult { background: rgba(249, 212, 35, 0.75); color: #000; width: 55px; height: 55px; font-size: 1.1rem; }
+        /* 버튼 시인성 극대화 개편 (진한 배경 + 두꺼운 화이트 테두리) */
+        .ctrl-btn { 
+            width: 68px; 
+            height: 68px; 
+            background: rgba(15, 23, 42, 0.85); /* 투명도를 낮춰 어둡고 선명하게 변경 */
+            border: 3px solid #ffffff; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: #ffffff; 
+            font-weight: 900; 
+            font-size: 1.5rem; 
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3); /* 그림자 추가로 공중 부양 효과 */
+        }
+        .ctrl-btn.active-touch { 
+            background: #0ea5e9; 
+            transform: scale(0.88); 
+            border-color: #f9d423; 
+        }
+        
+        /* 기능성 버튼 색상 및 크기 최적화 */
+        .btn-jump { background: rgba(14, 165, 233, 0.9); width: 72px; height: 72px; font-size: 1.6rem; }
+        .btn-atk { background: rgba(244, 63, 94, 0.9); width: 82px; height: 82px; font-size: 1.8rem; }
+        .btn-ult { background: rgba(249, 212, 35, 1); color: #000000; width: 62px; height: 62px; font-size: 1.3rem; }
 
         #ult-cut-in {
             position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%) scale(0);
@@ -123,7 +139,7 @@
         <div class="sidebar-section"><h4>🔥 필살기 (X)</h4><div id="side-ult" class="sidebar-content">-</div></div>
         <div style="margin-top:auto; font-size:0.85rem; color:#64748b;">
             Z: 공격 / X: 필살기 / Space: 점프<br>
-            모바일: 하단 가상 버튼 터치
+            모바일: 화면 하단 버튼 터치
         </div>
     </div>
 
@@ -193,7 +209,7 @@
     let portal = { x: 950, y: 390, w: 80, h: 120 };
     let shakeAmount = 0;
 
-    const keys = {}; // 조작 키 상태 객체 (데스크톱 및 모바일 통합)
+    const keys = {};
 
     function initSelectionScreen() {
         const grid = document.getElementById('char-grid');
@@ -209,7 +225,6 @@
         setupMobileControls();
     }
 
-    // 모바일 완전 무결 멀티터치 조작 프레임워크 구현
     function setupMobileControls() {
         const activeTouches = {};
         const buttons = {
@@ -223,15 +238,13 @@
         const container = document.getElementById('mobile-controls');
 
         function handleTouch(e) {
-            e.preventDefault(); // 기본 줌, 드래그 차단
+            e.preventDefault();
             
-            // 모든 버튼 상태 리셋 초기화
             Object.values(buttons).forEach(btn => {
                 if (!btn.once) keys[btn.key] = false;
             });
             Object.keys(buttons).forEach(id => document.getElementById(id).classList.remove('active-touch'));
 
-            // 현재 터치된 실시간 포인트 파악하여 버튼 매핑
             for (let i = 0; i < e.targetTouches.length; i++) {
                 const touch = e.targetTouches[i];
                 const element = document.elementFromPoint(touch.clientX, touch.clientY);
@@ -243,12 +256,11 @@
                     document.getElementById(btnId).classList.add('active-touch');
                     
                     if (btn.once) {
-                        // 일회성 액션(점프, 공격)은 새로 터치되는 시점에만 발동되도록 제어
                         if (!activeTouches[touch.identifier] || activeTouches[touch.identifier] !== btnId) {
                             btn.action();
                         }
                     } else {
-                        keys[btn.key] = true; // 방향키 연속 전달 유지
+                        keys[btn.key] = true;
                     }
                     activeTouches[touch.identifier] = btnId;
                 }
@@ -257,7 +269,6 @@
 
         function handleTouchEnd(e) {
             e.preventDefault();
-            // 사라진 터치 정리
             const currentIds = Array.from(e.targetTouches).map(t => t.identifier);
             Object.keys(activeTouches).forEach(id => {
                 if (!currentIds.includes(parseInt(id))) {
@@ -268,7 +279,7 @@
                     delete activeTouches[id];
                 }
             });
-            handleTouch(e); // 남은 터치 재업데이트
+            handleTouch(e);
         }
 
         container.addEventListener('touchstart', handleTouch, { passive: false });
@@ -302,7 +313,6 @@
         requestAnimationFrame(gameLoop);
     }
 
-    // 모바일 고해상도 디스플레이(Retina) 해상도 깨짐 보완을 적용한 리사이즈 알고리즘
     function resizeCanvas() {
         const container = document.getElementById('game-container');
         const ratio = 1100 / 550;
@@ -313,18 +323,15 @@
             w = h * ratio;
         }
         
-        // CSS 크기 세팅
         canvas.style.width = w + "px";
         canvas.style.height = h + "px";
         
-        // 디바이스 픽셀 비율에 맞춰 실제 캔버스 해상도 고정 (이모지 픽셀 깨짐 해결)
         const dpr = window.devicePixelRatio || 1;
         canvas.width = 1100 * dpr;
         canvas.height = 550 * dpr;
         ctx.scale(dpr, dpr);
     }
 
-    // 키보드 조작 이벤트 지원 (데스크톱 호환용)
     window.onkeydown = e => {
         if(gameState !== 'play') return;
         if(e.code === 'Space') jump();
@@ -507,8 +514,6 @@
         
         ctx.clearRect(0, 0, 1100, 550);
         
-        // Platforms
-        ctx.fillStyle = "#fff"; ctx.strokeStyle = "#0ea5e9"; ctx.lineWidth = 3;
         platforms.forEach(p => { ctx.beginPath(); ctx.roundRect(p.x, p.y, p.w, p.h, 8); ctx.fill(); ctx.stroke(); });
 
         if(portalActive) {
