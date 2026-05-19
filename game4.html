@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
-    <title>윤리 판타지: 성현의 역습 v3.0 (모바일 풀 최적화)</title>
+    <title>윤리 판타지: 성현의 역습 v3.5 (모바일 완벽 수정)</title>
     <style>
         :root {
             --primary: #4facfe;
@@ -19,19 +19,28 @@
             user-select: none;
             -webkit-user-select: none;
             touch-action: none;
+            box-sizing: border-box;
         }
         
-        body { 
+        /* 모바일 주소창 밀림 방지를 위해 100svh 고정 */
+        body, html { 
             margin: 0; 
+            padding: 0;
             overflow: hidden; 
             background: #0f172a; 
             font-family: 'Pretendard', 'Malgun Gothic', sans-serif; 
-            color: var(--text-dark); 
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            height: 100svh; 
         }
         
-        .game-wrapper { display: flex; width: 100vw; height: 100vh; position: relative; }
+        .game-wrapper { 
+            display: flex; 
+            width: 100%; 
+            height: 100%; 
+            height: 100svh;
+            position: relative; 
+        }
         
         #sidebar { 
             width: 320px; background: var(--sidebar-bg); border-right: 4px solid var(--primary); 
@@ -43,7 +52,17 @@
             #sidebar { display: none !important; } 
         }
 
-        #game-container { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: #f1f5f9; overflow: hidden; width: 100%; height: 100%; }
+        #game-container { 
+            flex: 1; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: #f1f5f9; 
+            overflow: hidden; 
+            width: 100%; 
+            height: 100%; 
+        }
 
         canvas { 
             background: linear-gradient(to bottom, #bae6fd, #e0f2fe); 
@@ -57,7 +76,7 @@
         }
         h1 { font-size: clamp(1.5rem, 6vw, 2.8rem); margin-top: 10px; margin-bottom: 1rem; color: #0c4a6e; text-shadow: 2px 2px 0px rgba(255,255,255,1); }
         
-        .char-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; max-width: 800px; width: 100%; padding-bottom: 40px; }
+        .char-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; max-width: 800px; width: 100%; padding-bottom: 120px; /* 조작키 공간 확보 */ }
         .char-card { 
             background: white; border: 3px solid #e2e8f0; border-radius: 16px; 
             padding: 12px; cursor: pointer; transition: all 0.2s ease;
@@ -75,46 +94,50 @@
         .hp-container { width: 100%; height: 10px; background: #e2e8f0; border-radius: 5px; border: 1.5px solid #fff; overflow: hidden; }
         #boss-hp-bar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
 
-        /* 사파리 / 삼성인터넷 하단 바 간섭 방지 최적화 레이아웃 */
+        /* [초강력 수정] 사파리 및 삼성 인터넷 전용 최상위 레이아웃 */
         #mobile-controls { 
-            position: absolute; 
-            bottom: calc(30px + env(safe-area-inset-bottom)); /* 하단 내비게이션 바 위로 강제 리프팅 */
+            position: fixed; 
+            bottom: calc(20px + env(safe-area-inset-bottom)); /* 기기별 안전구역 + 여백 */
+            left: 0;
             width: 100%; 
-            display: none; 
+            display: flex; /* 무조건 처음부터 렌더링 */
             justify-content: space-between; 
-            padding: 0 25px; 
+            padding: 0 20px; 
             box-sizing: border-box; 
-            z-index: 70; 
-            pointer-events: none;
+            z-index: 9999; /* 화면 최상단으로 강제 팝업 */
+            pointer-events: none; /* 빈 공간은 터치 통과 */
         }
-        .control-group { display: flex; gap: 15px; pointer-events: auto; align-items: flex-end; }
+        .control-group { display: flex; gap: 12px; pointer-events: auto; align-items: flex-end; }
         
-        /* 버튼 시인성 극대화 개편 (진한 배경 + 두꺼운 화이트 테두리) */
+        /* 버튼 디자인 극대화 (화이트 테두리 + 강력한 검은색 투명도) */
         .ctrl-btn { 
-            width: 68px; 
-            height: 68px; 
-            background: rgba(15, 23, 42, 0.85); /* 투명도를 낮춰 어둡고 선명하게 변경 */
-            border: 3px solid #ffffff; 
+            width: 72px; 
+            height: 72px; 
+            background: rgba(15, 23, 42, 0.9); /* 극도로 어둡게 하여 무조건 보이도록 설정 */
+            border: 4px solid #ffffff; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
             color: #ffffff; 
             font-weight: 900; 
-            font-size: 1.5rem; 
-            backdrop-filter: blur(5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3); /* 그림자 추가로 공중 부양 효과 */
+            font-size: 1.6rem; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            cursor: pointer;
+            -webkit-user-select: none;
         }
+        /* 터치 시 시각 피드백 명확화 */
         .ctrl-btn.active-touch { 
-            background: #0ea5e9; 
-            transform: scale(0.88); 
-            border-color: #f9d423; 
+            background: #0ea5e9 !important; 
+            transform: scale(0.85); 
+            border-color: #f9d423 !important; 
         }
         
-        /* 기능성 버튼 색상 및 크기 최적화 */
-        .btn-jump { background: rgba(14, 165, 233, 0.9); width: 72px; height: 72px; font-size: 1.6rem; }
-        .btn-atk { background: rgba(244, 63, 94, 0.9); width: 82px; height: 82px; font-size: 1.8rem; }
-        .btn-ult { background: rgba(249, 212, 35, 1); color: #000000; width: 62px; height: 62px; font-size: 1.3rem; }
+        /* 기능성 버튼 개별 최적화 */
+        .btn-jump { background: rgba(14, 165, 233, 0.95); width: 75px; height: 75px; font-size: 1.7rem; }
+        .btn-atk { background: rgba(244, 63, 94, 0.95); width: 85px; height: 85px; font-size: 1.9rem; }
+        .btn-ult { background: rgba(250, 204, 21, 1); color: #000000; width: 65px; height: 65px; font-size: 1.4rem; border-color: #000000; }
 
         #ult-cut-in {
             position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%) scale(0);
@@ -147,7 +170,7 @@
         <div id="ult-cut-in">필살기!</div>
         
         <div id="selection-screen" class="screen">
-            <h1>🕊️ 성현의 역습 v3.0</h1>
+            <h1>🕊️ 성현의 역습 v3.5</h1>
             <p style="margin-top:-0.5rem; margin-bottom:1.5rem; color:#64748b; font-size:0.85rem;">허무의 군주로부터 윤리의 세계를 구원할 사상가를 선택하세요.</p>
             <div class="char-grid" id="char-grid"></div>
         </div>
@@ -167,7 +190,7 @@
             <div class="hp-container"><div id="boss-hp-bar"></div></div>
         </div>
 
-        <canvas id="gameCanvas"></canvas>
+        <canvas id="gameCanvas" style="display:none;"></canvas>
 
         <div id="mobile-controls">
             <div class="control-group">
@@ -290,6 +313,7 @@
 
     function renderCharPreview(name) {
         const pCanvas = document.getElementById(`prev-${name}`);
+        if(!pCanvas) return;
         const pCtx = pCanvas.getContext('2d');
         const c = CHARS[name];
         pCtx.fillStyle = c.color; pCtx.beginPath(); pCtx.roundRect(17, 35, 45, 50, 8); pCtx.fill();
@@ -304,10 +328,10 @@
         document.getElementById('side-ult').innerText = CHARS[name].ult;
         document.getElementById('selection-screen').style.display = 'none';
         document.getElementById('top-ui').style.display = 'flex';
-        document.getElementById('mobile-controls').style.display = 'flex';
         canvas.style.display = 'block';
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
         loadStage(1);
         gameState = 'play';
         requestAnimationFrame(gameLoop);
@@ -316,10 +340,10 @@
     function resizeCanvas() {
         const container = document.getElementById('game-container');
         const ratio = 1100 / 550;
-        let w = container.clientWidth - 20;
+        let w = container.clientWidth;
         let h = w / ratio;
-        if (h > container.clientHeight - 20) {
-            h = container.clientHeight - 20;
+        if (h > container.clientHeight) {
+            h = container.clientHeight;
             w = h * ratio;
         }
         
@@ -349,7 +373,7 @@
     }
 
     function shoot() {
-        if(bullets.length > 20) return;
+        if(gameState !== 'play' || bullets.length > 20) return;
         bullets.push({ x: player.x + (player.dir === 1 ? 45 : -5), y: player.y + 30, dx: player.dir * CHARS[player.char].bulletSpeed, char: CHARS[player.char].bullet, penetrate: player.char === '공자' });
     }
 
@@ -360,7 +384,7 @@
     }
 
     function useUltimate() {
-        if(player.ultGauge < player.maxUlt) return;
+        if(gameState !== 'play' || player.ultGauge < player.maxUlt) return;
         player.ultGauge = 0;
         shakeAmount = 20;
         const c = player.char;
