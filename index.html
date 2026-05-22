@@ -160,7 +160,7 @@
       background-color: #3730a3;
     }
 
-    /* [추가] 환경 윤리 전용 카드 스타일 (그린/에메랄드 테마) */
+    /* 환경 윤리 전용 카드 스타일 (그린/에메랄드 테마) */
     .card.eco::before {
       background: #10b981;
     }
@@ -175,6 +175,23 @@
     }
     .card.eco .btn:hover {
       background-color: #047857;
+    }
+
+    /* [신규 추가] 인공지능 윤리 전용 카드 스타일 (퍼플/딥 인디고 테마) */
+    .card.ai::before {
+      background: #8b5cf6;
+    }
+    .card.ai .badge {
+      color: #8b5cf6;
+    }
+    .card.ai:hover::before {
+      background: #6d28d9;
+    }
+    .card.ai .btn {
+      background-color: #6d28d9;
+    }
+    .card.ai .btn:hover {
+      background-color: #5b21b6;
     }
   </style>
 </head>
@@ -226,12 +243,20 @@
       <a href="game5.html" class="btn">가이드 열기</a>
     </div>
 
-    <!-- [신규 추가] Game 06: 환경 윤리 -->
+    <!-- Game 06: 환경 윤리 -->
     <div class="card eco">
       <div class="badge"><i class="fa-solid fa-leaf"></i> 06 · 환경 윤리</div>
       <div class="title">생태 발자국 탐험대</div>
       <div class="desc">인간 중심주의부터 생태 중심주의까지 다양한 관점을 배우고, 일상생활 속 나의 생태 발자국 점수를 측정해봅니다.</div>
       <a href="game6.html" class="btn">탐험 시작</a>
+    </div>
+
+    <!-- [신규 추가] Game 07: 인공지능 윤리 -->
+    <div class="card ai">
+      <div class="badge"><i class="fa-solid fa-brain"></i> 07 · 과학 기술 윤리</div>
+      <div class="title">인공지능 윤리 시뮬레이터</div>
+      <div class="desc">자율주행 자동차의 트롤리 딜레마를 체험하고, 채용 심사 인공지능을 직접 훈련시키며 나의 가치 지표를 분석해봅니다.</div>
+      <a href="ai_ethics_games.html" class="btn">시뮬레이션 시작</a>
     </div>
 
   </div>
