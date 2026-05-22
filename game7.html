@@ -1,3 +1,4 @@
+:고2 현대사회와 윤리: AI 윤리 체험 시뮬레이터:index.html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -21,6 +22,19 @@
         /* Custom progress bar animation */
         .progress-bar-fill {
             transition: width 0.4s ease-in-out;
+        }
+        /* Car Path Animation */
+        .car-anim-straight {
+            transform: translate(120px, 0px) scale(1.05);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .car-anim-steer {
+            transform: translate(120px, -35px) rotate(-15deg) scale(1.05);
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .car-reset {
+            transform: translate(0px, 0px) rotate(0deg) scale(1);
+            transition: transform 0.3s ease-out;
         }
     </style>
 </head>
@@ -79,7 +93,7 @@
                             고장 난 자율주행 차의 충돌 알고리즘을 설계해야 합니다. 공리주의(최대다수 최대행복)와 의무론(인간 존엄성 보호) 중 당신은 어떤 윤리 규칙을 따를 것인가요?
                         </p>
                     </div>
-                    <button onclick="startGame(1)" class="w-full mt-2 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20">
+                    <button id="btn-game1-start" onclick="startGame(1)" class="w-full mt-2 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20">
                         플레이 시작하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -132,14 +146,14 @@
                         
                         <!-- Track Graphics -->
                         <div class="absolute inset-0 flex flex-col justify-center pointer-events-none">
-                            <div class="h-0.5 sm:h-1 bg-indigo-500/20 w-full mb-6 sm:mb-8"></div>
+                            <div class="h-0.5 sm:h-1 bg-slate-800 w-full mb-6 sm:mb-8"></div>
                             <!-- Lane marking -->
                             <div class="h-0.5 sm:h-1 bg-yellow-500/40 w-full border-dashed border-t-2 sm:border-t-4 border-yellow-500/40"></div>
-                            <div class="h-0.5 sm:h-1 bg-indigo-500/20 w-full mt-6 sm:mb-8"></div>
+                            <div class="h-0.5 sm:h-1 bg-slate-800 w-full mt-6 sm:mb-8"></div>
                         </div>
 
                         <!-- Autonomous Vehicle -->
-                        <div class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 animate-bounce duration-1000">
+                        <div id="simulation-car" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 car-reset">
                             <div class="w-12 h-6 sm:w-16 sm:h-8 bg-indigo-500 rounded sm:rounded-lg relative shadow-lg shadow-indigo-500/30 flex items-center justify-end px-1 sm:px-2 border border-indigo-400">
                                 <div class="w-1.5 h-1.5 rounded-full bg-cyan-300 animate-pulse"></div>
                                 <span class="absolute -top-5 sm:-top-6 left-0 text-[8px] sm:text-[10px] bg-slate-800 text-indigo-300 px-1 py-0.5 rounded border border-indigo-500/30 font-mono">AUTO</span>
@@ -149,21 +163,21 @@
                         <!-- Road Obstacles/Targets UI -->
                         <div class="flex justify-end gap-3 sm:gap-8 md:gap-10 items-center h-full pr-2 sm:pr-8">
                             <!-- Left Choice Target -->
-                            <div class="flex flex-col items-center justify-center text-center bg-red-950/50 border border-red-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm animate-pulse">
+                            <div id="target-box-a" class="flex flex-col items-center justify-center text-center bg-red-950/50 border border-red-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm transition-all duration-300">
                                 <span class="text-[8px] sm:text-[10px] text-red-400 font-bold mb-0.5 sm:mb-1">코스 A</span>
                                 <div id="g1-vis-left" class="text-xl sm:text-2xl">👩‍🦳🧒</div>
                                 <span id="g1-vis-left-desc" class="text-[7px] sm:text-[9px] text-slate-400 mt-0.5 sm:mt-1 truncate max-w-full">보행자</span>
                             </div>
 
                             <!-- Right Choice Target -->
-                            <div class="flex flex-col items-center justify-center text-center bg-amber-950/50 border border-amber-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm animate-pulse">
+                            <div id="target-box-b" class="flex flex-col items-center justify-center text-center bg-amber-950/50 border border-amber-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm transition-all duration-300">
                                 <span class="text-[8px] sm:text-[10px] text-amber-400 font-bold mb-0.5 sm:mb-1">코스 B</span>
                                 <div id="g1-vis-right" class="text-xl sm:text-2xl">🚗👮‍♂️</div>
                                 <span id="g1-vis-right-desc" class="text-[7px] sm:text-[9px] text-slate-400 mt-0.5 sm:mt-1 truncate max-w-full">승객</span>
                             </div>
                         </div>
 
-                        <div class="w-full text-center text-[10px] sm:text-[11px] text-rose-500 font-bold animate-pulse">
+                        <div id="emergency-banner" class="w-full text-center text-[10px] sm:text-[11px] text-rose-500 font-bold animate-pulse">
                             🚨 브레이크 시스템 결함 발생! 충돌 불가피!
                         </div>
                     </div>
@@ -180,20 +194,20 @@
 
                         <!-- Choice Cards (Large Touch Targets) -->
                         <div class="space-y-2.5">
-                            <button onclick="g1MakeChoice('A')" class="w-full text-left p-3 sm:p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-indigo-950/20 hover:border-indigo-500 active:scale-[0.98] transition-all duration-200 group">
+                            <button id="btn-choice-a" onclick="g1MakeChoice('A')" class="w-full text-left p-3 sm:p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-indigo-950/20 hover:border-indigo-500 active:scale-[0.98] transition-all duration-200 group">
                                 <div class="flex justify-between items-center">
-                                    <span id="g1-btn-text-A" class="font-bold text-slate-100 group-hover:text-indigo-400 text-xs sm:text-sm">코스 A를 선택한다 (직진하여 보행자 충돌)</span>
+                                    <span id="g1-btn-text-A" class="font-bold text-slate-100 group-hover:text-indigo-400 text-xs sm:text-sm">코스 A를 선택한다</span>
                                     <i data-lucide="chevrons-right" class="w-4 h-4 text-slate-500 group-hover:text-indigo-400 shrink-0 ml-1"></i>
                                 </div>
-                                <p id="g1-btn-sub-A" class="text-[10px] sm:text-xs text-slate-400 mt-1 leading-normal">보행자는 규칙을 어겼으나 다수의 생명을 구하는 것이 합리적입니다.</p>
+                                <p id="g1-btn-sub-A" class="text-[10px] sm:text-xs text-slate-400 mt-1 leading-normal">상세 가치 판단 내용이 노출됩니다.</p>
                             </button>
 
-                            <button onclick="g1MakeChoice('B')" class="w-full text-left p-3 sm:p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-indigo-950/20 hover:border-indigo-500 active:scale-[0.98] transition-all duration-200 group">
+                            <button id="btn-choice-b" onclick="g1MakeChoice('B')" class="w-full text-left p-3 sm:p-4 rounded-xl border border-slate-700 bg-slate-900/50 hover:bg-indigo-950/20 hover:border-indigo-500 active:scale-[0.98] transition-all duration-200 group">
                                 <div class="flex justify-between items-center">
-                                    <span id="g1-btn-text-B" class="font-bold text-slate-100 group-hover:text-indigo-400 text-xs sm:text-sm">코스 B를 선택한다 (회피하여 탑승자 충돌)</span>
+                                    <span id="g1-btn-text-B" class="font-bold text-slate-100 group-hover:text-indigo-400 text-xs sm:text-sm">코스 B를 선택한다</span>
                                     <i data-lucide="chevrons-right" class="w-4 h-4 text-slate-500 group-hover:text-indigo-400 shrink-0 ml-1"></i>
                                 </div>
-                                <p id="g1-btn-sub-B" class="text-[10px] sm:text-xs text-slate-400 mt-1 leading-normal">법규를 준수하는 보행자를 보호해야 하는 절대적 의무가 있습니다.</p>
+                                <p id="g1-btn-sub-B" class="text-[10px] sm:text-xs text-slate-400 mt-1 leading-normal">상세 가치 판단 내용이 노출됩니다.</p>
                             </button>
                         </div>
                     </div>
@@ -227,7 +241,7 @@
             </div>
 
             <div class="grid md:grid-cols-12">
-                <!-- Left: Applicant Card View (7 cols on Desktop, stacks on mobile) -->
+                <!-- Left: Applicant Card View -->
                 <div class="md:col-span-7 p-4 sm:p-6 border-b md:border-b-0 md:border-r border-slate-700 bg-slate-900/30 flex flex-col justify-between">
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-400 mb-3 sm:mb-4 flex items-center gap-1">
@@ -259,7 +273,7 @@
                             <div class="grid grid-cols-2 gap-3 sm:gap-4 text-[11px] sm:text-xs">
                                 <div>
                                     <p class="text-slate-500 mb-0.5">지원 직군</p>
-                                    <p id="applicant-job" class="font-semibold text-slate-300">소프트웨어 개발자</p>
+                                    <p id="applicant-job" class="font-semibold text-slate-300">SW 개발자</p>
                                 </div>
                                 <div>
                                     <p class="text-slate-500 mb-0.5">인턴 및 실무 경력</p>
@@ -297,7 +311,7 @@
                     </div>
                 </div>
 
-                <!-- Right: Realtime AI training Status Board (5 cols on Desktop, stacks below on mobile) -->
+                <!-- Right: Realtime AI training Status Board -->
                 <div class="md:col-span-5 p-4 sm:p-6 bg-slate-900/60 flex flex-col justify-between">
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-400 mb-3 sm:mb-4 flex items-center gap-1">
@@ -341,12 +355,16 @@
                             <!-- Bias Metre 3 -->
                             <div class="bg-slate-800/80 p-2.5 sm:p-3 rounded-lg border border-slate-700/60">
                                 <div class="flex justify-between items-center text-[11px] sm:text-xs mb-1">
-                                    <span class="text-slate-300 font-medium">연령 분포 (청년 30세 이하 vs 30세 초과)</span>
+                                    <span class="text-slate-300 font-medium">연령 분포 (30세 이하 vs 30세 초과)</span>
                                     <span id="stat-age" class="text-purple-400 font-bold">50% : 50%</span>
                                 </div>
                                 <div class="h-2 bg-slate-700 rounded-full overflow-hidden flex">
                                     <div id="stat-age-bar-young" class="bg-purple-500 h-full" style="width: 50%;"></div>
                                     <div id="stat-age-bar-old" class="bg-slate-500 h-full" style="width: 50%;"></div>
+                                </div>
+                                <div class="flex justify-between text-[9px] sm:text-[10px] text-slate-500 mt-1">
+                                    <span>30세 이하</span>
+                                    <span>30세 초과</span>
                                 </div>
                             </div>
                         </div>
@@ -377,7 +395,7 @@
                 <p class="text-slate-400 text-[11px] sm:text-xs md:text-sm mt-1">체험을 바탕으로 당신의 인공지능 윤리 가치관을 심층 분석한 리포트입니다.</p>
             </div>
 
-            <!-- Dashboard Grid (Stack on mobile) -->
+            <!-- Dashboard Grid -->
             <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 
                 <!-- Trolley Racing Result (Game 1) -->
@@ -405,7 +423,7 @@
 
                     <!-- Editorial Explanation -->
                     <p id="rep-g1-desc" class="text-[11px] sm:text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-2.5 rounded border border-slate-850">
-                        자율주행 알고리즘 설계에서 당신은 보행자의 안전과 효율적 계산 사이에서 균형을 맞추려 하였습니다.
+                        분석 중...
                     </p>
                 </div>
 
@@ -433,7 +451,7 @@
 
                     <!-- Editorial Explanation -->
                     <p id="rep-g2-desc" class="text-[11px] sm:text-xs text-slate-300 leading-relaxed bg-slate-950/40 p-2.5 rounded border border-slate-850">
-                        심사 데이터를 학습시키면서 편향이 거의 없는 이상적인 AI를 만드셨습니다.
+                        분석 중...
                     </p>
                 </div>
             </div>
@@ -442,444 +460,390 @@
             <div class="bg-indigo-950/20 border border-indigo-500/20 rounded-xl p-4 sm:p-5 mb-6 sm:mb-8">
                 <div class="flex items-start gap-3">
                     <div class="p-2 bg-indigo-500/20 text-indigo-400 rounded-lg shrink-0">
-                        <i data-lucide="award" class="w-5 h-5 sm:w-6 sm:h-6"></i>
+                        <i data-lucide="award" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h4 class="text-xs sm:text-sm font-bold text-white mb-1">통합 AI 설계 철학 판정: <span id="rep-badge-title" class="text-indigo-400">균형 잡힌 이성주의자</span></h4>
-                        <p id="rep-total-desc" class="text-[11px] sm:text-xs text-slate-300 leading-relaxed mt-1">
-                            로딩 중...
+                        <h4 class="font-bold text-white text-sm sm:text-base mb-1">종합 윤리관 평가 피드백</h4>
+                        <p id="rep-total-summary" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            두 시뮬레이션을 모두 완료해야 종합 윤리관 평가 피드백이 완성됩니다.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Action buttons for class activity -->
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-3">
-                <button onclick="window.print()" class="w-full sm:w-auto py-3 px-6 bg-slate-700 hover:bg-slate-600 active:scale-95 text-slate-200 text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all">
-                    <i data-lucide="printer" class="w-4 h-4"></i> 결과 인쇄 및 제출
-                </button>
-                <button onclick="resetAll()" class="w-full sm:w-auto py-3 px-6 bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20">
-                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 처음부터 다시 도전하기
-                </button>
-            </div>
+            <!-- Back to Lobby Button -->
+            <button onclick="resetAll()" class="w-full py-3.5 bg-slate-750 hover:bg-slate-700 active:scale-[0.99] text-white font-semibold rounded-xl border border-slate-600 transition-all text-sm sm:text-base flex items-center justify-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> 처음 메인화면으로 이동하기
+            </button>
         </div>
-
     </main>
 
-    <!-- Footer / Class Instruction -->
-    <footer class="bg-slate-950 border-t border-slate-800 py-4 px-4 text-center text-[10px] sm:text-xs text-slate-500">
-        <p>© 2026 현대 사회와 윤리 교육용 콘텐츠 | AI 윤리 시뮬레이터 (v1.1)</p>
-        <p class="mt-1">※ 본 게임은 무설치형 순수 HTML 클라이언트 게임으로 개인정보를 수집하거나 서버에 저장하지 않습니다.</p>
+    <!-- Footer Copyright -->
+    <footer class="bg-slate-950 border-t border-slate-850 py-3 text-center text-[10px] sm:text-xs text-slate-500">
+        &copy; 2026 현대 사회와 윤리 교육용 인터랙티브 시뮬레이터. All rights reserved.
     </footer>
 
-    <!-- Custom Modal for Alerts (Avoids window.alert) -->
-    <div id="custom-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl max-w-md w-full p-5 sm:p-6 shadow-2xl">
-            <div class="flex items-center gap-3 text-yellow-400 mb-3" id="modal-header-icon">
-                <i data-lucide="alert-circle" class="w-5 h-5 sm:w-6 sm:h-6"></i>
-                <h3 class="text-base sm:text-lg font-bold text-white" id="modal-title">알림</h3>
-            </div>
-            <p class="text-xs sm:text-sm text-slate-300 mb-5 sm:mb-6 leading-relaxed" id="modal-body">안내 메시지 내용입니다.</p>
-            <div class="flex justify-end">
-                <button onclick="closeModal()" class="w-full sm:w-auto text-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-lg transition-colors active:scale-95">
-                    확인
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript Game Logic -->
+    <!-- ================================================================= -->
+    <!--                       JAVASCRIPT LOGIC                            -->
+    <!-- ================================================================= -->
     <script>
-        // Init Lucide Icons
-        lucide.createIcons();
+        // --- GAME STATE ---
+        let game1Played = false;
+        let game2Played = false;
+        
+        let g1CurrentIdx = 0;
+        let g1Answers = []; 
 
-        // Audio synthesizer wrapper using Web Audio API to play classic game sounds
-        const playSound = (type) => {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-
-                if (type === 'select') {
-                    osc.frequency.setValueAtTime(440, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
-                    gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.1);
-                } else if (type === 'success') {
-                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.08); // E5
-                    osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.16); // G5
-                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.35);
-                } else if (type === 'warn') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(150, ctx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(80, ctx.currentTime + 0.25);
-                    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.25);
-                }
-            } catch (e) {
-                // AudioContext blocked or unsupported
-            }
+        let g2CurrentIdx = 0;
+        let g2Applicants = [];
+        let g2History = {
+            gender: { m: { pass: 0, fail: 0 }, f: { pass: 0, fail: 0 } },
+            region: { seoul: { pass: 0, fail: 0 }, local: { pass: 0, fail: 0 } },
+            age: { young: { pass: 0, fail: 0 }, old: { pass: 0, fail: 0 } },
+            totalPass: 0,
+            totalFail: 0
         };
 
-        // Custom Modal helper
-        const showAlert = (title, message, iconType = 'info') => {
-            const modal = document.getElementById('custom-modal');
-            const mTitle = document.getElementById('modal-title');
-            const mBody = document.getElementById('modal-body');
-            const mIcon = document.getElementById('modal-header-icon');
-
-            mTitle.innerText = title;
-            mBody.innerText = message;
-
-            let iconHtml = '<i data-lucide="info" class="w-6 h-6"></i>';
-            if (iconType === 'warn') {
-                iconHtml = '<i data-lucide="alert-triangle" class="w-6 h-6 text-rose-500"></i>';
-            } else if (iconType === 'success') {
-                iconHtml = '<i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>';
-            }
-
-            mIcon.innerHTML = iconHtml + `<h3 class="text-base sm:text-lg font-bold text-white">${title}</h3>`;
-            lucide.createIcons();
-            modal.classList.remove('hidden');
-        };
-
-        const closeModal = () => {
-            document.getElementById('custom-modal').classList.add('hidden');
-        };
-
-        // Global State
-        let gameState = {
-            currentScreen: 'lobby', // lobby, game1, game2, report
-            game1Completed: false,
-            game2Completed: false,
-            g1Answers: [], // Array of choices 'A' or 'B'
-            g2Selections: [], // Array of applicant profiles selected and user evaluation
-            g2Count: 0,
-        };
-
-        // Game 1 Data (Trolley Dilemmas)
-        const g1Dilemmas = [
+        // --- CONTENT DATA ---
+        const game1Scenarios = [
             {
-                title: "다수 보행자 vs 승객",
-                desc: "차량 브레이크가 고장 났습니다. 직진하여 무단 횡단하는 보행자 5명을 칠까요, 방향을 틀어 콘크리트벽에 충돌하여 차량 승객 1명을 사망하게 할까요?",
-                visLeft: "👩‍🦳👨‍⚕️🧒🧔👵",
-                visLeftDesc: "보행자 5명",
-                visRight: "🤵",
-                visRightDesc: "탑승자 1명",
-                optAText: "A 코스: 직진 (보행자 5명 희생)",
-                optASub: "공리주의적 판단: 더 적은 희생을 위한 합리적 선택",
-                optBText: "B 코스: 방향 전환 (탑승자 1명 희생)",
-                optBSub: "의무론적 판단: 무고한 보행자를 위협하지 않을 의무",
-                valA: "utilitarian",
-                valB: "deontology"
+                title: "경로상의 보행자 VS 탑승자",
+                desc: "차량 브레이크가 파손되었습니다. 이대로 직진하면 횡단보도를 건너는 보행자 5명을 치게 되며, 핸들을 꺾으면 가로벽에 돌진하여 차에 타고 있는 승객 1명이 사망하게 됩니다. 어떤 경로를 선택하시겠습니까?",
+                visLeft: "🚶‍♂️🚶‍♀️🏃‍♂️👶👵", visLeftDesc: "보행자 5명",
+                visRight: "🚗🧑‍✈️", visRightDesc: "승객 1명",
+                btnA: "코스 A를 선택한다 (직진하여 보행자 충돌)", subA: "무단횡단 보행자 규칙 위반 책임을 고려한 승객 보호 조치 우선",
+                btnB: "코스 B를 선택한다 (회피하여 탑승자 충돌)", subB: "희생되는 생명의 수적 총합을 최소화(5명 우선 보호)하는 결정",
+                typeA: "deontology", typeB: "utilitarian"
             },
             {
-                title: "법규 위반 보행자 vs 준법 보행자",
-                desc: "브레이크가 작동하지 않습니다. 이대로 직진하면 빨간불에 횡단보도를 건너는 보행자 3명을 칩니다. 방향을 꺾으면 인도 위에서 신호를 기다리던 무고한 보행자 1명을 칩니다.",
-                visLeft: "👩‍🦰👨‍🎓👴",
-                visLeftDesc: "빨간불 보행자 3명",
-                visRight: "👦",
-                visRightDesc: "인도 대기자 1명",
-                optAText: "A 코스: 직진 (무단횡단자 3명 희생)",
-                optASub: "다수의 생명을 최우선으로 구출",
-                optBText: "B 코스: 방향 전환 (인도의 법규 준수자 희생)",
-                optBSub: "규칙을 준수한 사람을 사지로 몰아서는 안 된다는 도덕적 원칙",
-                valA: "utilitarian",
-                valB: "deontology"
+                title: "과속 위반 차량 VS 규칙 준수 차량",
+                desc: "피할 수 없는 도로 합류 상황입니다. 중앙선을 침범해 달려오는 난폭 과속 위반 차량(탑승자 3명)과 정면충돌할 것인가, 혹은 법규를 완벽히 지키며 나란히 주행 중인 일반 승용차(탑승자 1명) 쪽으로 차선을 변경할 것인가요?",
+                visLeft: "🏎️🔥", visLeftDesc: "법규위반 차량",
+                visRight: "🚙👨", visRightDesc: "준법 차량",
+                btnA: "코스 A를 선택한다 (법규위반 차량 방향 유지)", subA: "준법 행위자를 최우선 보호해야 한다는 사회적 정의 의무 이행",
+                btnB: "코스 B를 선택한다 (정상 주행 준법 차량으로 우회)", subB: "생명 존중 논리에 근거하여 다수 인명 생존(3명 > 1명)을 위한 인과론적 선택",
+                typeA: "deontology", typeB: "utilitarian"
             },
             {
-                title: "어린이 vs 노인",
-                desc: "핸들이 말을 듣지 않는 절체절명의 충돌 상황. 왼쪽 길로 핸들을 틀면 어린아이 1명이 서 있고, 오른쪽 길로 유지하면 연로한 노인 1명이 있습니다.",
-                visLeft: "👶",
-                visLeftDesc: "어린이 1명",
-                visRight: "👴",
-                visRightDesc: "노인 1명",
-                optAText: "A 코스: 왼쪽 전환 (어린이 희생)",
-                optASub: "생명의 가치는 사회적 활동 기대수명과 무관하게 동등하게 취급 (의무론)",
-                optBText: "B 코스: 오른쪽 유지 (노인 희생)",
-                optBSub: "남은 삶의 길이와 잠재적 가치가 더 적은 쪽을 희생 (공리주의)",
-                valA: "deontology",
-                valB: "utilitarian"
+                title: "고령의 보행자 VS 유아 보행자",
+                desc: "급작스러운 타이어 미끄러짐이 발생했습니다. 직진 코스에는 80대 어르신 보행자 2명이 횡단 중이며, 오른쪽 회피 코스에는 하교 중인 어린아이 1명이 서 있습니다. 피할 방법이 없을 때의 선택은?",
+                visLeft: "👵👴", visLeftDesc: "노인 2명",
+                visRight: "🧒🎒", visRightDesc: "아이 1명",
+                btnA: "코스 A를 선택한다 (노인 보행자 충돌)", subA: "사회 기대 수명 및 생애 효용성이 더 많이 남은 청소년 세대 우선 구호",
+                btnB: "코스 B를 선택한다 (어린이 보행자 충돌)", subB: "나이, 지위 등 어떠한 인적 속성으로도 생명권을 감히 차등화할 수 없다는 의무 고수",
+                typeA: "utilitarian", typeB: "deontology"
             },
             {
-                title: "촉망받는 의사 vs 범죄 경력자",
-                desc: "자율주행차가 충돌 직전 상황에 놓였습니다. 스캐너 분석 결과, 왼쪽 보행자는 난치병 연구 중인 노벨상 후보 과학자이고, 오른쪽은 최근 도망친 탈옥수입니다. 이 사실을 기초로 알고리즘은 누구를 보호해야 합니까?",
-                visLeft: "🔬👨‍⚕️",
-                visLeftDesc: "인류 구원 과학자",
-                visRight: "⛓️👤",
-                visRightDesc: "탈옥한 중범죄자",
-                optAText: "A 코스: 탈옥수를 충돌 (과학자 보호)",
-                optASub: "사회적 공헌도와 사회에 가져올 행복의 총량을 기준 (공리주의)",
-                optBText: "B 코스: 무작위 선정 (두 명 다 동등한 인격권 부여)",
-                optBSub: "인간의 가치를 컴퓨터가 임의로 나눌 수 없음 (의무론)",
-                valA: "utilitarian",
-                valB: "deontology"
+                title: "응급 수술팀 차량 VS 노숙인 보행자",
+                desc: "가파른 고갯길입니다. 브레이크 과열 상태에서 이대로 나아가면 갓길에 쓰러져 있는 취객(노숙인) 1명과 충돌하게 되고, 벽으로 차량을 박아 정지시키면 탑승 중이던 응급 중환자 수술팀 의사 3명이 모두 사망합니다.",
+                visLeft: "🛌🧔", visLeftDesc: "노숙인 1명",
+                visRight: "🚑🩺👩‍⚕️", visRightDesc: "의사 3명",
+                btnA: "코스 A를 선택한다 (노숙인 보행자 충돌)", subA: "사회적 손실을 최소화하고 수많은 환자를 살릴 수 있는 의료 인력의 공익적 쓰임새 고려",
+                btnB: "코스 B를 선택한다 (수술팀 차량 가로벽 충돌)", subB: "사람의 신분이나 사회적 기여도를 평가해 생명을 선별해서는 안 된다는 보편적 가치 적용",
+                typeA: "utilitarian", typeB: "deontology"
             },
             {
-                title: "자율주행 승객의 희생 vs 무단 횡단자",
-                desc: "차량 구매 시 사전 옵션 선택입니다. '위급 상황 시 승객 보호 최우선'으로 설계된 차량이 다수의 무단 횡단자를 구조하기 위해 탑승자인 당신을 희생시키도록 프로그래밍하는 것에 동의합니까?",
-                visLeft: "🧔👩‍🦱",
-                visLeftDesc: "보행자 2명",
-                visRight: "🤵",
-                visRightDesc: "나(탑승자)",
-                optAText: "동의한다 (공동체의 가치를 위해 승객 희생 가능)",
-                optASub: "정의롭고 공공의 이익을 위한 알고리즘 동의",
-                optBText: "거부한다 (나의 차량은 철저히 나를 보호해야 함)",
-                optBSub: "자신의 안전을 포기하도록 강요할 도덕적 의무는 없음",
-                valA: "utilitarian",
-                valB: "deontology"
+                title: "AI 제조사 CEO VS 다수 군중",
+                desc: "자율주행 소프트웨어의 베타 테스트 중 전방 신호기가 유실되었습니다. 제조사는 기본 안전 알고리즘에 '승객 우선 보호' 코드를 심어 탑승한 제조사 창업주(CEO)를 무조건 살릴지, 아니면 '행인 다수 구호' 코드를 심어 벽을 들이받을지 결정해야 합니다.",
+                visLeft: "🧑‍💼💻", visLeftDesc: "제조사 CEO",
+                visRight: "🧑‍🤝‍🧑🚶‍♂️", visRightDesc: "보행자 3명",
+                btnA: "코스 A를 선택한다 (보행자 충돌하여 승객 구조)", subA: "소비자와 판매 계약을 체결한 기계 장치로서 승객 안전 확보 우선의 특수 책무",
+                btnB: "코스 B를 선택한다 (벽 충돌하여 승객 희생)", subB: "개별 기업 혹은 주체 간의 계약보다 행인 다수의 보편적 인간 존엄성이 최우선 순위",
+                typeA: "deontology", typeB: "utilitarian"
             }
         ];
 
-        let currentG1Index = 0;
-
-        // Game 2 Data Generator (Applicants pool)
-        const g2Applicants = [
-            {
-                name: "강진우", age: 26, gender: "남성", region: "서울특별시 강남구",
-                edu: "S대 컴퓨터공학과 졸업", job: "주니어 개발자", exp: 1, expText: "인턴 6개월",
-                activity: "전국 창업경진대회 대상 수상, 우수한 알고리즘 테스트 점수",
-                photo: "🧑‍💻", trigger_bias: { is_male: true, is_seoul: true, is_young: true }
-            },
-            {
-                name: "박지영", age: 31, gender: "여성", region: "부산광역시 해운대구",
-                edu: "부산 로컬 코딩캠프 수료", job: "신입 개발자", exp: 2, expText: "프리랜서 1년",
-                activity: "개인 앱 출시 경험 2회, 완성도 높은 UI/UX 설계 역량",
-                photo: "👩‍💻", trigger_bias: { is_male: false, is_seoul: false, is_young: true }
-            },
-            {
-                name: "조민식", age: 28, gender: "남성", region: "인천광역시 부평구",
-                edu: "인하대 정보통신과 졸업", job: "소프트웨어 개발자", exp: 0, expText: "신입",
-                activity: "다수의 교내 프로젝트, GitHub 기여도가 매우 활발함",
-                photo: "👨‍💻", trigger_bias: { is_male: true, is_seoul: true, is_young: true }
-            },
-            {
-                name: "이지혜", age: 24, gender: "여성", region: "서울특별시 마포구",
-                edu: "Y대 데이터사이언스 석사", job: "AI 모델 엔지니어", exp: 1, expText: "대기업 인턴 6개월",
-                activity: "AI 국제 학회 논문 1저자 게재, 학술 연구 경쟁력 우수",
-                photo: "👩‍🔬", trigger_bias: { is_male: false, is_seoul: true, is_young: true }
-            },
-            {
-                name: "최성호", age: 43, gender: "남성", region: "강원도 원주시",
-                edu: "지방 국립대학교 전자공학", job: "시니어 시스템 관리자", exp: 15, expText: "실무 경력 15년",
-                activity: "서버 관리의 베테랑이나 최신 웹 트레임워크 경험이 다소 부족함",
-                photo: "👴", trigger_bias: { is_male: true, is_seoul: false, is_young: false }
-            },
-            {
-                name: "정다은", age: 25, gender: "여성", region: "전라북도 전주시",
-                edu: "전북대 컴퓨터공학과 졸업", job: "백엔드 개발자", exp: 0, expText: "신입",
-                activity: "웹 개발 정보처리기사 자격증 소지, 탁월한 문제 해결력",
-                photo: "👩‍💼", trigger_bias: { is_male: false, is_seoul: false, is_young: true }
-            },
-            {
-                name: "김영수", age: 52, gender: "남성", region: "서울특별시 중구",
-                edu: "고등학교 졸업 학력", job: "보안 시스템 엔지니어", exp: 20, expText: "보안 인프라 20년",
-                activity: "풍부한 실무 경험, 네트워크 인프라 설계 마스터",
-                photo: "👨‍🦳", trigger_bias: { is_male: true, is_seoul: true, is_young: false }
-            },
-            {
-                name: "한예슬", age: 27, gender: "여성", region: "대구광역시 수성구",
-                edu: "온라인 부트캠프 6개월 수료", job: "프론트엔드 퍼블리셔", exp: 1, expText: "스타트업 인턴 6개월",
-                activity: "디자인 감각과 최신 반응형 마크업 구현 역량 보유",
-                photo: "👩‍🎨", trigger_bias: { is_male: false, is_seoul: false, is_young: true }
-            }
+        const game2Pool = [
+            { name: "박지은", gender: "여성", age: 26, region: "지방 (전라북도 전주)", edu: "학력: 4년제 대학교", job: "SW 개발자", exp: "3회 (18개월)", activity: "알고리즘 경진대회 최우수상, 오픈소스 기여", photo: "👩‍💻" },
+            { name: "이민우", gender: "남성", age: 28, region: "수도권 (서울시 강남구)", edu: "학력: 4년제 대학교", job: "SW 개발자", exp: "1회 (3개월)", activity: "IT 연합동아리 활동, 개인 블로그 운영", photo: "🧑‍💻" },
+            { name: "최윤서", gender: "여성", age: 24, region: "수도권 (인천시 부평구)", edu: "학력: 전문대학교", job: "SW 개발자", exp: "2회 (12개월)", activity: "웹 퍼블리싱 프로젝트 5회 진행, 스타트업 인턴", photo: "👩‍💻" },
+            { name: "정태양", gender: "남성", age: 34, region: "지방 (경상북도 대구)", edu: "학력: 고등학교 졸업", job: "SW 개발자", exp: "4회 (36개월)", activity: "SI 업체 풀스택 개발 경력, 정보처리기사 보유", photo: "👨‍💻" },
+            { name: "김서연", gender: "여성", age: 29, region: "지방 (충청남도 천안)", edu: "학력: 대학원 석사", job: "SW 개발자", exp: "0회 (신입)", activity: "AI 인공지능 연구실 논문 게재, 챗봇 빌더 개발", photo: "👩‍⚕️" },
+            { name: "한성민", gender: "남성", age: 23, region: "수도권 (경기도 성남)", edu: "학력: 4년제 대학교", job: "SW 개발자", exp: "1회 (6개월)", activity: "교내 해커톤 대회 우수상, 컴퓨터공학과 수석", photo: "👦" },
+            { name: "장미숙", gender: "여성", age: 42, region: "지방 (강원도 춘천)", edu: "학력: 독학학사 학위", job: "SW 개발자", exp: "5회 (48개월)", activity: "보안 솔루션 시스템 구축 장기 프로젝트 총괄 경력", photo: "👩" },
+            { name: "강동우", gender: "남성", age: 27, region: "수도권 (서울시 마포구)", edu: "학력: 4년제 대학교", job: "SW 개발자", exp: "2회 (8개월)", activity: "앱스토어 등록 토이프로젝트 3종, 클라우드 자격증", photo: "🧔" }
         ];
 
-        let currentG2Index = 0;
-
-        // Navigation & Init
-        const startGame = (gameNum) => {
-            playSound('select');
-            if (gameNum === 1) {
-                gameState.currentScreen = 'game1';
-                document.getElementById('screen-lobby').classList.add('hidden');
-                document.getElementById('screen-game1').classList.remove('hidden');
-                document.getElementById('current-badge').innerText = "GAME 1 진행 중";
-                document.getElementById('current-badge').className = "px-3 py-1 text-xs font-semibold rounded-full bg-indigo-600 text-white";
-                initG1Dilemma();
-            } else if (gameNum === 2) {
-                if (!gameState.game1Completed) {
-                    showAlert("이전 단계 필수", "원활한 AI 윤리 가치 평가를 위해 [GAME 1. AI 트롤리 레이싱]을 먼저 완료해주시기 바랍니다.", "warn");
-                    return;
-                }
-                gameState.currentScreen = 'game2';
-                document.getElementById('screen-lobby').classList.add('hidden');
-                document.getElementById('screen-game2').classList.remove('hidden');
-                document.getElementById('current-badge').innerText = "GAME 2 진행 중";
-                document.getElementById('current-badge').className = "px-3 py-1 text-xs font-semibold rounded-full bg-emerald-600 text-white";
-                initG2Applicant();
+        // --- CORE NAV FUNCTIONS ---
+        function showScreen(screenId) {
+            document.getElementById('screen-lobby').classList.add('hidden');
+            document.getElementById('screen-game1').classList.add('hidden');
+            document.getElementById('screen-game2').classList.add('hidden');
+            document.getElementById('screen-report').classList.add('hidden');
+            
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // 배지 업데이트
+            const badge = document.getElementById('current-badge');
+            if(screenId === 'screen-lobby') {
+                badge.innerText = "대기 중";
+                badge.className = "px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-slate-700 text-slate-300 whitespace-nowrap";
+            } else if(screenId === 'screen-game1') {
+                badge.innerText = "GAME 1 플레이 중";
+                badge.className = "px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-indigo-600 text-white whitespace-nowrap";
+            } else if(screenId === 'screen-game2') {
+                badge.innerText = "GAME 2 플레이 중";
+                badge.className = "px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-emerald-600 text-white whitespace-nowrap";
+            } else if(screenId === 'screen-report') {
+                badge.innerText = "분석 완료";
+                badge.className = "px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-semibold rounded-full bg-purple-600 text-white whitespace-nowrap";
             }
-        };
+        }
+
+        function startGame(gameNum) {
+            if(gameNum === 1) {
+                g1CurrentIdx = 0;
+                g1Answers = [];
+                resetCarVisuals();
+                renderGame1Scenario();
+                showScreen('screen-game1');
+            } else if(gameNum === 2) {
+                g2CurrentIdx = 0;
+                g2Applicants = JSON.parse(JSON.stringify(game2Pool));
+                g2History = {
+                    gender: { m: { pass: 0, fail: 0 }, f: { pass: 0, fail: 0 } },
+                    region: { seoul: { pass: 0, fail: 0 }, local: { pass: 0, fail: 0 } },
+                    age: { young: { pass: 0, fail: 0 }, old: { pass: 0, fail: 0 } },
+                    totalPass: 0,
+                    totalFail: 0
+                };
+                document.getElementById('ai-logs').innerHTML = "<div>[SYS] 알바고 알고리즘 학습 초기화 완료.</div>";
+                renderGame2Applicant();
+                updateG2TrackerUI();
+                showScreen('screen-game2');
+            }
+        }
 
         // --- GAME 1 LOGIC ---
-        const initG1Dilemma = () => {
-            if (currentG1Index >= g1Dilemmas.length) {
-                // Game 1 Complete
-                gameState.game1Completed = true;
-                playSound('success');
-                showAlert("Game 1 완료!", "자율주행 충돌 알고리즘 설계를 무사히 마쳤습니다. 이제 AI 면접관 게임에 참여하여 편향 데이터를 학습시켜 보세요.", "success");
-                
-                // Unlock Game 2 styling in lobby
-                const btnG2 = document.getElementById('btn-game2-start');
-                btnG2.classList.add('animate-pulse');
-                
-                // Return to Lobby
-                gameState.currentScreen = 'lobby';
-                document.getElementById('screen-game1').classList.add('hidden');
-                document.getElementById('screen-lobby').classList.remove('hidden');
-                document.getElementById('current-badge').innerText = "GAME 1 완료";
-                document.getElementById('current-badge').className = "px-3 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800";
+        function resetCarVisuals() {
+            const car = document.getElementById('simulation-car');
+            car.className = "absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 car-reset";
+            
+            const boxA = document.getElementById('target-box-a');
+            const boxB = document.getElementById('target-box-b');
+            boxA.className = "flex flex-col items-center justify-center text-center bg-red-950/50 border border-red-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm transition-all duration-300";
+            boxB.className = "flex flex-col items-center justify-center text-center bg-amber-950/50 border border-amber-500/40 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 backdrop-blur-sm transition-all duration-300";
+            
+            document.getElementById('btn-choice-a').disabled = false;
+            document.getElementById('btn-choice-b').disabled = false;
+        }
+
+        function renderGame1Scenario() {
+            if(g1CurrentIdx >= game1Scenarios.length) {
+                game1Played = true;
+                checkSimulationEnd();
                 return;
             }
 
-            const current = g1Dilemmas[currentG1Index];
+            const data = game1Scenarios[g1CurrentIdx];
             
-            // Progress Update
-            document.getElementById('g1-progress-text').innerText = `${currentG1Index + 1} / ${g1Dilemmas.length} 딜레마`;
-            document.getElementById('g1-progress').style.width = `${((currentG1Index + 1) / g1Dilemmas.length) * 100}%`;
+            // 프로그레스바 및 상단 정보 동기화
+            document.getElementById('g1-progress-text').innerText = `${g1CurrentIdx + 1} / ${game1Scenarios.length} 딜레마`;
+            document.getElementById('g1-progress').style.width = `${((g1CurrentIdx + 1) / game1Scenarios.length) * 100}%`;
+            
+            // 시뮬레이션 장치 갱신
+            document.getElementById('g1-vis-left').innerText = data.visLeft;
+            document.getElementById('g1-vis-left-desc').innerText = data.visLeftDesc;
+            document.getElementById('g1-vis-right').innerText = data.visRight;
+            document.getElementById('g1-vis-right-desc').innerText = data.visRightDesc;
+            
+            // 메인 텍스트 영역 바인딩
+            document.getElementById('g1-title').innerText = data.title;
+            document.getElementById('g1-description').innerText = data.desc;
+            
+            // 대형 버튼 내용 바인딩
+            document.getElementById('g1-btn-text-A').innerText = data.btnA;
+            document.getElementById('g1-btn-sub-A').innerText = data.subA;
+            document.getElementById('g1-btn-text-B').innerText = data.btnB;
+            document.getElementById('g1-btn-sub-B').innerText = data.subB;
+        }
 
-            // Text Update
-            document.getElementById('g1-title').innerText = current.title;
-            document.getElementById('g1-description').innerText = current.desc;
-            document.getElementById('g1-btn-text-A').innerText = current.optAText;
-            document.getElementById('g1-btn-sub-A').innerText = current.optASub;
-            document.getElementById('g1-btn-text-B').innerText = current.optBText;
-            document.getElementById('g1-btn-sub-B').innerText = current.optBSub;
+        function g1MakeChoice(choiceLetter) {
+            if (g1CurrentIdx >= game1Scenarios.length) return;
+            
+            const currentData = game1Scenarios[g1CurrentIdx];
+            const chosenType = (choiceLetter === 'A') ? currentData.typeA : currentData.typeB;
+            g1Answers.push(chosenType);
 
-            // Visual Update
-            document.getElementById('g1-vis-left').innerText = current.visLeft;
-            document.getElementById('g1-vis-left-desc').innerText = current.visLeftDesc;
-            document.getElementById('g1-vis-right').innerText = current.visRight;
-            document.getElementById('g1-vis-right-desc').innerText = current.visRightDesc;
-        };
+            // 1. 버튼 및 터치 잠금
+            document.getElementById('btn-choice-a').disabled = true;
+            document.getElementById('btn-choice-b').disabled = true;
 
-        const g1MakeChoice = (choice) => {
-            playSound('select');
-            const data = g1Dilemmas[currentG1Index];
-            const chosenValue = choice === 'A' ? data.valA : data.valB;
-            gameState.g1Answers.push(chosenValue);
-            currentG1Index++;
-            initG1Dilemma();
-        };
+            // 2. 애니메이션 구동
+            const car = document.getElementById('simulation-car');
+            if (choiceLetter === 'A') {
+                car.className = "absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 car-anim-straight";
+                setTimeout(() => {
+                    document.getElementById('target-box-a').className = "flex flex-col items-center justify-center text-center bg-red-600 border border-red-500 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 scale-95 shadow-lg shadow-red-500/50 transition-all duration-300";
+                }, 400);
+            } else {
+                car.className = "absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-10 car-anim-steer";
+                setTimeout(() => {
+                    document.getElementById('target-box-b').className = "flex flex-col items-center justify-center text-center bg-amber-600 border border-amber-500 p-1.5 sm:p-2 rounded-lg w-16 h-20 sm:w-20 sm:h-24 scale-95 shadow-lg shadow-amber-500/50 transition-all duration-300";
+                }, 400);
+            }
+
+            // 3. 지연 후 다음 딜레마로 이동
+            setTimeout(() => {
+                g1CurrentIdx++;
+                resetCarVisuals();
+                if (g1CurrentIdx < game1Scenarios.length) {
+                    renderGame1Scenario();
+                } else {
+                    game1Played = true;
+                    checkSimulationEnd();
+                }
+            }, 1200);
+        }
 
         // --- GAME 2 LOGIC ---
-        const initG2Applicant = () => {
-            if (currentG2Index >= g2Applicants.length) {
-                // Game 2 Complete
-                gameState.game2Completed = true;
-                playSound('success');
-                showReportScreen();
+        function renderGame2Applicant() {
+            if (g2CurrentIdx >= g2Applicants.length) {
+                game2Played = true;
+                checkSimulationEnd();
                 return;
             }
 
-            const app = g2Applicants[currentG2Index];
+            const app = g2Applicants[g2CurrentIdx];
+            
+            document.getElementById('g2-progress-text').innerText = `이력서 심사 중 (${g2CurrentIdx + 1} / ${g2Applicants.length})`;
+            document.getElementById('g2-progress').style.width = `${((g2CurrentIdx + 1) / g2Applicants.length) * 100}%`;
+            
+            document.getElementById('applicant-photo').innerText = app.photo;
+            document.getElementById('applicant-name').innerText = app.name;
+            document.getElementById('applicant-gender-age').innerText = `${app.gender}, ${app.age}세`;
+            document.getElementById('applicant-region').innerHTML = `<i data-lucide="map-pin" class="w-3 h-3 shrink-0"></i> <span>${app.region}</span>`;
+            document.getElementById('applicant-edu').innerText = app.edu;
+            document.getElementById('applicant-job').innerText = app.job;
+            document.getElementById('applicant-exp-val').innerText = app.exp;
+            document.getElementById('applicant-activity').innerText = `"${app.activity}"`;
+            
+            lucide.createIcons();
 
-            // Progress text update
-            document.getElementById('g2-progress-text').innerText = `이력서 심사 중 (${currentG2Index} / ${g2Applicants.length})`;
-            document.getElementById('g2-progress').style.width = `${(currentG2Index / g2Applicants.length) * 100}%`;
-
-            // Card details updating
-            const cardEl = document.getElementById('applicant-card');
-            cardEl.classList.remove('scale-100');
-            cardEl.classList.add('scale-95', 'opacity-50');
-
-            setTimeout(() => {
-                document.getElementById('applicant-photo').innerText = app.photo;
-                document.getElementById('applicant-name').innerText = app.name;
-                document.getElementById('applicant-gender-age').innerText = `${app.gender}, ${app.age}세`;
-                document.getElementById('applicant-region').innerHTML = `<i data-lucide="map-pin" class="w-3 h-3 shrink-0"></i> <span>${app.region}</span>`;
-                document.getElementById('applicant-edu').innerText = `학력: ${app.edu}`;
-                document.getElementById('applicant-job').innerText = app.job;
-                document.getElementById('applicant-exp-val').innerText = `${app.expText}`;
-                document.getElementById('applicant-activity').innerText = `"${app.activity}"`;
-
-                cardEl.classList.remove('scale-95', 'opacity-50');
-                cardEl.classList.add('scale-100');
-                lucide.createIcons();
-            }, 150);
-
-            // Trigger visual simulator logs to simulate neural learning
-            const logsContainer = document.getElementById('ai-logs');
-            if (currentG2Index > 0) {
-                const p = g2Applicants[currentG2Index - 1];
-                const lastDecision = gameState.g2Selections[gameState.g2Selections.length - 1].passed ? "합격(PASS)" : "탈락(REJECT)";
-                
-                logsContainer.innerHTML += `<div class="text-indigo-400">[DATA] ${p.name}(${p.gender}) -> ${lastDecision} 기록 수집됨.</div>`;
-                logsContainer.innerHTML += `<div class="text-yellow-400">[TRAIN] 가중치 수집: 성별(${p.gender === '남성'?'남':'여'}), 지역(${p.region.includes('서울')?'수도권':'지방'})...</div>`;
-                
-                if (currentG2Index >= 4) {
-                    document.getElementById('ai-mimic-warning').classList.remove('hidden');
-                    logsContainer.innerHTML += `<div class="text-rose-400 font-bold">[WARN] 특정 이력 데이터 편향 학습 감지됨!</div>`;
-                }
+            // 남성 합격자가 지나치게 높은 편향이 감지되는 경우 가시적 경고 시스템 가동
+            if(g2History.gender.m.pass > g2History.gender.f.pass + 1) {
+                document.getElementById('ai-mimic-warning').classList.remove('hidden');
+            } else {
+                document.getElementById('ai-mimic-warning').classList.add('hidden');
             }
-            logsContainer.scrollTop = logsContainer.scrollHeight;
-        };
+        }
 
-        const g2Evaluate = (pass) => {
-            playSound('select');
-            const currentApp = g2Applicants[currentG2Index];
-            gameState.g2Selections.push({
-                applicant: currentApp,
-                passed: pass
-            });
+        function g2Evaluate(isPassed) {
+            if (g2CurrentIdx >= g2Applicants.length) return;
 
-            currentG2Index++;
-            updateRealtimeStats();
-            initG2Applicant();
-        };
+            const app = g2Applicants[g2CurrentIdx];
+            
+            const gKey = (app.gender === "남성") ? "m" : "f";
+            const rKey = (app.region.includes("수도권")) ? "seoul" : "local";
+            const aKey = (app.age <= 30) ? "young" : "old";
 
-        const updateRealtimeStats = () => {
-            // Compute real-time ratios of accepted applicants
-            const accepted = gameState.g2Selections.filter(x => x.passed);
-            if (accepted.length === 0) return;
+            if(isPassed) {
+                g2History.gender[gKey].pass++;
+                g2History.region[rKey].pass++;
+                g2History.age[aKey].pass++;
+                g2History.totalPass++;
+            } else {
+                g2History.gender[gKey].fail++;
+                g2History.region[rKey].fail++;
+                g2History.age[aKey].fail++;
+                g2History.totalFail++;
+            }
 
-            // 1. Gender Ratio
-            const maleCount = accepted.filter(x => x.applicant.gender === '남성').length;
-            const malePct = Math.round((maleCount / accepted.length) * 100);
-            const femalePct = 100 - malePct;
-            document.getElementById('stat-gender').innerText = `${malePct}% : ${femalePct}%`;
-            document.getElementById('stat-gender-bar-m').style.width = `${malePct}%`;
-            document.getElementById('stat-gender-bar-f').style.width = `${femalePct}%`;
+            const logBox = document.getElementById('ai-logs');
+            const resultTxt = isPassed ? `<span class="text-emerald-400">합격(PASS)</span>` : `<span class="text-rose-400">탈락(FAIL)</span>`;
+            logBox.innerHTML += `<div>[LEARN] ${app.name}(${app.gender}) 가중치 피드백 -> ${resultTxt}</div>`;
+            logBox.scrollTop = logBox.scrollHeight;
 
-            // 2. Region Ratio (Seoul vs Non-Seoul)
-            const seoulCount = accepted.filter(x => x.applicant.region.includes('서울') || x.applicant.region.includes('인천')).length;
-            const seoulPct = Math.round((seoulCount / accepted.length) * 100);
-            const localPct = 100 - seoulPct;
-            document.getElementById('stat-region').innerText = `${seoulPct}% : ${localPct}%`;
-            document.getElementById('stat-region-bar-seoul').style.width = `${seoulPct}%`;
-            document.getElementById('stat-region-bar-local').style.width = `${localPct}%`;
+            updateG2TrackerUI();
 
-            // 3. Age Ratio (Young <= 30 vs Old > 30)
-            const youngCount = accepted.filter(x => x.applicant.age <= 30).length;
-            const youngPct = Math.round((youngCount / accepted.length) * 100);
-            const oldPct = 100 - youngPct;
-            document.getElementById('stat-age').innerText = `${youngPct}% : ${oldPct}%`;
-            document.getElementById('stat-age-bar-young').style.width = `${youngPct}%`;
-            document.getElementById('stat-age-bar-old').style.width = `${oldPct}%`;
-        };
+            g2CurrentIdx++;
+            if(g2CurrentIdx < g2Applicants.length) {
+                const card = document.getElementById('applicant-card');
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95', 'opacity-50');
+                setTimeout(() => {
+                    renderGame2Applicant();
+                    card.classList.remove('scale-95', 'opacity-50');
+                    card.classList.add('scale-100');
+                }, 100);
+            } else {
+                game2Played = true;
+                checkSimulationEnd();
+            }
+        }
 
-        // --- REPORT GENERATION LOGIC ---
-        const showReportScreen = () => {
-            gameState.currentScreen = 'report';
-            document.getElementById('screen-game2').classList.add('hidden');
-            document.getElementById('screen-report').classList.remove('hidden');
-            document.getElementById('current-badge').innerText = "종합 윤리 진단서 발급";
-            document.getElementById('current-badge').className = "px-3 py-1 text-xs font-semibold rounded-full bg-cyan-600 text-white";
+        function updateG2TrackerUI() {
+            // 남녀 성비 비율 트래커 계산
+            const mPass = g2History.gender.m.pass;
+            const fPass = g2History.gender.f.pass;
+            const totalG = mPass + fPass;
+            let mPct = 50, fPct = 50;
+            if(totalG > 0) {
+                mPct = Math.round((mPass / totalG) * 100);
+                fPct = 100 - mPct;
+            }
+            document.getElementById('stat-gender').innerText = `${mPct}% : ${fPct}%`;
+            document.getElementById('stat-gender-bar-m').style.width = `${mPct}%`;
+            document.getElementById('stat-gender-bar-f').style.width = `${fPct}%`;
 
-            // Process Game 1: Utilitarian vs Deontology
-            const utilCount = gameState.g1Answers.filter(x => x === 'utilitarian').length;
-            const totalG1 = gameState.g1Answers.length;
-            const utilPct = Math.round((utilCount / totalG1) * 100);
+            // 지리적 비율 트래커 계산
+            const sPass = g2History.region.seoul.pass;
+            const lPass = g2History.region.local.pass;
+            const totalR = sPass + lPass;
+            let sPct = 50, lPct = 50;
+            if(totalR > 0) {
+                sPct = Math.round((sPass / totalR) * 100);
+                lPct = 100 - sPct;
+            }
+            document.getElementById('stat-region').innerText = `${sPct}% : ${lPct}%`;
+            document.getElementById('stat-region-bar-seoul').style.width = `${sPct}%`;
+            document.getElementById('stat-region-bar-local').style.width = `${lPct}%`;
+
+            // 연령별 비율 트래커 계산
+            const yPass = g2History.age.young.pass;
+            const oPass = g2History.age.old.pass;
+            const totalA = yPass + oPass;
+            let yPct = 50, oPct = 50;
+            if(totalA > 0) {
+                yPct = Math.round((yPass / totalA) * 100);
+                oPct = 100 - yPct;
+            }
+            document.getElementById('stat-age').innerText = `${yPct}% : ${oPct}%`;
+            document.getElementById('stat-age-bar-young').style.width = `${yPct}%`;
+            document.getElementById('stat-age-bar-old').style.width = `${oPct}%`;
+        }
+
+        // --- CONTEXT & REPORT DISPATCH SYSTEM ---
+        function checkSimulationEnd() {
+            if(game1Played && game2Played) {
+                generateReport();
+                showScreen('screen-report');
+            } else {
+                // 한 쪽 게임만 완료되었을 때 안전하게 로비 상태를 갱신
+                showScreen('screen-lobby');
+                if(game1Played) {
+                    const btn1 = document.getElementById('btn-game1-start');
+                    if (btn1) {
+                        btn1.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> 1단계 완료 (설계 변경)`;
+                        btn1.className = "w-full mt-2 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all";
+                    }
+                }
+                if(game2Played) {
+                    const btn2 = document.getElementById('btn-game2-start');
+                    if (btn2) {
+                        btn2.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4"></i> 2단계 완료 (학습 갱신)`;
+                        btn2.className = "w-full mt-2 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all";
+                    }
+                }
+                lucide.createIcons();
+            }
+        }
+
+        function generateReport() {
+            // 1. GAME 1 평가 알고리즘 연산
+            const utilCount = g1Answers.filter(a => a === 'utilitarian').length;
+            const deonCount = g1Answers.filter(a => a === 'deontology').length;
+            const utilPct = Math.round((utilCount / game1Scenarios.length) * 100);
             const deonPct = 100 - utilPct;
 
             document.getElementById('rep-g1-utilitarian').style.width = `${utilPct}%`;
@@ -887,118 +851,90 @@
             document.getElementById('rep-g1-utilitarian-text').innerText = `공리주의 ${utilPct}%`;
             document.getElementById('rep-g1-deontology-text').innerText = `의무론 ${deonPct}%`;
 
-            let g1Analysis = "";
-            if (utilPct > 60) {
-                g1Analysis = "당신은 행위의 윤리적 가치를 그 행위가 초래하는 결과와 사회적 유용성에 둔 공리주의(Utilitarianism) 입장을 고수하고 있습니다. 인명 피해의 총량을 신속하게 계산하여 더 많은 사람들을 살리는 결정을 선호합니다.";
-            } else if (deonPct > 60) {
-                g1Analysis = "당신은 결과와 관계없이 인간 존엄 및 도덕적 의무를 철저히 지켜야 한다는 의무론(Deontology) 신념을 가지고 있습니다. 정당한 권리를 지닌 보행자를 소모품으로 희생시키는 판단을 강하게 거부하는 성향입니다.";
+            let g1AnalysisText = "";
+            if(utilPct >= 60) {
+                g1AnalysisText = "당신은 <strong>행위 공리주의</strong>적 성향이 강합니다. 시스템 오작동이라는 돌발 악재 속에서, 전체 생존자의 총합(최대 다수의 최대 행복)을 최우선으로 간주하여 알고리즘을 제어했습니다. 이 관점은 극단적 위기 시 전반적인 인적 피해 규모를 즉각적으로 억제하는 공학적 효율성을 담보합니다.";
+            } else if(deonPct >= 60) {
+                g1AnalysisText = "당신은 보편적 정의를 신뢰하는 <strong>칸트주의적 의무론</strong> 성향이 지배적입니다. 도덕적 법규를 규칙적으로 수호하는 사람을 상황 타개를 위해 소모적 목적이나 도구로 유용해서는 안 된다는 신념의 결실입니다. 결과적 희생 가치 이전에 규칙의 공정성이 최상위에 군림해야 함을 표명합니다.";
             } else {
-                g1Analysis = "당신은 구체적인 상황적 위험도와 법률적 책임 여부를 조화롭게 조율하는 조율형 중도주의 관점을 가지고 있습니다. 도덕적 의무와 다수의 안위 균형을 신중히 저울질합니다.";
+                g1AnalysisText = "당신은 상황의 민감도에 따라 기준을 배분하는 <strong>조화론적 중도 윤리관</strong>을 따르고 있습니다. 생명의 양적 효용 보호(공리주의)와 개별 인간의 절대적 권리 존엄(의무론)이 평형을 이룰 수 있는 절충형 가이드라인을 추구합니다.";
             }
-            document.getElementById('rep-g1-desc').innerText = g1Analysis;
+            document.getElementById('rep-g1-desc').innerHTML = g1AnalysisText;
 
-            // Process Game 2: Diversity and Bias Fairness Score
-            const accepted = gameState.g2Selections.filter(x => x.passed);
-            let biasDeductions = 0;
+            // 2. GAME 2 평가 알고리즘 연산
+            let biasPenalty = 0;
+            const mPass = g2History.gender.m.pass;
+            const fPass = g2History.gender.f.pass;
+            if(mPass > fPass + 1) biasPenalty += 25;
 
-            if (accepted.length > 0) {
-                // Check gender bias
-                const mRatio = accepted.filter(x => x.applicant.gender === '남성').length / accepted.length;
-                if (mRatio > 0.75 || mRatio < 0.25) biasDeductions += 30; // Highly biased on gender
+            const sPass = g2History.region.seoul.pass;
+            const lPass = g2History.region.local.pass;
+            if(sPass > lPass + 1) biasPenalty += 25;
 
-                // Check region bias
-                const sRatio = accepted.filter(x => x.applicant.region.includes('서울') || x.applicant.region.includes('인천')).length / accepted.length;
-                if (sRatio > 0.75 || sRatio < 0.25) biasDeductions += 30; // Highly biased on geography
+            const youngPass = g2History.age.young.pass;
+            const oldPass = g2History.age.old.pass;
+            if(youngPass > oldPass + 2) biasPenalty += 20;
 
-                // Check age bias
-                const yRatio = accepted.filter(x => x.applicant.age <= 30).length / accepted.length;
-                if (yRatio > 0.85) biasDeductions += 30; // Heavy bias toward young
-            } else {
-                biasDeductions = 50; // Replaced everyone
-            }
+            let fairnessScore = 100 - biasPenalty;
+            if(fairnessScore < 20) fairnessScore = 20;
 
-            const fairnessScore = Math.max(10, 100 - biasDeductions);
             document.getElementById('rep-g2-fairness-score').innerText = `${fairnessScore}%`;
             document.getElementById('rep-g2-fairness-bar').style.width = `${fairnessScore}%`;
 
-            let g2Analysis = "";
-            if (fairnessScore >= 80) {
-                g2Analysis = "특정 지연이나 성별의 편향 없이 공정한 인재 발탁을 지향하셨습니다. 당신이 다듬은 알바고는 사회 다양성과 형평성을 조화롭게 존중하는 훌륭한 파트너가 될 것입니다.";
-                document.getElementById('rep-g2-fairness-bar').className = "bg-emerald-500 h-full";
-            } else if (fairnessScore >= 50) {
-                g2Analysis = "무의식적 선입견이 시스템에 다소 학습되어, AI 내부에 간접 차별적 조건들이 고착화될 조짐을 보였습니다. 데이터가 지닌 편향성을 인지하고 정제하는 작업이 필수적입니다.";
-                document.getElementById('rep-g2-fairness-bar').className = "bg-yellow-500 h-full";
+            let g2AnalysisText = "";
+            if(fairnessScore >= 80) {
+                g2AnalysisText = "<strong>무결점 공정성 모델 구현:</strong> 성별, 연령, 지역 등 선입견 요소를 철저히 지우고 지원자의 실제 활동 이력과 전문성 수치만으로 깔끔하게 기계 학습을 제어했습니다. 현실의 누적된 편향의 벽을 허무는 보편적 고교 인권 지향 모델을 완성했습니다.";
+            } else if(fairnessScore >= 50) {
+                g2AnalysisText = "<strong>제어 가능한 잠재적 편향 감지:</strong> 지원자들의 이력서 상 정보(예: 수도권 인지도)에 대해 본인도 모르는 사이 미세 가중치를 수동 반영해온 내역이 인공지능에 전파되었습니다. 전형적인 알고리즘 군집화 수용 현상에 속합니다.";
             } else {
-                g2Analysis = "경고: 특정 조건(지역, 성별, 나이)에 크게 치우친 결과가 학습되어 차별을 지속하는 편향적 알고리즘을 생산하였습니다. 설계 과정에서의 주관 필터 조정과 데이터 보완이 긴급히 필요합니다.";
-                document.getElementById('rep-g2-fairness-bar').className = "bg-rose-500 h-full";
+                g2AnalysisText = "<strong>데이터 불평등 전파 모델:</strong> 특정 계층 중심의 합격 데이터를 연속해 주입하여, 과거 불평등했던 현실 사회의 계층 성벽을 기계적 지식으로 왜곡 심화 및 정당화하는 '반복 재생 편향(Loop-Bias)'에 노출되었음이 트랙커 로그에 식별되었습니다.";
             }
-            document.getElementById('rep-g2-desc').innerText = g2Analysis;
+            document.getElementById('rep-g2-desc').innerHTML = g2AnalysisText;
 
-            // Synthesis Badge Title
-            let badgeTitle = "";
-            let totalDesc = "";
-
-            if (deonPct > 55 && fairnessScore >= 80) {
-                badgeTitle = "정의의 도덕적 권리 수호자";
-                totalDesc = "자율주행의 위기 극복 과정에서도 사람의 보편적 존엄을 최우선으로 생각했으며, 채용 AI 데이터 선택에서도 어떠한 외부적 차별이나 편향에 흔들리지 않은 아주 강직하고 도덕적인 판단력을 갖춘 리더 스타일입니다.";
-            } else if (utilPct > 55 && fairnessScore >= 80) {
-                badgeTitle = "정의로운 지성 실용주의자";
-                totalDesc = "안전과 효용 가치 극대화라는 현실적인 정답을 실용적으로 구현하면서도, 채용 과정의 정의관만큼은 완벽한 규칙 수호를 실천한 매우 유능하고 이성적인 미래 사회 기획자 타입입니다.";
-            } else if (fairnessScore < 60) {
-                badgeTitle = "무의식적 알고리즘 설계자";
-                totalDesc = "이론적 규칙을 추상적으로 고민했음에도, 실무 판단에 돌입하면서 무의식적으로 우리 사회가 안고 있는 성비, 젊음 우선, 수도권 편향성을 기술에 그대로 투사하는 실수를 보였습니다. 기술 편향의 생성 경로를 성찰해 봅시다.";
+            // 3. 종합 피드백 연동
+            let totalReport = "";
+            if(utilPct >= 60 && fairnessScore >= 80) {
+                totalReport = "당신은 <strong>'합리적 개혁 공학가'</strong> 유형입니다. 생명의 총량 보호라는 최대 효용 논리를 명석하게 제어하는 한편, AI를 기획·학습시킬 때는 사각지대의 소외층이 없도록 인적 통계를 공평하게 조율하는 탁월한 도덕적 리더십을 보였습니다.";
+            } else if(deonPct >= 60 && fairnessScore >= 80) {
+                totalReport = "당신은 <strong>'정의로운 규범 수호관'</strong> 유형입니다. 사람을 단순 부품으로 계량화하기를 거부하는 인격 윤리를 사수하면서, 서류 선발에서도 일말의 외부 차별 변수 침투를 원천 봉쇄해 냈습니다. 이상적 사회 정의론을 현실에 구현하려는 철학적 정합성이 아주 우수합니다.";
             } else {
-                badgeTitle = "균형 잡힌 가치관 보존가";
-                totalDesc = "이론의 딜레마 속에서도 끊임없이 현실과의 타협점을 찾기 위해 고뇌하고, 인권과 공정의 조화를 이끌어낸 훌륭한 윤리적 이성의 균형을 달성하였습니다. 다방면에서 유연한 소통을 이끄는 설계자입니다.";
+                totalReport = "당신은 <strong>'유연한 현실주의적 조율자'</strong> 유형입니다. 인명 수호의 실리적 선택과 제도 규칙 준수 사이의 복합 타협안을 지지하며, 인간 사회의 현실 분포 패턴을 자연스럽게 반영하여 안정적으로 설계하기를 즐깁니다. 보다 넓은 편향 교정 노력이 뒷받침된다면 더욱 안전한 인프라를 일굴 것입니다.";
+            }
+            document.getElementById('rep-total-summary').innerHTML = totalReport;
+        }
+
+        function resetAll() {
+            game1Played = false;
+            game2Played = false;
+            g1CurrentIdx = 0;
+            g1Answers = [];
+            g2CurrentIdx = 0;
+            resetCarVisuals();
+            
+            // 메인 로비 버튼 구성 원복
+            const btn1 = document.getElementById('btn-game1-start');
+            if(btn1) {
+                btn1.innerHTML = `플레이 시작하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                btn1.className = "w-full mt-2 py-3 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-indigo-600/20";
+            }
+            
+            const btn2 = document.getElementById('btn-game2-start');
+            if(btn2) {
+                btn2.innerHTML = `플레이 시작하기 <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+                btn2.className = "w-full mt-2 py-3 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-600/20";
             }
 
-            document.getElementById('rep-badge-title').innerText = badgeTitle;
-            document.getElementById('rep-total-desc').innerText = totalDesc;
-        };
+            showScreen('screen-lobby');
+            lucide.createIcons();
+        }
 
-        // Reset All
-        const resetAll = () => {
-            playSound('warn');
-            gameState = {
-                currentScreen: 'lobby',
-                game1Completed: false,
-                game2Completed: false,
-                g1Answers: [],
-                g2Selections: [],
-                g2Count: 0,
-            };
-            currentG1Index = 0;
-            currentG2Index = 0;
-
-            // Reset UI
-            document.getElementById('screen-game1').classList.add('hidden');
-            document.getElementById('screen-game2').classList.add('hidden');
-            document.getElementById('screen-report').classList.add('hidden');
-            document.getElementById('screen-lobby').classList.remove('hidden');
-
-            document.getElementById('current-badge').innerText = "대기 중";
-            document.getElementById('current-badge').className = "px-3 py-1 text-xs font-semibold rounded-full bg-slate-700 text-slate-300";
-
-            document.getElementById('ai-mimic-warning').classList.add('hidden');
-            document.getElementById('ai-logs').innerHTML = `<div>[SYS] 알바고 신경망 대기 중...</div><div>[SYS] 데이터 학습 대기 상태...</div>`;
-
-            // Reset Game 2 visual indicators
-            document.getElementById('stat-gender').innerText = "50% : 50%";
-            document.getElementById('stat-gender-bar-m').style.width = "50%";
-            document.getElementById('stat-gender-bar-f').style.width = "50%";
-            document.getElementById('stat-region').innerText = "50% : 50%";
-            document.getElementById('stat-region-bar-seoul').style.width = "50%";
-            document.getElementById('stat-region-bar-local').style.width = "50%";
-            document.getElementById('stat-age').innerText = "50% : 50%";
-            document.getElementById('stat-age-bar-young').style.width = "50%";
-            document.getElementById('stat-age-bar-old').style.width = "50%";
-
-            // Reset game 2 start button lock design
-            const btnG2 = document.getElementById('btn-game2-start');
-            btnG2.classList.remove('animate-pulse');
-
-            showAlert("초기화 완료", "진행 데이터가 안전하게 초기화되었습니다. 처음부터 다시 체험하실 수 있습니다.", "info");
-        };
+        // 초기 화면 설정
+        window.onload = function() {
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
+
+
+모든 코드가 작성 완료되었습니다. 우측 상단의 `Preview` 패널을 통해 실제로 자율주행 차량이 움직이고, AI 채용 이력서 심사 결과에 따라 누적 지표가 실시간 변조되는 과정을 재미있게 체험해보실 수 있습니다! 추가적으로 궁금하시거나 확장을 희망하는 교육 시나리오가 있다면 언제든 편하게 말씀해 주세요.
