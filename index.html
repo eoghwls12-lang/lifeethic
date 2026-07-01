@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>나만의 게임실</title>
-  <!-- FontAwesome 아이콘 추가 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     /* 전체 배경과 폰트 설정 */
@@ -177,7 +176,7 @@
       background-color: #047857;
     }
 
-    /* [신규 추가] 인공지능 윤리 전용 카드 스타일 (퍼플/딥 인디고 테마) */
+    /* 인공지능 윤리 전용 카드 스타일 (퍼플/딥 인디고 테마) */
     .card.ai::before {
       background: #8b5cf6;
     }
@@ -193,6 +192,23 @@
     .card.ai .btn:hover {
       background-color: #5b21b6;
     }
+
+    /* 딜레마 데이터 랩 전용 카드 스타일 (블랙/네오 브루탈리즘 테마) */
+    .card.dilemma::before {
+      background: #000000;
+    }
+    .card.dilemma .badge {
+      color: #000000;
+    }
+    .card.dilemma:hover::before {
+      background: #334155;
+    }
+    .card.dilemma .btn {
+      background-color: #000000;
+    }
+    .card.dilemma .btn:hover {
+      background-color: #334155;
+    }
   </style>
 </head>
 <body>
@@ -202,7 +218,6 @@
 
   <div class="grid-container">
     
-    <!-- Game 01 -->
     <div class="card">
       <div class="badge"><i class="fa-solid fa-scale-unbalanced-flip"></i> 01 · 생활과 윤리</div>
       <div class="title">시민불복종 게임</div>
@@ -210,7 +225,6 @@
       <a href="game1.html" class="btn">시작하기</a>
     </div>
 
-    <!-- Game 02 -->
     <div class="card">
       <div class="badge"><i class="fa-solid fa-circle-question"></i> 02 · 사회 윤리</div>
       <div class="title">사회계약론, 시민불복종 내용 확인 퀴즈</div>
@@ -218,7 +232,6 @@
       <a href="game2.html" class="btn">시작하기</a>
     </div>
 
-    <!-- Game 03 -->
     <div class="card">
       <div class="badge"><i class="fa-solid fa-eye-slash"></i> 03 · 정의론</div>
       <div class="title">무지의 베일 : 사회 설계자</div>
@@ -226,7 +239,6 @@
       <a href="game3.html" class="btn">시작하기</a>
     </div>
 
-    <!-- Game 04 (New!) -->
     <div class="card new">
       <div class="new-label">HOT</div>
       <div class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i> 04 · 응용 윤리</div>
@@ -235,7 +247,6 @@
       <a href="game4.html" class="btn">시작하기</a>
     </div>
 
-    <!-- Game 05: 마인드맵 설명서 -->
     <div class="card guide">
       <div class="badge"><i class="fa-solid fa-map"></i> 05 · 구조도 활동</div>
       <div class="title">생각 지도(마인드맵) 그리기 가이드</div>
@@ -243,7 +254,6 @@
       <a href="game5.html" class="btn">가이드 열기</a>
     </div>
 
-    <!-- Game 06: 환경 윤리 -->
     <div class="card eco">
       <div class="badge"><i class="fa-solid fa-leaf"></i> 06 · 환경 윤리</div>
       <div class="title">생태 발자국 탐험대</div>
@@ -251,12 +261,25 @@
       <a href="game6.html" class="btn">탐험 시작</a>
     </div>
 
-    <!-- [신규 추가] Game 07: 인공지능 윤리 -->
     <div class="card ai">
       <div class="badge"><i class="fa-solid fa-brain"></i> 07 · 과학 기술 윤리</div>
       <div class="title">인공지능 윤리 시뮬레이터</div>
       <div class="desc">자율주행 자동차의 트롤리 딜레마를 체험하고, 채용 심사 인공지능을 직접 훈련시키며 나의 가치 지표를 분석해봅니다.</div>
       <a href="game7.html" class="btn">시뮬레이션 시작</a>
+    </div>
+
+    <div class="card dilemma">
+      <div class="badge"><i class="fa-solid fa-route"></i> 08 · 진로·창체 탐구</div>
+      <div class="title">딜레마 밸런스 프로젝트 가이드</div>
+      <div class="desc">희망 전공 지식과 윤리가 충돌하는 5:5 밸런스 게임을 기획하고 데이터를 정량 분석하여 나만의 세특을 완성하는 가이드입니다.</div>
+      <a href="dilema_a.html" class="btn">가이드 열기</a>
+    </div>
+
+    <div class="card dilemma">
+      <div class="badge"><i class="fa-solid fa-database"></i> 09 · 데이터베이스</div>
+      <div class="title">전공 계열별 가치 충돌 사례집</div>
+      <div class="desc">인문, 경영, IT, 보건 등 각 전공별 최적의 가치 갈등 사례와 학생부 기록용 핵심 교과 연계 키워드를 모아둔 요약집입니다.</div>
+      <a href="dilema_ex.html" class="btn">사례집 열기</a>
     </div>
 
   </div>
