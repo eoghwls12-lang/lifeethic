@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilemma Data Lab - 프로젝트 가이드</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Noto Sans KR (Minimal Gothic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Custom High-Contrast Styling for Minimal Theme */
+        .text-stroke {
+            -webkit-text-stroke: 1px black;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-white text-black antialiased">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-50 w-full border-b-2 border-black bg-white/95 backdrop-blur-md">
+        <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+            <div class="flex items-center gap-2.5">
+                <div class="flex h-7 w-7 items-center justify-center bg-black text-white rounded-none">
+                    <i data-lucide="scale" class="h-4 w-4"></i>
+                </div>
+                <div>
+                    <span class="text-base font-black tracking-tight uppercase">Dilemma Data Lab</span>
+                    <span class="hidden sm:inline-block ml-2 border border-black px-1.5 py-0.5 text-[9px] font-black tracking-widest bg-black text-white">CORE</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center gap-8 text-xs font-black tracking-wider uppercase">
+                <a href="#why-project" class="hover:underline underline-offset-4">활동 의의</a>
+                <a href="#timeline" class="hover:underline underline-offset-4">상세 진행 표</a>
+                <a href="#examples" class="hover:underline underline-offset-4">전공별 예시</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="border-b border-black py-28 bg-white">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 text-center">
+            <span class="inline-flex items-center gap-1 border border-black px-3 py-1 text-[10px] font-black tracking-wider uppercase mb-6 bg-slate-50">
+                <i data-lucide="sparkles" class="h-3.5 w-3.5"></i>
+                2026학년도 고교 진로·창체 탐구 모델
+            </span>
+            <h1 class="text-4xl font-black tracking-tighter sm:text-5xl lg:text-6xl leading-none">
+                내가 설계하는 기술,<br class="sm:hidden"> 내가 책임지는 미래
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                희망 전공 지식과 인문학적 윤리가 부딪히는 '5:5 밸런스 게임'을 제작하고,<br class="hidden sm:inline">
+                대중의 가치 선택 데이터를 정량적으로 수집 및 분석하여 독창적인 세특을 완성하는 탐구 활동입니다.
+            </p>
+            <div class="mt-10 flex flex-wrap justify-center gap-3">
+                <a href="#timeline" class="inline-flex items-center gap-2 bg-black px-6 py-3 text-xs font-black text-white hover:bg-slate-800 transition-colors">
+                    <span>수업 단계 가이드</span>
+                    <i data-lucide="arrow-down" class="h-3.5 w-3.5"></i>
+                </a>
+                <a href="#examples" class="inline-flex items-center gap-2 border border-black px-6 py-3 text-xs font-black hover:bg-slate-50 transition-colors">
+                    <span>전공별 충돌 예시</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 1: WHY THIS PROJECT -->
+    <section id="why-project" class="py-20 border-b border-black mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="mb-16">
+            <span class="text-[10px] font-black uppercase tracking-widest block mb-1 text-slate-400">Objectives</span>
+            <h2 class="text-2xl font-black sm:text-3xl">무엇을 배우고 성장할 수 있을까요?</h2>
+            <p class="text-xs text-slate-500 mt-1">단순한 지식 요약을 넘어 입학사정관이 주목하는 3대 핵심 역량을 체득합니다.</p>
+        </div>
+
+        <div class="grid gap-12 md:grid-cols-3">
+            <!-- Cap 1 -->
+            <div class="border-t-2 border-black pt-6">
+                <div class="mb-4 text-black">
+                    <i data-lucide="brain-circuit" class="h-5 w-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-black mb-2 uppercase tracking-wide">AI 리터러시 (AI와의 협업)</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    AI가 생성한 기본 시나리오의 맹점을 찾아내고, 원하는 5:5 밸런스를 만들기 위해 질문을 검증 및 튜닝하며 인공지능을 도구적으로 주도하는 능력을 입증합니다.
+                </p>
+            </div>
+
+            <!-- Cap 2 -->
+            <div class="border-t-2 border-black pt-6">
+                <div class="mb-4 text-black">
+                    <i data-lucide="scale" class="h-5 w-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-black mb-2 uppercase tracking-wide">융합적 비판 사고 (인간성 성찰)</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    단순한 기술 예찬을 넘어 효율성과 인간의 존엄, 기업의 이윤과 공동체의 안전이 상충할 때 발생하는 그림자를 다각도로 들여다보며 비판적인 시야를 기릅니다.
+                </p>
+            </div>
+
+            <!-- Cap 3 -->
+            <div class="border-t-2 border-black pt-6">
+                <div class="mb-4 text-black">
+                    <i data-lucide="bar-chart-3" class="h-5 w-5"></i>
+                </div>
+                <h3 class="text-sm font-black text-black mb-2 uppercase tracking-wide">데이터 문해력 (정량 분석)</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    단상에 그치는 설득이 아닌 동료들로부터 직접 수집한 실시간 통계 차트를 기반으로 대중의 가치 인식 흐름을 파악하여 팩트 기반의 논리 보고서를 작성합니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: DETAIL TIMELINE TABLE (HIGH VISIBILITY) -->
+    <section id="timeline" class="py-20 border-b border-black bg-white">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6">
+            <div class="mb-12">
+                <span class="text-[10px] font-black uppercase tracking-widest block mb-1 text-slate-400">Class Process Table</span>
+                <h2 class="text-2xl font-black sm:text-3xl">프로젝트 상세 진행 가이드</h2>
+                <p class="text-xs text-slate-500 mt-1">3차시 동안 이루어지는 학생들의 구체적인 활동 프로세스를 명확하게 설계한 타임라인입니다.</p>
+            </div>
+
+            <!-- RESPONSIVE TABLE CONTAINER -->
+            <div class="overflow-x-auto border-t-2 border-b-2 border-black">
+                <table class="w-full text-left border-collapse text-xs min-w-[800px]">
+                    <thead>
+                        <tr class="border-b border-black bg-slate-50 font-black">
+                            <th class="p-4 w-1/12 text-center border-r border-slate-200">차시</th>
+                            <th class="p-4 w-2/12 border-r border-slate-200">단계 및 세부 흐름</th>
+                            <th class="p-4 w-5/12 border-r border-slate-200">주요 활동 내용 (Action)</th>
+                            <th class="p-4 w-2/12 border-r border-slate-200">학생 산출물</th>
+                            <th class="p-4 w-2/12">핵심 관찰 및 평가 지표</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <!-- Class 1 -->
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 text-center font-black border-r border-slate-200 bg-slate-50/50" rowspan="3">
+                                1차시<br>
+                                <span class="text-[10px] text-slate-400 font-normal">설계</span>
+                            </td>
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                01. 탐구 주제 선정<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(00' ~ 10')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                희망 전공 분야의 유력 핵심 기술(A)과 이와 강하게 충돌하는 보편적 사회·윤리 가치(B)를 요약표에서 직접 매칭하여 명확한 가치 대립각을 설정함.
+                            </td>
+                            <td class="p-4 font-medium border-r border-slate-200" rowspan="3">
+                                <span class="block border border-black p-2 bg-white font-bold text-center">
+                                    딜레마 설계서<br>
+                                    <span class="text-[9px] font-normal text-slate-400">(활동지 앞면)</span>
+                                </span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-normal" rowspan="3">
+                                <strong>비판적 탐구 역량</strong><br>
+                                <span class="text-[10px] text-slate-400">단순 기술 찬양을 벗어나 역기능적 도덕 갈등 요소를 포착해 내는가?</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                02. AI 기반 질문 추출<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(10' ~ 30')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                안내서 내 프롬프트를 바탕으로 AI(ChatGPT, Claude 등)에게 직접 질문을 생성시킴. AI가 도출한 답변(질문 3개)의 상식적 한계와 데이터 편향성을 스스로 검증함.
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                03. 인간 밸런스 패치<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(30' ~ 50')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                AI가 추출한 단순하고 쏠린 질문의 상황에 '가족 대입', '제한 조항 튜닝', '수치 조정' 등의 정교한 밸런스 튜닝을 가해 팽팽한 5:5 킬러 질문을 최종 확정함.
+                            </td>
+                        </tr>
+
+                        <!-- Class 2 -->
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 text-center font-black border-r border-slate-200 bg-slate-50/50" rowspan="3">
+                                2차시<br>
+                                <span class="text-[10px] text-slate-400 font-normal">구현</span>
+                            </td>
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                04. 웹 도구 레이아웃 설정<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(00' ~ 10')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                디지털 설문지 환경(Google Forms, Canva 등)을 택하고, 질문을 시각적으로 어떻게 배열할지 및 가설 수립 과정을 기록함.
+                            </td>
+                            <td class="p-4 font-medium border-r border-slate-200" rowspan="3">
+                                <span class="block border border-black p-2 bg-white font-bold text-center">
+                                    온라인 투표폼<br>
+                                    <span class="text-[9px] font-normal text-slate-400">& QR코드</span>
+                                </span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-normal" rowspan="3">
+                                <strong>디지털 리터러시</strong><br>
+                                <span class="text-[10px] text-slate-400">기획한 텍스트를 디지털 인터랙티브 공간으로 능숙히 연계·디자인하는가?</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                05. 질문 입력 및 배경 구현<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(10' ~ 35')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                설계된 질문 3개와 대안들을 웹 폼에 텍스트로 올린 후, 사용자의 선택을 더 어렵게 만들 전공 기반 이론 설명을 폼 내 각 캡션란에 정밀 삽입함.
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                06. 단축 링크 및 QR 생성<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(35' ~ 50')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                완성된 웹 폼의 접근 단축 주소(URL)를 복사한 후, 네이버/구글 QR 생성기를 통하여 실시간 QR코드로 전환 및 테스트 진행.
+                            </td>
+                        </tr>
+
+                        <!-- Class 3 -->
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 text-center font-black border-r border-slate-200 bg-slate-50/50" rowspan="3">
+                                3차시<br>
+                                <span class="text-[10px] text-slate-400 font-normal">분석</span>
+                            </td>
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                07. 교실 실시간 데이터 축적<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(00' ~ 15')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                스마트폰을 지참하여 교실에 부착된 동료들의 다양한 딜레마 게임 QR코드를 릴레이로 스캔하고, 직접 투표를 남기며 정량적 모수를 쌓음.
+                            </td>
+                            <td class="p-4 font-medium border-r border-slate-200" rowspan="3">
+                                <span class="block border border-black p-2 bg-white font-bold text-center">
+                                    성찰 리포트<br>
+                                    <span class="text-[9px] font-normal text-slate-400">(활동지 뒷면)</span>
+                                </span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-normal" rowspan="3">
+                                <strong>데이터 분석 및 성찰</strong><br>
+                                <span class="text-[10px] text-slate-400">통계 격차의 이면을 전공 용어로 설명하고 도덕적 주체로 결단하는가?</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                08. 데이터 가설-실제 검증<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(15' ~ 35')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                내 게임의 최종 투표 비율 데이터를 획득한 후, 가설과 결과의 불일치 여부를 확인하고 대중들의 무의식적 경향과 이중 심리를 사회학적 시선으로 분석함.
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="p-4 font-bold border-r border-slate-200">
+                                09. 교과개념 융합 성찰<br>
+                                <span class="text-[10px] text-slate-400 font-normal">(35' ~ 50')</span>
+                            </td>
+                            <td class="p-4 text-slate-600 leading-relaxed border-r border-slate-200">
+                                분석 결과를 바탕으로 교과 전공 개념(외부효과, 배분적 정의 등)을 사용해 학술 성찰 리포트를 완성하고 미래 전문가로서 지향할 태도를 정립함.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: REAL EXAMPLES -->
+    <section id="examples" class="py-20 mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="mb-16">
+            <span class="text-[10px] font-black uppercase tracking-widest block mb-1 text-slate-400">Examples</span>
+            <h2 class="text-2xl font-black sm:text-3xl">전공별 딜레마 실제 사례</h2>
+            <p class="text-xs text-slate-500 mt-2">고등학생이 깊이 공감하고 스스로를 대입해 열띤 분석을 이끌어낼 수 있는 일상의 가치 충돌 상황들입니다.</p>
+        </div>
+
+        <div class="grid gap-8 md:grid-cols-3">
+            <!-- Example 1 -->
+            <div class="border border-black p-6 flex flex-col justify-between bg-white">
+                <div>
+                    <span class="text-[10px] font-extrabold border border-black px-2 py-0.5 block w-max mb-4 bg-black text-white">경영 / 경제 / 플랫폼</span>
+                    <h3 class="text-base font-extrabold mb-2">중고 플랫폼 되팔이(리셀), 규제해야 할까?</h3>
+                    <p class="text-[11px] text-slate-500 leading-relaxed mb-6">
+                        수요와 공급에 따른 가격 형성 구조와 상도덕 및 소비자 권익 보호라는 상반된 가치가 충돌합니다.
+                    </p>
+                    <div class="space-y-4 border-t border-slate-200 pt-4">
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice A (이윤/시장주의 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">원하는 사람에게 비싸게 양도하는 것은 자유 시장 원칙에 부합하므로 합법적 영역으로 보아 규제하지 않아야 한다.</p>
+                        </div>
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice B (윤리/공익규제 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">매크로 독점 및 비정상 되팔이 거래를 제한함으로써 실수요자를 보호하고 공정한 시장 생태계를 보존해야 한다.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-100 text-[10px] font-mono text-slate-400">KEYWORDS : 외부효과, 평판가치, 자유방임주의</div>
+            </div>
+
+            <!-- Example 2 -->
+            <div class="border border-black p-6 flex flex-col justify-between bg-white">
+                <div>
+                    <span class="text-[10px] font-extrabold border border-black px-2 py-0.5 block w-max mb-4 bg-black text-white">IT / 컴퓨터 / 인공지능</span>
+                    <h3 class="text-base font-extrabold mb-2">자율주행의 딜레마: 탑승자 우선 보호제?</h3>
+                    <p class="text-[11px] text-slate-500 leading-relaxed mb-6">
+                        사고 회피가 불가한 상황에서 차량 인공지능은 누구의 인명을 우선 순위로 두어야 하는가에 관한 문제입니다.
+                    </p>
+                    <div class="space-y-4 border-t border-slate-200 pt-4">
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice A (기술/기업주의 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">차량 구매자이자 탑승자의 안전을 100% 보장하는 알고리즘을 도입하여 상용화에 힘써야 한다.</p>
+                        </div>
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice B (생명/공익윤리 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">도로상의 보행자를 포함해 인명 피해의 총량을 최소화하도록 설계해야 하며 탑승자의 희생도 감수할 수 있어야 한다.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-100 text-[10px] font-mono text-slate-400">KEYWORDS : 트롤리 딜레마, 알고리즘 윤리, 제조사 책임론</div>
+            </div>
+
+            <!-- Example 3 -->
+            <div class="border border-black p-6 flex flex-col justify-between bg-white">
+                <div>
+                    <span class="text-[10px] font-extrabold border border-black px-2 py-0.5 block w-max mb-4 bg-black text-white">미디어 / 저널리즘 / 마케팅</span>
+                    <h3 class="text-base font-extrabold mb-2">알고리즘 필터버블 유도, 매출 우선인가?</h3>
+                    <p class="text-[11px] text-slate-500 leading-relaxed mb-6">
+                        포털 및 SNS 플랫폼 기업의 체류 시간 연장을 통한 이윤 극대화와 대중의 객관적 여론 보장의 대립입니다.
+                    </p>
+                    <div class="space-y-4 border-t border-slate-200 pt-4">
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice A (이윤/플랫폼 생존 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">사용자가 선호하는 편향적 콘텐츠를 지속 노출시켜 체류 시간하고 타겟 광고 수입을 늘린다.</p>
+                        </div>
+                        <div>
+                            <span class="font-extrabold text-[10px] text-slate-800 uppercase tracking-wider block mb-1">Choice B (공공성/정보 중립 우선)</span>
+                            <p class="text-[11px] text-slate-600 leading-normal">사용자 취향과 상반되는 객관적 시선의 정제된 뉴스를 의무 노출하여 플랫폼 이탈 리스크를 감수하더라도 가치 편향을 예방한다.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-100 text-[10px] font-mono text-slate-400">KEYWORDS : 필터버블, 확증 편향, 데이터 에코챔버 효과</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-black bg-white py-16">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <div class="flex h-6 w-6 items-center justify-center bg-black text-white">
+                    <i data-lucide="scale" class="h-3.5 w-3.5"></i>
+                </div>
+                <span class="font-black text-xs tracking-widest uppercase">Dilemma Data Lab</span>
+            </div>
+            <p class="text-[10px] text-slate-400">이 프로젝트 안내서는 고교 진학지도 및 학생 맞춤형 세특 설계를 지원하기 위해 제작되었습니다.</p>
+            <p class="text-[10px] text-slate-400 mt-2">© 2026 Dilemma Data Lab • All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        window.onload = function() {
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
