@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나랑 닮은 사상가 찾기 | 윤리와 사상 심리테스트</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                        serif: ['Gowun Batang', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                        },
+                        amberGold: '#f59e0b',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .option-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(79, 70, 229, 0.25);
+            border-color: #818cf8;
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+            border-color: #a5b4fc;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .glow-effect {
+            animation: pulseGlow 4s infinite ease-in-out;
+        }
+
+        /* Custom scrollbar for chat */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="font-sans flex flex-col justify-between min-h-screen p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-3xl w-full mx-auto my-auto">
+        
+        <!-- Header / Logo -->
+        <header class="text-center mb-6">
+            <span class="inline-block bg-indigo-900/60 text-indigo-300 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full border border-indigo-500/30 mb-2">
+                <i class="fa-solid fa-graduation-cap mr-1.5 text-amber-400"></i>고등학교 윤리와 사상 오리엔테이션
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
+                나랑 닮은 철학자 찾기
+            </h1>
+        </header>
+
+        <main id="app-container" class="glass-card rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            
+            <!-- START SCREEN -->
+            <section id="start-screen" class="text-center py-6 sm:py-10 space-y-6">
+                <div class="w-24 h-24 mx-auto rounded-full bg-indigo-600/30 flex items-center justify-center border-2 border-indigo-400/50 glow-effect">
+                    <i class="fa-solid fa-brain text-5xl text-indigo-300"></i>
+                </div>
+                
+                <div class="space-y-3">
+                    <h2 class="text-xl sm:text-2xl font-serif text-amber-200">
+                        "나는 과연 어떤 사상가의 눈으로 세상을 볼까?"
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
+                        수천 년 전 철학자들도 여러분과 똑같은 삶과 행복의 고민을 던졌습니다. 
+                        단 5가지 간단한 질문에 답하고, 나와 가장 닮은 영혼의 윤리 사상가를 확인해 보세요!
+                    </p>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="quizApp.startQuiz()" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/40 transform active:scale-95 transition text-lg flex items-center justify-center mx-auto gap-2">
+                        <span>테스트 시작하기</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="flex justify-center items-center gap-6 text-xs text-slate-400 pt-4 border-t border-slate-700/50">
+                    <span><i class="fa-solid fa-clock text-amber-400 mr-1"></i>소요시간: 1분</span>
+                    <span><i class="fa-solid fa-circle-question text-indigo-400 mr-1"></i>문항 수: 5문항</span>
+                    <span><i class="fa-solid fa-comments text-emerald-400 mr-1"></i>AI 사상가 대화 탑재</span>
+                </div>
+            </section>
+
+            <!-- QUESTION SCREEN -->
+            <section id="quiz-screen" class="hidden space-y-6">
+                <!-- Progress bar -->
+                <div>
+                    <div class="flex justify-between items-center text-xs sm:text-sm text-indigo-300 mb-2">
+                        <span id="question-number" class="font-bold">QUESTION 01 / 05</span>
+                        <span id="progress-percent" class="font-semibold text-amber-400">20%</span>
+                    </div>
+                    <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-amber-400 transition-all duration-300" style="width: 20%;"></div>
+                    </div>
+                </div>
+
+                <!-- Question Text -->
+                <div class="pt-2">
+                    <h2 id="question-text" class="text-lg sm:text-2xl font-serif font-bold text-white leading-snug">
+                        질문 텍스트가 여기에 표시됩니다.
+                    </h2>
+                </div>
+
+                <!-- Options List -->
+                <div id="options-container" class="space-y-3 pt-2">
+                    <!-- Dynamic options will be rendered here -->
+                </div>
+
+                <!-- Footer / Next Button -->
+                <div class="flex justify-between items-center pt-4 border-t border-slate-700/50">
+                    <button id="prev-btn" onclick="quizApp.prevQuestion()" class="px-4 py-2 text-slate-400 hover:text-white transition text-sm flex items-center gap-2" style="visibility: hidden;">
+                        <i class="fa-solid fa-chevron-left"></i> 이전 질문
+                    </button>
+                    <span class="text-xs text-slate-500">선택지를 클릭하면 다음 질문으로 이동합니다</span>
+                </div>
+            </section>
+
+            <!-- LOADING SCREEN -->
+            <section id="loading-screen" class="hidden py-16 text-center space-y-6">
+                <div class="relative w-20 h-20 mx-auto">
+                    <div class="absolute inset-0 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+                    <div class="absolute inset-2 border-4 border-amber-400/20 border-b-amber-400 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+                    <i class="fa-solid fa-hourglass-half text-2xl text-indigo-300 absolute inset-0 m-auto flex items-center justify-center"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-serif text-white font-bold mb-2">당신의 철학적 자아를 분석하고 있습니다...</h3>
+                    <p class="text-slate-400 text-sm">동서양 고전 학자들의 지혜와 답변을 매칭하는 중입니다</p>
+                </div>
+            </section>
+
+            <section id="result-screen" class="hidden space-y-6">
+                <!-- Result Badge -->
+                <div class="text-center space-y-2">
+                    <span id="result-tagline" class="inline-block bg-amber-500/20 text-amber-300 text-xs sm:text-sm font-semibold px-3.5 py-1 rounded-full border border-amber-500/40">
+                        유형 타이틀
+                    </span>
+                    <h2 id="result-philosopher-name" class="text-3xl sm:text-4xl font-serif font-bold text-white">
+                        사상가 이름
+                    </h2>
+                </div>
+
+                <!-- Result Card Content -->
+                <div class="bg-slate-800/80 rounded-xl p-5 border border-slate-700/80 space-y-4">
+                    <div class="flex flex-col sm:flex-row items-center gap-4">
+                        <!-- Icon Avatar -->
+                        <div id="result-avatar" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-800 flex items-center justify-center text-4xl sm:text-5xl text-amber-300 shadow-xl border border-indigo-400/30 flex-shrink-0">
+                            <i class="fa-solid fa-scroll"></i>
+                        </div>
+                        <div class="space-y-2 text-center sm:text-left">
+                            <blockquote id="result-quote" class="text-sm sm:text-base italic font-serif text-amber-200 border-l-0 sm:border-l-2 border-amber-400 pl-0 sm:pl-3">
+                                "사상가의 대표 명언이 들어갑니다."
+                            </blockquote>
+                            <p id="result-description" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                사상가에 대한 상세한 성향 분석과 윤리와 사상 과목에서의 핵심 포인트 설명이 표시됩니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Key Traits -->
+                    <div class="pt-3 border-t border-slate-700">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">나의 철학적 가치관 지표</h4>
+                        <div id="trait-bars" class="space-y-2">
+                            <!-- Dynamic Stat Bars -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI PHILOSOPHER CHAT SECTION -->
+                <div class="bg-indigo-950/60 rounded-xl p-4 sm:p-5 border border-indigo-500/30 space-y-3">
+                    <div class="flex items-center justify-between border-b border-indigo-800/60 pb-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-amber-300 text-sm">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-sm font-bold text-white"><span id="chat-philosopher-title">사상가</span>와 AI 대화하기</h3>
+                                <p class="text-xs text-indigo-300">Google Gemini API 기반 실시간 철학 상담</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Gemini 3 Flash</span>
+                    </div>
+
+                    <!-- Chat Messages Window -->
+                    <div id="chat-messages" class="chat-scroll h-48 overflow-y-auto space-y-2.5 p-2 bg-slate-900/70 rounded-lg text-xs sm:text-sm">
+                        <!-- Messages inserted dynamically -->
+                    </div>
+
+                    <!-- Preset Question Chips -->
+                    <div id="preset-questions" class="flex flex-wrap gap-1.5 pt-1">
+                        <!-- Preset buttons dynamically injected -->
+                    </div>
+
+                    <!-- Chat Input -->
+                    <form id="chat-form" onsubmit="quizApp.handleChatSubmit(event)" class="flex gap-2 pt-1">
+                        <input type="text" id="chat-input" placeholder="질문을 입력해보세요 (예: 고등학생의 고민...)" 
+                               class="flex-1 bg-slate-900/90 border border-indigo-500/40 rounded-lg px-3 py-2 text-xs sm:text-sm text-white focus:outline-none focus:border-indigo-400 placeholder-slate-500">
+                        <button type="submit" id="chat-send-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg text-xs sm:text-sm transition flex items-center gap-1">
+                            <span>전송</span>
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="quizApp.shareResult()" class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-share-nodes text-amber-400"></i>
+                        <span>결과 복사 / 공유하기</span>
+                    </button>
+                    <button onclick="quizApp.restartQuiz()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>다시 테스트하기</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-6 text-slate-500 text-xs">
+            <p>고등학교 윤리와 사상 오리엔테이션 학습 자료 | Interactive Philosophy Quiz</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast Message -->
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full border border-indigo-500/40 shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2 z-50">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i>
+        <span id="toast-message">클립보드에 복사되었습니다!</span>
+    </div>
+
+    <script>
+        const QUIZ_DATA = [
+            {
+                id: 1,
+                question: "Q1. 내가 생각하는 '이상적인 행복'이란 무엇일까요?",
+                options: [
+                    { label: "A", text: "불필요한 욕망을 줄이고 마음의 평정심(아타락시아)을 유지하는 삶", trait: "STOIC_EPICURUS" },
+                    { label: "B", text: "치열하게 노력해서 내 한계를 극복하고 스스로를 증명하는 삶", trait: "NIETZSCHE" },
+                    { label: "C", text: "타인과 연결되어 함께 더 나은 사회와 공동체를 만들어가는 삶", trait: "CONFUCIUS_MILL" },
+                    { label: "D", text: "모든 정해진 틀에서 벗어나 내 마음이 이끄는 대로 자유롭게 사는 삶", trait: "ZHUANGZI_SARTRE" }
+                ]
+            },
+            {
+                id: 2,
+                question: "Q2. 삶에서 큰 시련이나 고통이 찾아왔을 때 나의 태도는?",
+                options: [
+                    { label: "A", text: "\"이 또한 지나가리라.\" 이미 일어난 일은 이성적으로 수용하고 감정을 다스린다.", trait: "STOIC_EPICURUS" },
+                    { label: "B", text: "\"오히려 좋아!\" 고통은 나를 단련하는 양분이라 생각하고 정면 돌파한다.", trait: "NIETZSCHE" },
+                    { label: "C", text: "\"혼자 고민하지 말자.\" 주변 사람들에게 조언을 구하고 함께 해결책을 찾는다.", trait: "CONFUCIUS_MILL" },
+                    { label: "D", text: "\"인생에 정답은 없어.\" 고통에 연연하기보다 내가 선택한 새로운 길을 떠난다.", trait: "ZHUANGZI_SARTRE" }
+                ]
+            },
+            {
+                id: 3,
+                question: "Q3. 도덕과 사회 규칙에 대한 나의 생각은?",
+                options: [
+                    { label: "A", text: "사회적 혼란을 막기 위해 원칙과 보편적 이성 기준을 반드시 지켜야 한다.", trait: "STOIC_EPICURUS" },
+                    { label: "B", text: "기존 규범에 맹목적으로 갇히지 말고, 스스로 주체적인 가치를 세워야 한다.", trait: "NIETZSCHE" },
+                    { label: "C", text: "나와 타인 모두에게 유익하고 다수의 행복에 기여한다면 좋은 규칙이다.", trait: "CONFUCIUS_MILL" },
+                    { label: "D", text: "인위적인 규제는 인간을 얽매이게 한다. 자연스럽고 유연한 것이 최고다.", trait: "ZHUANGZI_SARTRE" }
+                ]
+            },
+            {
+                id: 4,
+                question: "Q4. 세상과 인간관계를 바라보는 나의 핵심 관점은?",
+                options: [
+                    { label: "A", text: "세상은 정해진 이치대로 흐르므로, 내 내면의 중심을 잡는 것이 가장 중요하다.", trait: "STOIC_EPICURUS" },
+                    { label: "B", text: "세상을 바꾸는 것은 남들의 시선에 굴하지 않는 강력한 의지다.", trait: "NIETZSCHE" },
+                    { label: "C", text: "인간은 홀로 살 수 없으며, 서로에 대한 예의(禮)와 배려가 세상을 아름답게 만든다.", trait: "CONFUCIUS_MILL" },
+                    { label: "D", text: "편견이나 차별 없이 세상을 있는 그대로 바라보고 얽매이지 않아야 한다.", trait: "ZHUANGZI_SARTRE" }
+                ]
+            },
+            {
+                id: 5,
+                question: "Q5. 내가 꿈꾸는 내 인생의 최종 목표에 가까운 것은?",
+                options: [
+                    { label: "A", text: "동요하지 않는 마음의 평화와 단단한 이성적 지혜", trait: "STOIC_EPICURUS" },
+                    { label: "B", text: "자신의 가치를 증명하고 끊임없이 성장하는 주체적 자아", trait: "NIETZSCHE" },
+                    { label: "C", text: "공동체에 기여하며 타인과 함께 누리는 보람차고 유용한 삶", trait: "CONFUCIUS_MILL" },
+                    { label: "D", text: "어떠한 억압도 없는 절대적 자유와 구속 없는 자아 발견", trait: "ZHUANGZI_SARTRE" }
+                ]
+            }
+        ];
+
+        const PHILOSOPHER_RESULTS = {
+            STOIC_EPICURUS: {
+                name: "에픽쿠로스 & 아우렐리우스",
+                tagline: "마음의 평정심을 구하는 '이성의 탐구자'",
+                icon: "fa-solid fa-hands-holding-circle",
+                quote: "\"마음의 평안(아타락시아)이야말로 진정한 삶의 고요한 행복이다.\"",
+                description: "당신은 어떤 불확실한 상황에서도 감정에 휘둘리지 않고, 마음의 평정심과 이성적 기준을 소중히 여기는 사상가 타입입니다! 불필요한 과욕을 경계하고 내면의 지혜를 가꾸는 힘이 뛰어납니다.",
+                ethicsContext: "<b>윤리와 사상 팁:</b> 서양 헬레니즘 시대의 스토아학파(아우렐리우스) 및 에픽쿠로스학파의 '아타락시아/아파테이아' 개념과 강하게 연결됩니다.",
+                traits: [
+                    { name: "내면의 평정심", score: 95 },
+                    { name: "이성적 절제력", score: 90 },
+                    { name: "공동체 기여도", score: 65 },
+                    { name: "주체적 자유도", score: 75 }
+                ],
+                presets: [
+                    "선생님, 시험 불안을 떨치고 마음의 평정을 찾는 법을 알려주세요.",
+                    "욕심을 줄이는 게 어떻게 진짜 행복이 되나요?",
+                    "윤리와 사상 과목에서 이 단원을 공부할 때 팁이 있나요?"
+                ]
+            },
+            NIETZSCHE: {
+                name: "프리드리히 니체",
+                tagline: "운명을 스스로 개척하는 '운명애(Amor Fati)의 초인'",
+                icon: "fa-solid fa-fire-flame-curved",
+                quote: "\"나를 죽이지 못하는 고통은 나를 더욱 강하게 만들 뿐이다.\"",
+                description: "당신은 난관이나 시련에 쉽게 굴복하지 않고, 자신의 운명을 사랑하며 주체적으로 극복해 내는 정열적인 창조자 타입입니다! 기존의 틀에 안주하지 않고 끊임없이 자신을 단련하고자 합니다.",
+                ethicsContext: "<b>윤리와 사상 팁:</b> 현대 서양 윤리 사상 중 '허무주의 극복', '위버멘쉬(초인)', '아모르파티(운명애)'를 주장한 니체 철학에 해당합니다.",
+                traits: [
+                    { name: "주체적 도전의지", score: 98 },
+                    { name: "시련 극복 능력", score: 92 },
+                    { name: "기존 규범 수용도", score: 40 },
+                    { name: "자아 실현도", score: 95 }
+                ],
+                presets: [
+                    "슬럼프가 왔을 때 니체 선생님이라면 어떻게 정면돌파 할까요?",
+                    "남들의 시선이나 비난에 흔들리지 않는 법이 궁금해요.",
+                    "‘운명애(아모르파티)’가 정확히 무슨 뜻인가요?"
+                ]
+            },
+            CONFUCIUS_MILL: {
+                name: "공자 & 존 스튜어트 밀",
+                tagline: "더불어 살아가는 사회를 가꾸는 '덕과 실용의 실천가'",
+                icon: "fa-solid fa-people-holding-hands",
+                quote: "\"남을 배려하는 인(仁)과, 사회 모두의 유익을 생각하는 따뜻한 이성.\"",
+                description: "당신은 나 혼자의 행복보다 주변 사람들과 함께 어울리고 따뜻한 관계를 만드는 것에 큰 가치를 둡니다! 도덕적 책임감과 공공의 이익을 균형 있게 고려하는 윤리적 리더 스타일입니다.",
+                ethicsContext: "<b>윤리와 사상 팁:</b> 동양 유교 사상의 핵심인 '인(仁)과 예(禮)', 그리고 서양 공리주의의 '최대 다수의 최대 행복' 및 '질적 공리주의'와 잘 어우러집니다.",
+                traits: [
+                    { name: "공동체 감수성", score: 96 },
+                    { name: "사회적 실용성", score: 88 },
+                    { name: "타인 공감 능력", score: 92 },
+                    { name: "도덕적 원칙 준수", score: 85 }
+                ],
+                presets: [
+                    "친구들과 갈등이 있을 때 유교적 배려(仁)를 어떻게 적용하나요?",
+                    "‘최대 다수의 최대 행복’과 개인의 권리가 충돌하면 어쩌죠?",
+                    "윤리와 사상 수업을 더 잘 들을 수 있는 조언 부탁드려요!"
+                ]
+            },
+            ZHUANGZI_SARTRE: {
+                name: "장자 & 사르트르",
+                tagline: "구속 없는 자유와 본연의 삶을 찾는 '자유로운 방랑자'",
+                icon: "fa-solid fa-wind",
+                quote: "\"타인의 시선에 갇히지 마라, 너는 스스로를 창조하는 존재다.\"",
+                description: "당신은 세상이 정해놓은 거창한 정답이나 인위적인 틀을 싫어하며, 나의 진정한 자유와 본래의 순수한 삶을 소중하게 여기는 예술가/자유인 타입입니다!",
+                ethicsContext: "<b>윤리와 사상 팁:</b> 동양 도가 사상의 '무위자연(無爲自然)'과 장자의 '제물론/좌망', 그리고 현대 서양 실존주의(사르트르의 '실존은 본질에 앞선다')와 통합니다.",
+                traits: [
+                    { name: "자유와 주체성", score: 98 },
+                    { name: "유연한 사고력", score: 94 },
+                    { name: "인위적 규범 거부", score: 85 },
+                    { name: "창의적 표현력", score: 88 }
+                ],
+                presets: [
+                    "남들이 정해준 성공 기준에 지칠 때 장자 선생님은 뭐라 하실까요?",
+                    "‘실존이 본질에 앞선다’는 말이 쉽게 무슨 뜻인가요?",
+                    "자유로우면서도 책임을 지는 삶이란 무엇인가요?"
+                ]
+            }
+        };
+
+        class QuizApp {
+            constructor() {
+                this.currentQuestionIndex = 0;
+                this.answers = [];
+                this.matchedResultKey = null;
+                this.chatHistory = [];
+                this.audioCtx = null;
+            }
+
+            // Audio Effect Helper using Web Audio API
+            playTone(freq = 440, duration = 0.1) {
+                try {
+                    if (!this.audioCtx) {
+                        this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (this.audioCtx.state === 'suspended') {
+                        this.audioCtx.resume();
+                    }
+                    const osc = this.audioCtx.createOscillator();
+                    const gain = this.audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, this.audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, this.audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(this.audioCtx.destination);
+                    osc.start();
+                    osc.stop(this.audioCtx.currentTime + duration);
+                } catch(e) {
+                    // Audio context fallback silent
+                }
+            }
+
+            startQuiz() {
+                this.playTone(523.25, 0.15); // C5 tone
+                document.getElementById('start-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                this.currentQuestionIndex = 0;
+                this.answers = [];
+                this.renderQuestion();
+            }
+
+            renderQuestion() {
+                const q = QUIZ_DATA[this.currentQuestionIndex];
+                
+                // Update header info
+                document.getElementById('question-number').innerText = `QUESTION 0${q.id} / 0${QUIZ_DATA.length}`;
+                const progress = Math.round((q.id / QUIZ_DATA.length) * 100);
+                document.getElementById('progress-percent').innerText = `${progress}%`;
+                document.getElementById('progress-bar').style.width = `${progress}%`;
+                
+                // Set Question
+                document.getElementById('question-text').innerText = q.question;
+
+                // Set Options
+                const optionsContainer = document.getElementById('options-container');
+                optionsContainer.innerHTML = '';
+
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-800/60 hover:bg-indigo-900/40 flex items-start gap-3 group text-slate-200';
+                    btn.onclick = () => this.selectOption(opt.trait);
+                    
+                    btn.innerHTML = `
+                        <span class="w-7 h-7 rounded-lg bg-indigo-950 border border-indigo-500/40 text-indigo-300 font-bold flex items-center justify-center text-xs flex-shrink-0 group-hover:border-amber-400 group-hover:text-amber-300 transition">
+                            ${opt.label}
+                        </span>
+                        <span class="text-xs sm:text-sm pt-0.5 leading-relaxed">${opt.text}</span>
+                    `;
+                    optionsContainer.appendChild(btn);
+                });
+
+                // Prev button visibility
+                const prevBtn = document.getElementById('prev-btn');
+                if (this.currentQuestionIndex > 0) {
+                    prevBtn.style.visibility = 'visible';
+                } else {
+                    prevBtn.style.visibility = 'hidden';
+                }
+            }
+
+            selectOption(trait) {
+                this.playTone(659.25, 0.1); // E5 tone
+                this.answers[this.currentQuestionIndex] = trait;
+
+                if (this.currentQuestionIndex < QUIZ_DATA.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.renderQuestion();
+                } else {
+                    this.calculateResult();
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.playTone(392.00, 0.1); // G4 tone
+                    this.currentQuestionIndex--;
+                    this.renderQuestion();
+                }
+            }
+
+            calculateResult() {
+                // Show loading screen briefly for dramatic effect
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('loading-screen').classList.remove('hidden');
+
+                // Tally scores
+                const scoreMap = {};
+                this.answers.forEach(t => {
+                    scoreMap[t] = (scoreMap[t] || 0) + 1;
+                });
+
+                // Find highest frequency trait
+                let topTrait = 'STOIC_EPICURUS';
+                let maxCount = -1;
+                for (const [t, count] of Object.entries(scoreMap)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        topTrait = t;
+                    }
+                }
+
+                this.matchedResultKey = topTrait;
+
+                setTimeout(() => {
+                    this.showResult();
+                }, 1200);
+            }
+
+            showResult() {
+                this.playTone(783.99, 0.25); // G5 tone
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.remove('hidden');
+
+                const res = PHILOSOPHER_RESULTS[this.matchedResultKey];
+
+                document.getElementById('result-tagline').innerText = res.tagline;
+                document.getElementById('result-philosopher-name').innerText = res.name;
+                document.getElementById('result-quote').innerText = res.quote;
+                document.getElementById('result-description').innerHTML = `${res.description}<br><br>${res.ethicsContext}`;
+
+                // Set Icon
+                const avatarEl = document.getElementById('result-avatar');
+                avatarEl.innerHTML = `<i class="${res.icon}"></i>`;
+
+                // Render Traits
+                const traitContainer = document.getElementById('trait-bars');
+                traitContainer.innerHTML = '';
+                res.traits.forEach(trait => {
+                    const barItem = document.createElement('div');
+                    barItem.className = 'space-y-1';
+                    barItem.innerHTML = `
+                        <div class="flex justify-between text-xs text-slate-300">
+                            <span>${trait.name}</span>
+                            <span class="font-semibold text-amber-300">${trait.score}%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-indigo-500 to-amber-400 rounded-full" style="width: ${trait.score}%"></div>
+                        </div>
+                    `;
+                    traitContainer.appendChild(barItem);
+                });
+
+                // Setup AI Chat section
+                document.getElementById('chat-philosopher-title').innerText = res.name;
+                this.initAiChat(res);
+            }
+
+            initAiChat(resData) {
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.innerHTML = '';
+
+                // Initial AI Greeting Message
+                const greetingMsg = {
+                    role: 'model',
+                    text: `반갑습니다! 나는 **${resData.name}**입니다. 당신의 고뇌와 성향을 보니 나와 깊은 생각을 공유하고 있군요. 윤리와 사상 수업이나 인생의 질문이 있다면 무엇이든 편하게 물어보세요.`
+                };
+                this.chatHistory = [greetingMsg];
+                this.renderChatMessage('model', greetingMsg.text);
+
+                // Render Presets
+                const presetContainer = document.getElementById('preset-questions');
+                presetContainer.innerHTML = '';
+                resData.presets.forEach(pText => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'text-[11px] bg-indigo-900/80 hover:bg-indigo-800 text-indigo-200 px-2.5 py-1 rounded-full border border-indigo-400/30 transition text-left';
+                    btn.innerText = `💡 ${pText}`;
+                    btn.onclick = () => {
+                        document.getElementById('chat-input').value = pText;
+                        this.handleChatSubmit(new Event('submit'));
+                    };
+                    presetContainer.appendChild(btn);
+                });
+            }
+
+            renderChatMessage(role, text) {
+                const messagesContainer = document.getElementById('chat-messages');
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+
+                const innerDiv = document.createElement('div');
+                innerDiv.className = `max-w-[85%] p-2.5 rounded-xl text-xs leading-relaxed ${
+                    role === 'user' 
+                        ? 'bg-indigo-600 text-white rounded-br-none' 
+                        : 'bg-slate-800 text-slate-200 border border-indigo-500/30 rounded-bl-none font-serif'
+                }`;
+                
+                // Formatted markdown bold basic replace
+                const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                innerDiv.innerHTML = formattedText;
+
+                msgDiv.appendChild(innerDiv);
+                messagesContainer.appendChild(msgDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            async handleChatSubmit(e) {
+                if (e) e.preventDefault();
+
+                const inputEl = document.getElementById('chat-input');
+                const userText = inputEl.value.trim();
+                if (!userText) return;
+
+                // Clear input
+                inputEl.value = '';
+
+                // Render user message
+                this.renderChatMessage('user', userText);
+                this.chatHistory.push({ role: 'user', text: userText });
+
+                // Disable button during load
+                const sendBtn = document.getElementById('chat-send-btn');
+                sendBtn.disabled = true;
+                sendBtn.classList.add('opacity-50');
+
+                // Render thinking indicator
+                const thinkingDiv = document.createElement('div');
+                thinkingDiv.id = 'thinking-msg';
+                thinkingDiv.className = 'flex justify-start';
+                thinkingDiv.innerHTML = `
+                    <div class="bg-slate-800/60 text-slate-400 px-3 py-1.5 rounded-xl text-xs italic border border-slate-700 animate-pulse">
+                        <i class="fa-solid fa-spinner animate-spin mr-1"></i> 깊이 고찰하는 중...
+                    </div>
+                `;
+                document.getElementById('chat-messages').appendChild(thinkingDiv);
+
+                try {
+                    const currentRes = PHILOSOPHER_RESULTS[this.matchedResultKey];
+                    const systemPrompt = `당신은 고등학교 윤리와 사상 수업에 참여 중인 철학자 '${currentRes.name}'입니다. 
+당신의 윤리 사상(${currentRes.tagline})에 충실한 인격체로서 고등학생 유저와 대화하세요. 
+답변 규칙:
+1. 친절하면서도 사상가 특유의 품격 있는 말투(격식체 또는 인자한 존댓말)를 사용하세요.
+2. 답변 길이는 2~3문장 정도로 명확하고 간결하게 작성하세요.
+3. 윤리와 사상 교과목 개념이나 고등학생의 고민에 도움이 되는 용기와 철학적 성찰을 전달하세요.`;
+
+                    // Gemini API call using gemini-3-flash-preview
+                    const apiKey = ""; // Canvas runtime environment injected key
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                    // Build simple parts payload
+                    const partsPayload = this.chatHistory.map(item => ({
+                        role: item.role === 'user' ? 'user' : 'model',
+                        parts: [{ text: item.text }]
+                    }));
+
+                    const payload = {
+                        contents: partsPayload,
+                        systemInstruction: {
+                            parts: [{ text: systemPrompt }]
+                        }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const resultData = await response.json();
+                    
+                    // Remove thinking message
+                    const tEl = document.getElementById('thinking-msg');
+                    if (tEl) tEl.remove();
+
+                    const aiResponseText = resultData.candidates?.[0]?.content?.parts?.[0]?.text 
+                        || "허허, 깊은 생각이로군요. 다시 한 번 말씀해 주시겠습니까?";
+
+                    this.renderChatMessage('model', aiResponseText);
+                    this.chatHistory.push({ role: 'model', text: aiResponseText });
+
+                } catch (err) {
+                    console.error(err);
+                    const tEl = document.getElementById('thinking-msg');
+                    if (tEl) tEl.remove();
+                    this.renderChatMessage('model', "죄송합니다. 철학적 성찰을 정리하는 도중 잠시 지연이 발생했습니다. 다시 말씀해 주세요.");
+                } finally {
+                    sendBtn.disabled = false;
+                    sendBtn.classList.remove('opacity-50');
+                }
+            }
+
+            shareResult() {
+                const res = PHILOSOPHER_RESULTS[this.matchedResultKey];
+                const shareText = `[윤리와 사상 심리테스트]\n나랑 닮은 철학자는 바로 '${res.name}' (${res.tagline}) 입니다!\n\n" ${res.quote} "\n\n나의 철학 유형이 궁금하다면 도전해보세요!`;
+
+                // Executive copy command fallback for safety
+                const dummy = document.createElement('textarea');
+                document.body.appendChild(dummy);
+                dummy.value = shareText;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+
+                this.showToast("결과 요약문이 클립보드에 복사되었습니다!");
+            }
+
+            showToast(msg) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-message').innerText = msg;
+                toast.classList.remove('opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('opacity-0');
+                }, 2500);
+            }
+
+            restartQuiz() {
+                this.playTone(440, 0.15);
+                document.getElementById('result-screen').classList.add('hidden');
+                document.getElementById('start-screen').classList.remove('hidden');
+            }
+        }
+
+        // Initialize quiz instance on load
+        let quizApp;
+        window.onload = function() {
+            quizApp = new QuizApp();
+        };
+    </script>
+</body>
+</html>
