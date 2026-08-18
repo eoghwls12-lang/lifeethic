@@ -209,6 +209,23 @@
     .card.dilemma .btn:hover {
       background-color: #334155;
     }
+
+    /* 윤리와 사상 심리테스트 전용 카드 스타일 (엠버/인디고 고급 테마) */
+    .card.philosophy::before {
+      background: linear-gradient(90deg, #6366f1 0%, #f59e0b 100%);
+    }
+    .card.philosophy .badge {
+      color: #6366f1;
+    }
+    .card.philosophy:hover::before {
+      background: linear-gradient(90deg, #4f46e5 0%, #d97706 100%);
+    }
+    .card.philosophy .btn {
+      background-color: #4f46e5;
+    }
+    .card.philosophy .btn:hover {
+      background-color: #3730a3;
+    }
   </style>
 </head>
 <body>
@@ -218,6 +235,15 @@
 
   <div class="grid-container">
     
+    <!-- 신규 추가: 윤리와 사상 심리테스트 카드 -->
+    <div class="card philosophy new">
+      <div class="new-label">NEW</div>
+      <div class="badge"><i class="fa-solid fa-graduation-cap"></i> 10 · 윤리와 사상</div>
+      <div class="title">나랑 닮은 사상가 찾기</div>
+      <div class="desc">5가지 질문을 통해 나와 가장 닮은 영혼의 윤리 사상가를 찾고, AI 사상가와 실시간 상담을 진행해봅니다.</div>
+      <a href="philosopher_quiz.html" class="btn">테스트 시작하기</a>
+    </div>
+
     <div class="card">
       <div class="badge"><i class="fa-solid fa-scale-unbalanced-flip"></i> 01 · 생활과 윤리</div>
       <div class="title">시민불복종 게임</div>
